@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import {computed,ref,watch} from 'vue'
 import type {ObjectBounds} from '../core/subject-segmentation'
 import type {SubjectMatteSettings} from '../shared/subject-matte'
@@ -25,24 +27,24 @@ function select(kind:'subject'|'object'|'remove-background'):void {
 </script>
 
 <template>
- <section class="object-selection-tools" aria-label="Subject and object selection">
-  <p>Choose a box on the canvas to select an object. Advanced quality refines the mask against the image’s detail.</p>
+ <section class="object-selection-tools" :aria-label="t('Subject and object selection')">
+  <p>{{ t('Choose a box on the canvas to select an object. Advanced quality refines the mask against the image’s detail.') }}</p>
   <fieldset :disabled="disabled||busy">
-   <div class="row"><button @click="select('subject')">Select Subject</button><button :disabled="hasRaster===false" @click="select('remove-background')">Remove Background</button></div>
+   <div class="row"><button @click="select('subject')">{{ t('Select Subject') }}</button><button :disabled="hasRaster===false" @click="select('remove-background')">{{ t('Remove Background') }}</button></div>
    <div class="row"><label>X<input v-model.number="x" type="number" min="0" :max="props.width-1"></label><label>Y<input v-model.number="y" type="number" min="0" :max="props.height-1"></label></div>
-   <div class="row"><label>Width<input v-model.number="width" type="number" min="1" :max="props.width"></label><label>Height<input v-model.number="height" type="number" min="1" :max="props.height"></label></div>
-   <div class="row"><button @click="emit('drawbox')">Draw Object Box on Canvas</button></div>
-   <div class="row"><button @click="select('object')">Select Object in Box</button><button :disabled="hasRaster===false" @click="emit('fill')">Content-Aware Fill</button></div>
-   <div class="row"><label>Quality<select v-model="quality" aria-label="Matte Quality"><option value="basic">Basic</option><option value="advanced">Advanced</option></select></label></div>
+   <div class="row"><label>{{ t('Width') }}<input v-model.number="width" type="number" min="1" :max="props.width"></label><label>{{ t('Height') }}<input v-model.number="height" type="number" min="1" :max="props.height"></label></div>
+   <div class="row"><button @click="emit('drawbox')">{{ t('Draw Object Box on Canvas') }}</button></div>
+   <div class="row"><button @click="select('object')">{{ t('Select Object in Box') }}</button><button :disabled="hasRaster===false" @click="emit('fill')">{{ t('Content-Aware Fill') }}</button></div>
+   <div class="row"><label>{{ t('Quality') }}<select v-model="quality" :aria-label="t('Matte Quality')"><option value="basic">{{ t('Basic') }}</option><option value="advanced">{{ t('Advanced') }}</option></select></label></div>
    <template v-if="quality==='advanced'">
-    <label class="matte-control">Refine<input v-model.number="refineEdges" aria-label="Matte Refine" type="range" min="0" max="40" step="1"><input v-model.number="refineEdges" aria-label="Matte Refine value" type="number" min="0" max="40" step="1"><span>px</span></label>
-    <label class="matte-control">Contrast<input v-model.number="matteContrast" aria-label="Matte Contrast" type="range" min="0" max="100" step="1"><input v-model.number="matteContrast" aria-label="Matte Contrast value" type="number" min="0" max="100" step="1"><span>%</span></label>
-    <label class="matte-control">Shift Edge<input v-model.number="shiftEdge" aria-label="Matte Shift Edge" type="range" min="-10" max="10" step="1"><input v-model.number="shiftEdge" aria-label="Matte Shift Edge value" type="number" min="-10" max="10" step="1"><span>px</span></label>
+    <label class="matte-control">{{ t('Refine') }}<input v-model.number="refineEdges" :aria-label="t('Matte Refine')" type="range" min="0" max="40" step="1"><input v-model.number="refineEdges" :aria-label="t('Matte Refine value')" type="number" min="0" max="40" step="1"><span>px</span></label>
+    <label class="matte-control">{{ t('Contrast') }}<input v-model.number="matteContrast" :aria-label="t('Matte Contrast')" type="range" min="0" max="100" step="1"><input v-model.number="matteContrast" :aria-label="t('Matte Contrast value')" type="number" min="0" max="100" step="1"><span>%</span></label>
+    <label class="matte-control">{{ t('Shift Edge') }}<input v-model.number="shiftEdge" :aria-label="t('Matte Shift Edge')" type="range" min="-10" max="10" step="1"><input v-model.number="shiftEdge" :aria-label="t('Matte Shift Edge value')" type="number" min="-10" max="10" step="1"><span>px</span></label>
    </template>
   </fieldset>
-  <img v-if="preview" :src="preview" alt="Background removal preview" class="subject-preview"><p v-if="previewBusy" role="status">Updating background preview…</p><div v-if="pending" class="row"><button :disabled="previewBusy" @click="emit('apply')">Apply background removal</button><button @click="emit('cancel')">Cancel preview</button></div><p v-if="progress" role="status">{{progress.phase}}<span v-if="percentage!==undefined"> · {{percentage}}%</span></p>
-  <p v-if="error" role="alert">{{error}}</p>
-  <button v-if="busy" @click="emit('cancel')">Cancel</button>
+  <img v-if="preview" :src="preview" :alt="t('Background removal preview')" class="subject-preview"><p v-if="previewBusy" role="status">{{ t('Updating background preview…') }}</p><div v-if="pending" class="row"><button :disabled="previewBusy" @click="emit('apply')">{{ t('Apply background removal') }}</button><button @click="emit('cancel')">{{ t('Cancel preview') }}</button></div><p v-if="progress" role="status">{{tm(progress.phase)}}<span v-if="percentage!==undefined"> · {{percentage}}%</span></p>
+  <p v-if="error" role="alert">{{tm(error)}}</p>
+  <button v-if="busy" @click="emit('cancel')">{{ t('Cancel') }}</button>
  </section>
 </template>
 

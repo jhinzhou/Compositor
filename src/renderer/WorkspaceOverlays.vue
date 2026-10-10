@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { DEFAULT_GRID, fitRect, gridLines, navigatorPoint, navigatorSize, navigatorViewport, normalizeGrid, rulerTicks, snapGuide, visibleDocumentRect } from './view-geometry'
 import type { Guide, GridSettings, Point, Size, SnapOptions } from './view-geometry'
@@ -59,7 +61,7 @@ onBeforeUnmount(cleanup)
 </script>
 <template>
   <div ref="host" class="workspace-overlays" :class="{ dragging }" :style="{ width: `${viewport.width}px`, height: `${viewport.height}px` }">
-    <svg class="workspace-lines" :width="viewport.width" :height="viewport.height" aria-label="Canvas guides and grid">
+    <svg class="workspace-lines" :width="viewport.width" :height="viewport.height" :aria-label="t('Canvas guides and grid')">
       <defs><clipPath id="workspace-document-clip"><rect :x="x(0)" :y="y(0)" :width="document.width * zoom" :height="document.height * zoom" /></clipPath></defs>
       <g v-if="gridVisible" clip-path="url(#workspace-document-clip)" :stroke="settings.color" :stroke-opacity="settings.opacity / 100">
         <line v-for="line in xs" :key="`gx${line.position}`" :x1="x(line.position)" :x2="x(line.position)" :y1="y(0)" :y2="y(document.height)" :stroke-dasharray="line.major ? settings.style === 'dashed' ? '4 3' : settings.style === 'dots' ? '1 2' : undefined : '1 2'" :opacity="line.major ? 1 : 28 / 45" />
@@ -85,18 +87,18 @@ onBeforeUnmount(cleanup)
         <rect width="20" height="20" class="ruler-background" />
       </g>
     </svg>
-    <div v-if="navigator && zoom >= 3" class="navigator-minimap" :style="{ width: `${minimapSize.width}px`, height: `${minimapSize.height}px` }" role="slider" aria-label="Navigator" aria-valuetext="Click or drag to center the canvas" tabindex="0" @pointerdown="navigate" @pointermove="navigate" @pointerup="($event.currentTarget as HTMLElement).releasePointerCapture($event.pointerId)" @keydown="if ($event.key.startsWith('Arrow')) { $event.preventDefault(); emit('center', { x: visible.x + visible.width / 2 + ($event.key === 'ArrowRight' ? 20 : $event.key === 'ArrowLeft' ? -20 : 0) / zoom, y: visible.y + visible.height / 2 + ($event.key === 'ArrowDown' ? 20 : $event.key === 'ArrowUp' ? -20 : 0) / zoom }) }">
-      <img v-if="thumbnail" :src="thumbnail" alt="Document overview" :style="{ left: `${imageRect.x}px`, top: `${imageRect.y}px`, width: `${imageRect.width}px`, height: `${imageRect.height}px` }" draggable="false" />
+    <div v-if="navigator && zoom >= 3" class="navigator-minimap" :style="{ width: `${minimapSize.width}px`, height: `${minimapSize.height}px` }" role="slider" :aria-label="t('Navigator')" :aria-valuetext="t('Click or drag to center the canvas')" tabindex="0" @pointerdown="navigate" @pointermove="navigate" @pointerup="($event.currentTarget as HTMLElement).releasePointerCapture($event.pointerId)" @keydown="if ($event.key.startsWith('Arrow')) { $event.preventDefault(); emit('center', { x: visible.x + visible.width / 2 + ($event.key === 'ArrowRight' ? 20 : $event.key === 'ArrowLeft' ? -20 : 0) / zoom, y: visible.y + visible.height / 2 + ($event.key === 'ArrowDown' ? 20 : $event.key === 'ArrowUp' ? -20 : 0) / zoom }) }">
+      <img v-if="thumbnail" :src="thumbnail" :alt="t('Document overview')" :style="{ left: `${imageRect.x}px`, top: `${imageRect.y}px`, width: `${imageRect.width}px`, height: `${imageRect.height}px` }" draggable="false" />
       <span v-if="viewportRect.width && viewportRect.height" class="navigator-viewport" :style="{ left: `${viewportRect.x}px`, top: `${viewportRect.y}px`, width: `${viewportRect.width}px`, height: `${viewportRect.height}px` }" />
     </div>
-    <button v-if="gridVisible" class="grid-settings-button" aria-label="Grid settings" @click="showSettings = !showSettings">Grid…</button>
-    <div v-if="showSettings" class="grid-settings" role="dialog" aria-label="Grid settings" @keydown.esc.stop="showSettings = false">
-      <label>Spacing <input type="number" min="2" max="4096" :value="settings.spacing" @change="updateGrid('spacing', ($event.target as HTMLInputElement).value)" /> px</label>
-      <label>Subdivisions <input type="number" min="1" :max="Math.min(64, settings.spacing)" :value="settings.subdivisions" @change="updateGrid('subdivisions', ($event.target as HTMLInputElement).value)" /></label>
-      <label>Color <input type="color" :value="settings.color" @input="updateGrid('color', ($event.target as HTMLInputElement).value)" /></label>
-      <label>Opacity <input type="number" min="1" max="100" :value="settings.opacity" @change="updateGrid('opacity', ($event.target as HTMLInputElement).value)" /> %</label>
-      <label>Style <select :value="settings.style" @change="updateGrid('style', ($event.target as HTMLSelectElement).value)"><option value="lines">Lines</option><option value="dashed">Dashed Lines</option><option value="dots">Dots</option></select></label>
-      <button @click="showSettings = false">Done</button>
+    <button v-if="gridVisible" class="grid-settings-button" :aria-label="t('Grid settings')" @click="showSettings = !showSettings">{{ t('Grid…') }}</button>
+    <div v-if="showSettings" class="grid-settings" role="dialog" :aria-label="t('Grid settings')" @keydown.esc.stop="showSettings = false">
+      <label>{{ t('Spacing') }} <input type="number" min="2" max="4096" :value="settings.spacing" @change="updateGrid('spacing', ($event.target as HTMLInputElement).value)" /> px</label>
+      <label>{{ t('Subdivisions') }} <input type="number" min="1" :max="Math.min(64, settings.spacing)" :value="settings.subdivisions" @change="updateGrid('subdivisions', ($event.target as HTMLInputElement).value)" /></label>
+      <label>{{ t('Color') }} <input type="color" :value="settings.color" @input="updateGrid('color', ($event.target as HTMLInputElement).value)" /></label>
+      <label>{{ t('Opacity') }} <input type="number" min="1" max="100" :value="settings.opacity" @change="updateGrid('opacity', ($event.target as HTMLInputElement).value)" /> %</label>
+      <label>{{ t('Style') }} <select :value="settings.style" @change="updateGrid('style', ($event.target as HTMLSelectElement).value)"><option value="lines">{{ t('Lines') }}</option><option value="dashed">{{ t('Dashed Lines') }}</option><option value="dots">{{ t('Dots') }}</option></select></label>
+      <button @click="showSettings = false">{{ t('Done') }}</button>
     </div>
   </div>
 </template>

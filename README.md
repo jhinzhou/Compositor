@@ -1,6 +1,8 @@
 # Compositor Electron
 
-Compositor 的 Electron/Vue/TypeScript 跨平台实现，当前版本 **0.3.0-alpha.6**。最新原版源码固定快照为 `d0ec2f35b6358108ac3e59593da1688deb83a559`，完整 Git tree 已核验；原始 checkout 保持 `75147a2`。本轮实施原版差异方案并移植新增 9 个提交涉及的 WebP、Camera Raw、尺寸调整和标签页规则。当前结果及已确认边界见 [alpha.6 统一验收](docs/NATIVE_PARITY_ALPHA6_ACCEPTANCE.md)，旧 alpha.5 同图证据见 [原版操作对照](docs/NATIVE_OPERATION_COMPARISON.md)，原方案保留在 [PS 根目录](../Compositor_原版对齐与Photoshop能力差距评估_2026-10-10.md)。Windows 原生验证与 Photoshop 能力增强按用户要求延后。
+Compositor 的 Electron/Vue/TypeScript 跨平台实现，当前版本 **0.3.0-alpha.7**。最新原版源码固定快照为 `d0ec2f35b6358108ac3e59593da1688deb83a559`，完整 Git tree 已核验；原始 checkout 保持 `75147a2`。本轮实施原版差异方案并移植新增 9 个提交涉及的 WebP、Camera Raw、尺寸调整和标签页规则。当前结果及已确认边界见 [alpha.6 统一验收](docs/NATIVE_PARITY_ALPHA6_ACCEPTANCE.md)，旧 alpha.5 同图证据见 [原版操作对照](docs/NATIVE_OPERATION_COMPARISON.md)，原方案保留在 [PS 根目录](../Compositor_原版对齐与Photoshop能力差距评估_2026-10-10.md)。Windows 原生验证与 Photoshop 能力增强按用户要求延后。
+
+本轮完成中文 / English 国际化，标题栏 **ZH / EN** 单击切换，当前语言加粗高亮，切换结果在重启后保留。界面、编辑面板、原生菜单与内置诊断共用词典；工程内容和 MCP 协议值保持原样。实现和验收见 [国际化记录](docs/I18N_IMPLEMENTATION.md)。
 
 手动编辑和 Agent 共用事务服务：**编辑 → MCP → 实际图像预览 → 撤销 → 保存/恢复**。内置 Agent 已接通可配置的 OpenAI-compatible Chat Completions（另支持 Anthropic Messages），密钥在应用内设置并使用系统加密存储。真实厂家服务尚需用户在应用内填写地址、模型和密钥；模拟服务验证不能代替真实服务验收。
 
@@ -15,11 +17,11 @@ npm ci
 npm run dev
 ```
 
-生产构建：`npm run build`；启动构建版：`npm start`。检查：`npm run typecheck`、`npm test`。当前统一验收命令：`npx tsx scripts/check-native-parity.ts`（先运行 `npm run build`），10 组桌面脚本串行执行。本轮 481 项测试和 65 项桌面聚合检查通过，打包后的真实 MCP 验证见统一验收记录。桌面回归脚本在 `scripts/smoke-*.ts`，会使用临时 profile 和测试工程；鼠标/键盘测试须串行运行，避免系统焦点互相干扰。
+生产构建：`npm run build`；启动构建版：`npm start`。检查：`npm run check:i18n`、`npm run typecheck`、`npm test`。当前统一验收命令：`npx tsx scripts/check-native-parity.ts`（先运行 `npm run build`），10 组桌面脚本串行执行。alpha.6 的 481 项测试和 65 项桌面聚合检查通过；alpha.7 增至 491 项测试并追加双语桌面验收，打包后的真实 MCP 验证见统一验收记录。桌面回归脚本在 `scripts/smoke-*.ts`，会使用临时 profile 和测试工程；鼠标/键盘测试须串行运行，避免系统焦点互相干扰。
 
-欢迎页默认 1920 × 1080、透明、72 DPI。最多 8 个文档标签，各有独立历史、视图、选择和保存关联。Mac 当前目录包位于 `release/0.3.0-alpha.6/mac-arm64/Compositor Electron.app`，实际包版本以 Info.plist 为准；Windows 交叉构建不代表 Windows 原生验收。目录包、zip、验证记录与 SHA-256 见实施记录。Windows 历史 alpha.5 包在 `release/0.3.0-alpha.5/win-unpacked`，主体识别的 VC++ 运行库安装脚本和原生待验收项见 [Windows 交付说明](docs/WINDOWS-RELEASE.md)。
+欢迎页默认 1920 × 1080、透明、72 DPI。最多 8 个文档标签，各有独立历史、视图、选择和保存关联。Mac 当前目录包位于 `release/0.3.0-alpha.7/mac-arm64/Compositor Electron.app`，实际包版本以 Info.plist 为准；Windows 交叉构建不代表 Windows 原生验收。目录包、zip、验证记录与 SHA-256 见实施记录。Windows 历史 alpha.5 包在 `release/0.3.0-alpha.5/win-unpacked`，主体识别的 VC++ 运行库安装脚本和原生待验收项见 [Windows 交付说明](docs/WINDOWS-RELEASE.md)。
 
-升级到 alpha.6 时，先在旧窗口保存工程并退出，再打开 `release/0.3.0-alpha.6/mac-arm64/Compositor Electron.app`。`release/mac-arm64/Compositor Electron.app` 是保留的 alpha.2 历史包，多数工具图标仍为禁用占位；旧发布目录均保留。macOS 可能复用仍在运行的旧实例，双击另一个路径不能保证切换版本。工具栏共 15 个按钮，W/Tab 切换魔棒与对象选区。alpha.6 已补齐实际画笔/修复预览、持续变换、复合选区轮廓、默认裁剪框、文字/形状真实合成及上下文快捷键等流程；模型、字体、大图架构与视口采样仍有明确差异，见验收表。
+升级到 alpha.7 时，先在旧窗口保存工程并退出，再打开 `release/0.3.0-alpha.7/mac-arm64/Compositor Electron.app`。`release/mac-arm64/Compositor Electron.app` 是保留的 alpha.2 历史包，多数工具图标仍为禁用占位；旧发布目录均保留。macOS 可能复用仍在运行的旧实例，双击另一个路径不能保证切换版本。工具栏共 15 个按钮，W/Tab 切换魔棒与对象选区。alpha.6 已补齐实际画笔/修复预览、持续变换、复合选区轮廓、默认裁剪框、文字/形状真实合成及上下文快捷键等流程；模型、字体、大图架构与视口采样仍有明确差异，见验收表。
 
 ## 编辑功能
 

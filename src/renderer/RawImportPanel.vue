@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import { ref, watch } from 'vue'
 import type { RawImportSettings } from '../core/foreign-import'
 const props = withDefaults(defineProps<{ open: boolean; filename: string; settings?: Partial<RawImportSettings>; busy?: boolean; metadata?: { width: number; height: number; camera_make?: string; camera_model?: string }; error?: string; preview?: string }>(), { settings: () => ({}), busy: false, error: '' })
@@ -10,19 +12,19 @@ function submit() { if (!props.busy && Number.isFinite(draft.value.exposureEV) &
 <template>
   <div v-if="open" class="raw-backdrop" @keydown.esc.prevent.stop="emit('cancel')">
     <form class="raw-import" role="dialog" aria-modal="true" aria-labelledby="raw-heading" @submit.prevent="submit">
-      <header><h2 id="raw-heading">Import RAW image</h2><button type="button" aria-label="Close RAW import" @click="emit('cancel')">×</button></header>
+      <header><h2 id="raw-heading">{{ t('Import RAW image') }}</h2><button type="button" :aria-label="t('Close RAW import')" @click="emit('cancel')">×</button></header>
       <p class="raw-name" :title="filename">{{ filename }}</p>
       <p v-if="metadata" class="raw-meta">{{ metadata.camera_make }} {{ metadata.camera_model }} · {{ metadata.width }} × {{ metadata.height }} px</p>
-      <img v-if="preview" :src="preview" class="raw-preview" alt="RAW development preview" /><fieldset :disabled="busy">
-        <label>White balance<select v-model="draft.whiteBalance" aria-label="White balance"><option value="camera">Camera</option><option value="auto">Auto</option></select></label>
-        <label>Exposure EV<input v-model.number="draft.exposureEV" type="number" min="-5" max="5" step="0.1" required /></label>
-        <label>Highlights<select v-model.number="draft.highlightMode" aria-label="Highlights"><option :value="0">Clip</option><option :value="1">Unclip</option><option :value="2">Blend</option></select></label>
-        <label class="raw-check"><input v-model="draft.autoBright" type="checkbox" /> Auto brightness</label>
-        <label class="raw-check"><input v-model="draft.halfSize" type="checkbox" /> Decode at half resolution</label>
+      <img v-if="preview" :src="preview" class="raw-preview" :alt="t('RAW development preview')" /><fieldset :disabled="busy">
+        <label>{{ t('White balance') }}<select v-model="draft.whiteBalance" :aria-label="t('White balance')"><option value="camera">{{ t('Camera') }}</option><option value="auto">{{ t('Auto') }}</option></select></label>
+        <label>{{ t('Exposure EV') }}<input v-model.number="draft.exposureEV" type="number" min="-5" max="5" step="0.1" required /></label>
+        <label>{{ t('Highlights') }}<select v-model.number="draft.highlightMode" :aria-label="t('Highlights')"><option :value="0">{{ t('Clip') }}</option><option :value="1">{{ t('Unclip') }}</option><option :value="2">{{ t('Blend') }}</option></select></label>
+        <label class="raw-check"><input v-model="draft.autoBright" type="checkbox" /> {{ t('Auto brightness') }}</label>
+        <label class="raw-check"><input v-model="draft.halfSize" type="checkbox" /> {{ t('Decode at half resolution') }}</label>
       </fieldset>
-      <p class="raw-note">Camera orientation is applied. The result becomes an editable 8-bit sRGB image layer. RAW sensor data and development settings are not stored in the project.</p>
-      <p v-if="error" class="raw-error" role="alert">{{ error }}</p>
-      <footer><button type="button" :disabled="busy" @click="emit('preview', { ...draft })">Preview</button><button type="button" @click="emit('cancel')">{{ busy ? 'Cancel import' : 'Cancel' }}</button><button type="submit" :disabled="busy" class="raw-primary">{{ busy ? 'Decoding…' : 'Import image' }}</button></footer>
+      <p class="raw-note">{{ t('Camera orientation is applied. The result becomes an editable 8-bit sRGB image layer. RAW sensor data and development settings are not stored in the project.') }}</p>
+      <p v-if="error" class="raw-error" role="alert">{{ tm(error) }}</p>
+      <footer><button type="button" :disabled="busy" @click="emit('preview', { ...draft })">{{ t('Preview') }}</button><button type="button" @click="emit('cancel')">{{ t(busy ? 'Cancel import' : 'Cancel') }}</button><button type="submit" :disabled="busy" class="raw-primary">{{ t(busy ? 'Decoding…' : 'Import image') }}</button></footer>
     </form>
   </div>
 </template>

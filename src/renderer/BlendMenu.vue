@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { BLEND_MODES } from '../shared/contracts'
 type Mode = typeof BLEND_MODES[number]
@@ -32,9 +34,9 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', outside))
 
 <template>
   <div ref="root" class="blend-menu" @keydown.stop="keydown">
-    <button aria-label="Blend mode" role="combobox" aria-haspopup="listbox" :aria-expanded="open" :disabled="disabled" @click="toggle">{{ value }}<span>⌄</span></button>
-    <div v-if="open" class="blend-options" role="listbox" aria-label="Blend modes" @mouseleave="emit('preview', undefined)">
-      <button v-for="(mode, index) in BLEND_MODES" :key="mode" class="blend-option" :class="{ active: active === index, separator: separators.has(index) }" role="option" :aria-selected="value === mode" tabindex="-1" @mouseenter="hover(index)" @click="choose(index)">{{ mode }}<span v-if="value === mode">✓</span></button>
+    <button :aria-label="t('Blend mode')" role="combobox" aria-haspopup="listbox" :aria-expanded="open" :disabled="disabled" @click="toggle">{{ t(value) }}<span>⌄</span></button>
+    <div v-if="open" class="blend-options" role="listbox" :aria-label="t('Blend modes')" @mouseleave="emit('preview', undefined)">
+      <button v-for="(mode, index) in BLEND_MODES" :key="mode" class="blend-option" :class="{ active: active === index, separator: separators.has(index) }" role="option" :aria-selected="value === mode" tabindex="-1" @mouseenter="hover(index)" @click="choose(index)">{{ t(mode) }}<span v-if="value === mode">✓</span></button>
     </div>
   </div>
 </template>

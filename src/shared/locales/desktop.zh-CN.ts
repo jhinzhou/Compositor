@@ -1,0 +1,23 @@
+export const desktopZhCN: Record<string, string> = {
+  'File': '文件', 'Edit': '编辑', 'View': '视图', 'Select': '选择', 'Image': '图像', 'Filter': '滤镜', 'Layer': '图层', 'Window': '窗口', 'Help': '帮助',
+  'New Canvas…': '新建画布…', 'Open Project…': '打开工程…', 'Recent Projects…': '最近工程…', 'Import Images…': '导入图像…',
+  'Save As…': '另存为…', 'Save': '保存', 'Save a Copy…': '保存副本…', 'Export PNG…': '导出 PNG…', 'Export As…': '导出为…', 'Export PSD…': '导出 PSD…', 'Export PSB…': '导出 PSB…', 'Close Project': '关闭工程',
+  'Undo': '撤销', 'Redo': '重做', 'Cut': '剪切', 'Copy': '复制', 'Paste': '粘贴', 'Fill…': '填充…', 'Copy Merged': '合并复制',
+  'Fit Canvas': "适合画布", 'Actual Pixels': '实际像素', 'Zoom In': '放大', 'Zoom Out': '缩小', 'Show Controls': "显示控制柄", 'Canvas Only Fullscreen': '仅画布全屏',
+  'Rulers': '标尺', 'Grid': '网格', 'Guides': '参考线', 'Lock Guides': '锁定参考线', 'Clear Guides': '清除参考线', 'Snapping': '吸附', 'Navigator': '导航器', 'Agent / MCP': '智能助手 / MCP',
+  'Select All': '全选', 'Deselect': '取消选择', 'Invert': '反相', 'Color Range…': '色彩范围…', 'Select Subject…': '选择主体…', 'Content-Aware Fill…': '内容识别填充…', 'Expand…': '扩展…', 'Contract…': '收缩…', 'Feather…': '羽化…',
+  'Canvas Size…': '画布大小…', 'Image Size…': '图像大小…', 'Trim…': '裁切透明边缘…', 'Rotate Canvas 90°': '旋转画布 90°', 'Flip Canvas Horizontal': '水平翻转画布',
+  'Levels…': '色阶…', 'Curves…': '曲线…', 'Hue/Saturation…': '色相/饱和度…', 'Exposure…': '曝光度…', 'Gradient Map…': '渐变映射…', 'Grain…': '颗粒…', 'Invert…': '反相…', 'Black & White…': '黑白…', 'Color Balance…': '色彩平衡…',
+  'Gaussian Blur…': '高斯模糊…', 'Motion Blur…': '动感模糊…', 'Add Noise…': '添加杂色…', 'Vignette…': '暗角…', 'Bloom / Glow…': '泛光/辉光…', 'Tonal Contrast…': '色调对比…', 'Lens Correction…': '镜头校正…', 'Dither…': '抖色…', 'Scanlines…': '扫描线…', 'Camera Raw Filter…': 'Camera Raw 滤镜…', 'Repeat Last Filter': '重复上次滤镜',
+  'New Blank Layer': '新建空白图层', 'Duplicate Layer or Folder': '复制图层或文件夹', 'New Folder': '新建文件夹', 'Ungroup Layers': '取消图层编组', 'Delete Layer': '删除图层', 'Transform / Merge…': '变换/合并…', 'Transform Selected Pixels': '变换选中像素', 'Free Distort…': '自由扭曲…', 'Layer Effects…': '图层效果…', 'New Adjustment Layer': '新建调整图层',
+  'Compositor Electron {version} · Early Build': 'Compositor Electron {version} · 早期版本', 'Search Commands…': '搜索命令…', 'Keyboard Shortcuts…': '键盘快捷键…', 'MCP Connection': 'MCP 连接',
+  'Language': '语言', 'About Compositor Electron': '关于 Compositor Electron', 'Services': '服务', 'Hide Compositor Electron': '隐藏 Compositor Electron', 'Hide Others': '隐藏其他应用', 'Show All': '显示全部', 'Quit Compositor Electron': '退出 Compositor Electron',
+  'Minimize': '最小化', 'Zoom': "缩放", 'Bring All to Front': '全部置于前台', 'Toggle Full Screen': '切换全屏', 'Close': '关闭',
+  'Could not change language': '无法切换语言',
+  'Discard changes': '放弃更改', 'Cancel': '取消', 'Save changes to {title}?': '要保存对“{title}”的更改吗？',
+  'Export {format}': '导出 {format}', 'Export As': '导出为', 'Open project': "打开工程", 'Choose the project format to open.': '选择要打开的工程格式。',
+  'Compositor project (.comp)': 'Compositor 工程 (.comp)', 'Photoshop document (.psd / .psb)': 'Photoshop 文档 (.psd / .psb)', 'Open Photoshop document': '打开 Photoshop 文档', 'Open Compositor project': '打开 Compositor 工程', 'Photoshop document': 'Photoshop 文档',
+  'Import images': '导入图像', 'Images': '图像', 'Save a project copy': '保存工程副本', 'Save project as': '工程另存为', 'Compositor project': 'Compositor 工程', 'Export PNG': '导出 PNG', 'PNG image': 'PNG 图像',
+  'Could not close project': '无法关闭工程', 'Saving is unavailable. Quit keeps the existing automatic recovery files; edits after the latest recovery may be missing.': '当前无法保存。退出会保留已有的自动恢复文件，但最近一次恢复之后的编辑可能丢失。',
+  'The window has been kept open. Resolve the operation or save error, then try closing again.': '窗口已保持打开。请处理操作或保存错误后，再尝试关闭。', 'Keep application open': '保持应用打开', 'Quit and keep recovery files': '退出并保留恢复文件', 'OK': '确定'
+}

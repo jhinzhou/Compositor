@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import { computed, ref } from 'vue'
 import type { BatchMutation, Manifest } from '../shared/contracts'
 import { duplicateSelectionActions, mergeSelectionPlan, selectedRoots, sharedTransformActions, type MergePlan } from '../core/layer-operations'
@@ -31,29 +33,29 @@ function merge(kind: 'selected' | 'down' | 'group'): void { run(() => emit('merg
 </script>
 
 <template>
-  <div class="layer-actions" aria-label="Layer actions">
+  <div class="layer-actions" :aria-label="t('Layer actions')">
     <div class="action-row">
-      <button :disabled="disabled || !roots.length" title="Copy selected layers" @click="emit('copy', roots.map(layer => layer.id))">Copy</button>
-      <button :disabled="disabled || !roots.length" title="Cut selected layers" @click="emit('cut', roots.map(layer => layer.id))">Cut</button>
-      <button :disabled="disabled || !canPaste" title="Paste layers" @click="emit('paste')">Paste</button>
-      <button :disabled="disabled || !roots.length" title="Duplicate selected layers" @click="duplicate">Duplicate</button>
+      <button :disabled="disabled || !roots.length" :title="t('Copy selected layers')" @click="emit('copy', roots.map(layer => layer.id))">{{ t('Copy') }}</button>
+      <button :disabled="disabled || !roots.length" :title="t('Cut selected layers')" @click="emit('cut', roots.map(layer => layer.id))">{{ t('Cut') }}</button>
+      <button :disabled="disabled || !canPaste" :title="t('Paste layers')" @click="emit('paste')">{{ t('Paste') }}</button>
+      <button :disabled="disabled || !roots.length" :title="t('Duplicate selected layers')" @click="duplicate">{{ t('Duplicate') }}</button>
     </div>
     <div class="action-row">
-      <label>Rotate <input v-model.number="degrees" type="number" step="1" :disabled="disabled || !roots.length" aria-label="Shared rotation degrees">°</label>
-      <button :disabled="disabled || !roots.length" @click="transform('rotate')">Apply</button>
+      <label>{{ t('Rotate') }} <input v-model.number="degrees" type="number" step="1" :disabled="disabled || !roots.length" :aria-label="t('Shared rotation degrees')">°</label>
+      <button :disabled="disabled || !roots.length" @click="transform('rotate')">{{ t('Apply') }}</button>
     </div>
     <div class="action-row">
-      <label>Scale <input v-model.number="scale" type="number" min="1" max="10000" step="1" :disabled="disabled || !roots.length" aria-label="Shared scale percent">%</label>
-      <button :disabled="disabled || !roots.length" @click="transform('scale')">Apply</button>
+      <label>{{ t('Scale') }} <input v-model.number="scale" type="number" min="1" max="10000" step="1" :disabled="disabled || !roots.length" :aria-label="t('Shared scale percent')">%</label>
+      <button :disabled="disabled || !roots.length" @click="transform('scale')">{{ t('Apply') }}</button>
     </div>
     <div class="action-row">
-      <button :disabled="disabled || !roots.length" @click="transform('horizontal')">Flip H</button>
-      <button :disabled="disabled || !roots.length" @click="transform('vertical')">Flip V</button>
-      <button :disabled="disabled || roots.length < 2" @click="merge('selected')">Merge selected</button>
+      <button :disabled="disabled || !roots.length" @click="transform('horizontal')">{{ t('Flip H') }}</button>
+      <button :disabled="disabled || !roots.length" @click="transform('vertical')">{{ t('Flip V') }}</button>
+      <button :disabled="disabled || roots.length < 2" @click="merge('selected')">{{ t('Merge selected') }}</button>
     </div>
     <div class="action-row">
-      <button :disabled="disabled || roots.length !== 1" @click="merge('down')">Merge down</button>
-      <button :disabled="disabled || roots.length !== 1 || !roots[0]?.isGroup" @click="merge('group')">Merge folder</button>
+      <button :disabled="disabled || roots.length !== 1" @click="merge('down')">{{ t('Merge down') }}</button>
+      <button :disabled="disabled || roots.length !== 1 || !roots[0]?.isGroup" @click="merge('group')">{{ t('Merge folder') }}</button>
     </div>
   </div>
 </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm, locale } = useI18n()
 import {computed,onBeforeUnmount,ref} from 'vue'
 import {LIMITS,type Transform} from '../shared/contracts'
 import {commandForKey,type ShortcutOverrides,type WorkspaceCommand} from './command-shortcuts'
@@ -43,18 +45,18 @@ function keydown(event:KeyboardEvent):void{if(event.isComposing)return;const com
 defineExpose({commit,cancel})
 </script>
 <template>
- <form class="size-dialog image-size-dialog" role="dialog" aria-modal="true" aria-label="Image Size" novalidate @submit.prevent="commit" @keydown.capture="keydown">
-  <h2>Image Size</h2><p class="current">Current: {{props.width.toLocaleString('en-US')}} × {{props.height.toLocaleString('en-US')}} pixels</p>
-  <label>Units<select v-model="unit" aria-label="Image size units"><option v-for="name in units" :key="name">{{name}}</option></select></label>
-  <label class="dimension"><span class="scrub-label" @pointerdown="startScrub($event,'width')" @pointermove="moveScrub" @pointerup="finishScrub()" @pointercancel="finishScrub(true)">Width</span><input aria-label="Image width" type="number" step="any" :value="inputValue(true)" @input="rawDimension(true,$event)" @blur="restoreDimension(true,$event)"></label>
-  <label class="dimension"><span class="scrub-label" @pointerdown="startScrub($event,'height')" @pointermove="moveScrub" @pointerup="finishScrub()" @pointercancel="finishScrub(true)">Height</span><input aria-label="Image height" type="number" step="any" :value="inputValue(false)" @input="rawDimension(false,$event)" @blur="restoreDimension(false,$event)"></label>
-  <label class="check"><input v-model="locked" aria-label="Lock aspect ratio" type="checkbox" :disabled="!resample">Lock aspect ratio</label>
-  <label class="resolution"><span class="scrub-label" @pointerdown="startScrub($event,'resolution')" @pointermove="moveScrub" @pointerup="finishScrub()" @pointercancel="finishScrub(true)">Resolution</span><input aria-label="Image resolution" type="number" step="any" min="1" max="9600" :value="resolution" @input="rawResolution"><span>pixels/inch</span></label>
-  <label class="check"><input :checked="resample" aria-label="Resample pixels" type="checkbox" @change="setResample(($event.target as HTMLInputElement).checked)">Resample</label>
-  <label v-if="resample">Sampling<select v-model="sampling" aria-label="Image sampling"><option>High quality</option><option>Smooth</option><option>Nearest</option></select></label>
-  <p>{{resample?'Resizes layer pixels and applies existing transforms. Undo restores the originals.':'Only print dimensions and resolution change. Pixels stay unchanged.'}}</p>
-  <p :role="valid?'status':'alert'" :class="{invalid:!valid}">{{valid?`Result: ${Math.round(width).toLocaleString('en-US')} × ${Math.round(height).toLocaleString('en-US')} pixels`:`Use 1–${LIMITS.maxSide.toLocaleString('en-US')} pixels per side, up to ${LIMITS.maxSurfacePixels/1_000_000} megapixels, and 1–9,600 pixels/inch.`}}</p>
-  <footer><button type="button" @click="cancel">Cancel</button><button type="submit" :disabled="!valid">Resize</button></footer>
+ <form class="size-dialog image-size-dialog" role="dialog" aria-modal="true" :aria-label="t('Image Size')" novalidate @submit.prevent="commit" @keydown.capture="keydown">
+  <h2>{{ t('Image Size') }}</h2><p class="current">{{ t('Current:') }} {{props.width.toLocaleString(locale==='zh-CN'?'zh-CN':'en-US')}} × {{props.height.toLocaleString(locale==='zh-CN'?'zh-CN':'en-US')}} {{ t('pixels') }}</p>
+  <label>{{ t('Units') }}<select v-model="unit" :aria-label="t('Image size units')"><option v-for="name in units" :key="name" :value="name">{{t(name)}}</option></select></label>
+  <label class="dimension"><span class="scrub-label" @pointerdown="startScrub($event,'width')" @pointermove="moveScrub" @pointerup="finishScrub()" @pointercancel="finishScrub(true)">{{ t('Width') }}</span><input :aria-label="t('Image width')" type="number" step="any" :value="inputValue(true)" @input="rawDimension(true,$event)" @blur="restoreDimension(true,$event)"></label>
+  <label class="dimension"><span class="scrub-label" @pointerdown="startScrub($event,'height')" @pointermove="moveScrub" @pointerup="finishScrub()" @pointercancel="finishScrub(true)">{{ t('Height') }}</span><input :aria-label="t('Image height')" type="number" step="any" :value="inputValue(false)" @input="rawDimension(false,$event)" @blur="restoreDimension(false,$event)"></label>
+  <label class="check"><input v-model="locked" :aria-label="t('Lock aspect ratio')" type="checkbox" :disabled="!resample">{{ t('Lock aspect ratio') }}</label>
+  <label class="resolution"><span class="scrub-label" @pointerdown="startScrub($event,'resolution')" @pointermove="moveScrub" @pointerup="finishScrub()" @pointercancel="finishScrub(true)">{{ t('Resolution') }}</span><input :aria-label="t('Image resolution')" type="number" step="any" min="1" max="9600" :value="resolution" @input="rawResolution"><span>{{ t('pixels/inch') }}</span></label>
+  <label class="check"><input :checked="resample" :aria-label="t('Resample pixels')" type="checkbox" @change="setResample(($event.target as HTMLInputElement).checked)">{{ t('Resample') }}</label>
+  <label v-if="resample">{{ t('Sampling') }}<select v-model="sampling" :aria-label="t('Image sampling')"><option :value="'High quality'">{{ t('High quality') }}</option><option :value="'Smooth'">{{ t('Smooth') }}</option><option :value="'Nearest'">{{ t('Nearest') }}</option></select></label>
+  <p>{{t(resample?'Resizes layer pixels and applies existing transforms. Undo restores the originals.':'Only print dimensions and resolution change. Pixels stay unchanged.')}}</p>
+  <p :role="valid?'status':'alert'" :class="{invalid:!valid}">{{valid?t('Result: {width} × {height} pixels', {width:Math.round(width).toLocaleString(locale==='zh-CN'?'zh-CN':'en-US'),height:Math.round(height).toLocaleString(locale==='zh-CN'?'zh-CN':'en-US')}):t('Use 1–{side} pixels per side, up to {megapixels} megapixels, and 1–9,600 pixels/inch.', {side:LIMITS.maxSide.toLocaleString(locale==='zh-CN'?'zh-CN':'en-US'),megapixels:LIMITS.maxSurfacePixels/1_000_000})}}</p>
+  <footer><button type="button" @click="cancel">{{ t('Cancel') }}</button><button type="submit" :disabled="!valid">{{ t('Resize') }}</button></footer>
  </form>
 </template>
 <style scoped>

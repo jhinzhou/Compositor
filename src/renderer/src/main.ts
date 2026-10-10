@@ -4,6 +4,7 @@ import '../style.css'
 import { CanvasEngine, toBase64 } from '../canvas-engine'
 import {renderTextPNG,renderShapePNG,setInstalledFontCatalog} from '../content-raster'
 import { failure } from '../../shared/contracts'
+import { initializeI18n } from '../i18n'
 
 if (new URLSearchParams(location.search).has('render')) {
   const fonts=window.compositor.request<{family:string;postscriptName?:string;fullName?:string;style?:string}[]>('fontCatalog').then(result=>{if(result.ok)setInstalledFontCatalog(result.value)})
@@ -21,4 +22,6 @@ if (new URLSearchParams(location.search).has('render')) {
         previewId: crypto.randomUUID(), width: w, height: h, canvasSize: [width, height], scale: w / width } })
     } catch (error) { window.compositor.renderComplete(id, failure(error)) }
   })
-} else createApp(App).mount('#app')
+} else {
+  void initializeI18n().then(() => createApp(App).mount('#app'))
+}

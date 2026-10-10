@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import FontPicker from './FontPicker.vue'
 import { computed, ref, watch, toRaw } from 'vue'
 import {LIMITS,type Layer,type Transform} from '../shared/contracts'
@@ -81,31 +83,31 @@ defineExpose({cycleKind})
 </script>
 
 <template>
-  <form :class="['content-tools',{compact}]" aria-label="Editable content" @submit.prevent="apply(isExisting)">
+  <form :class="['content-tools',{compact}]" :aria-label="t('Editable content')" @submit.prevent="apply(isExisting)">
     <fieldset :disabled="disabled || busy">
-      <div class="row content-mode"><button type="button" :class="{ active: mode === 'text' }" @click="mode = 'text'">Text</button><button type="button" :class="{ active: mode === 'shape' }" @click="mode = 'shape'">Shape</button></div>
-      <label class="content-name">Name<input v-model="name" maxlength="4096"></label>
+      <div class="row content-mode"><button type="button" :class="{ active: mode === 'text' }" @click="mode = 'text'">{{ t('Text') }}</button><button type="button" :class="{ active: mode === 'shape' }" @click="mode = 'shape'">{{ t('Shape') }}</button></div>
+      <label class="content-name">{{ t('Name') }}<input v-model="name" maxlength="4096"></label>
       <template v-if="mode === 'text'">
-        <label class="content-source">Content<textarea aria-label="Text content" ref="textArea" :value="text.content" maxlength="100000" rows="4" @input="contentChanged" @select="rememberSelection" @keyup="rememberSelection" @mouseup="rememberSelection" /></label>
-        <label>Font<FontPicker :value="text.fontName" :fonts="fonts" :disabled="disabled||busy" @select="fontSelected"/></label><p class="font-preview" :style="{fontFamily:text.fontName}">Aa Bb · 文字预览 0123</p>
-        <div class="row"><label>Size<input aria-label="Font size" v-model.number="text.fontSize" type="number" min="1" max="2000"></label><label>Alignment<select v-model="text.alignment"><option>Left</option><option>Center</option><option>Right</option></select></label></div>
-        <div class="row"><label>Tracking<input aria-label="Text tracking" v-model.number="text.tracking" type="number" min="-100" max="1000"></label><label>Leading<input v-model.number="text.leading" type="number" min="0" max="5000" title="0 uses automatic 120% leading"></label></div>
-        <label class="check"><input v-model="fixedBox" type="checkbox">Fixed paragraph box</label>
-        <p v-if="selection[1]" class="hint">Font and color apply to {{ selection[1] }} selected UTF-16 units.</p>
+        <label class="content-source">{{ t('Content') }}<textarea :aria-label="t('Text content')" ref="textArea" :value="text.content" maxlength="100000" rows="4" @input="contentChanged" @select="rememberSelection" @keyup="rememberSelection" @mouseup="rememberSelection" /></label>
+        <label>{{ t('Font') }}<FontPicker :value="text.fontName" :fonts="fonts" :disabled="disabled||busy" @select="fontSelected"/></label><p class="font-preview" :style="{fontFamily:text.fontName}">Aa Bb · 文字预览 0123</p>
+        <div class="row"><label>{{ t('Size') }}<input :aria-label="t('Font size')" v-model.number="text.fontSize" type="number" min="1" max="2000"></label><label>{{ t('Alignment') }}<select v-model="text.alignment"><option :value="'Left'">{{ t('Left') }}</option><option :value="'Center'">{{ t('Center') }}</option><option :value="'Right'">{{ t('Right') }}</option></select></label></div>
+        <div class="row"><label>{{ t('Tracking') }}<input :aria-label="t('Text tracking')" v-model.number="text.tracking" type="number" min="-100" max="1000"></label><label>{{ t('Leading') }}<input v-model.number="text.leading" type="number" min="0" max="5000" :title="t('0 uses automatic 120% leading')"></label></div>
+        <label class="check"><input v-model="fixedBox" type="checkbox">{{ t('Fixed paragraph box') }}</label>
+        <p v-if="selection[1]" class="hint">{{ t('Font and color apply to {count} selected UTF-16 units.', {count:selection[1]}) }}</p>
       </template>
       <template v-else>
-        <label>Kind<select aria-label="Shape kind" v-model="shape.kind"><option>Rectangle</option><option>Ellipse</option><option>Line</option></select></label>
-        <label v-if="shape.kind === 'Rectangle'">Corner radius<input v-model.number="shape.cornerRadius" type="number" min="0"></label>
-        <label v-if="shape.kind === 'Line'">Line width<input v-model.number="shape.lineWidth" type="number" min="1"></label>
+        <label>{{ t('Kind') }}<select :aria-label="t('Shape kind')" v-model="shape.kind"><option :value="'Rectangle'">{{ t('Rectangle') }}</option><option :value="'Ellipse'">{{ t('Ellipse') }}</option><option :value="'Line'">{{ t('Line') }}</option></select></label>
+        <label v-if="shape.kind === 'Rectangle'">{{ t('Corner radius') }}<input v-model.number="shape.cornerRadius" type="number" min="0"></label>
+        <label v-if="shape.kind === 'Line'">{{ t('Line width') }}<input v-model.number="shape.lineWidth" type="number" min="1"></label>
         <template v-if="shape.kind === 'Line' && shape.start && shape.end">
-          <div class="row"><label>Start X<input v-model.number="shape.start[0]" type="number" min="0" max="1" step=".01"></label><label>Start Y<input v-model.number="shape.start[1]" type="number" min="0" max="1" step=".01"></label></div>
-          <div class="row"><label>End X<input v-model.number="shape.end[0]" type="number" min="0" max="1" step=".01"></label><label>End Y<input v-model.number="shape.end[1]" type="number" min="0" max="1" step=".01"></label></div>
+          <div class="row"><label>{{ t('Start X') }}<input v-model.number="shape.start[0]" type="number" min="0" max="1" step=".01"></label><label>{{ t('Start Y') }}<input v-model.number="shape.start[1]" type="number" min="0" max="1" step=".01"></label></div>
+          <div class="row"><label>{{ t('End X') }}<input v-model.number="shape.end[0]" type="number" min="0" max="1" step=".01"></label><label>{{ t('End Y') }}<input v-model.number="shape.end[1]" type="number" min="0" max="1" step=".01"></label></div>
         </template>
       </template>
-      <p v-for="warning in warnings" :key="warning" class="font-warning" role="status">{{warning}}</p>
-      <label>Color<input v-model="color" type="color"></label>
-      <div v-if="mode === 'shape' || fixedBox" class="row"><label>Width<input v-model.number="width" type="number" :min="mode === 'text' ? 16 : 1" :max="LIMITS.maxSide"></label><label>Height<input v-model.number="height" type="number" :min="mode === 'text' ? 16 : 1" :max="LIMITS.maxSide"></label></div>
-      <div class="row content-actions"><button type="submit">{{ busy ? 'Rendering…' : onCanvas ? 'Apply on canvas' : isExisting ? 'Update layer' : 'Create layer' }}</button><button v-if="isExisting&&!onCanvas" type="button" @click="apply(false)">Create new</button></div>
+      <p v-for="warning in warnings" :key="warning" class="font-warning" role="status">{{tm(warning)}}</p>
+      <label>{{ t('Color') }}<input v-model="color" type="color"></label>
+      <div v-if="mode === 'shape' || fixedBox" class="row"><label>{{ t('Width') }}<input v-model.number="width" type="number" :min="mode === 'text' ? 16 : 1" :max="LIMITS.maxSide"></label><label>{{ t('Height') }}<input v-model.number="height" type="number" :min="mode === 'text' ? 16 : 1" :max="LIMITS.maxSide"></label></div>
+      <div class="row content-actions"><button type="submit">{{ t(busy ? 'Rendering…' : onCanvas ? 'Apply on canvas' : isExisting ? 'Update layer' : 'Create layer') }}</button><button v-if="isExisting&&!onCanvas" type="button" @click="apply(false)">{{ t('Create new') }}</button></div>
     </fieldset>
   </form>
 </template>

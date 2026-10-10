@@ -1,6 +1,6 @@
 # 实施记录入口
 
-当前开发版本：**0.3.0-alpha.6**。当前结论、最新上游源码快照、29 项对齐范围与剩余边界见 [alpha.6 统一验收](NATIVE_PARITY_ALPHA6_ACCEPTANCE.md)。本轮优先原版功能对齐，Photoshop 增强与 Windows 原生验证延后。下面 alpha.4 及更早的链接保留历史实施事实，不作为 alpha.6 未经重跑的证明。
+当前开发版本：**0.3.0-alpha.7**。中文 / English 国际化和 ZH / EN 单击切换见 [alpha.7 国际化记录](I18N_IMPLEMENTATION.md)。当前结论、最新上游源码快照、29 项对齐范围与剩余边界见 [alpha.6 统一验收](NATIVE_PARITY_ALPHA6_ACCEPTANCE.md)。本轮优先原版功能对齐，Photoshop 增强与 Windows 原生验证延后。下面 alpha.4 及更早的链接保留历史实施事实，不作为 alpha.6 未经重跑的证明。
 
 - [alpha.4 排查与上游同步](UPSTREAM_CURRENT_USABILITY_AUDIT.md)：历史改动、真实交互回归、源码和发布包证据。
 - [1.4.8 功能补齐与验证](UPSTREAM_1_4_8_IMPLEMENTATION_STATUS.md)：41 项当前实现映射、已完成实际回归、兼容边界和最终交付结果。

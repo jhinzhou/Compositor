@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import CommitInput from './CommitInput.vue'
 import { computed, ref, watch } from 'vue'
 import { defaultEffect, EFFECT_KINDS, EFFECT_NAMES, validateLayerEffects, type EffectKind, type LayerEffects } from '../shared/layer-effects'
@@ -29,21 +31,21 @@ function cancel(): void { emit('preview', null); emit('cancel') }
 </script>
 
 <template>
-  <form class="effects-panel" aria-label="Layer effects" @submit.prevent="commit">
+  <form class="effects-panel" :aria-label="t('Layer effects')" @submit.prevent="commit">
     <fieldset :disabled="disabled">
-      <div class="effect-list"><button v-for="kind in EFFECT_KINDS" :key="kind" type="button" :class="{ selected: selected === kind, present: effects[kind] }" @click="add(kind)">{{ EFFECT_NAMES[kind] }}<span v-if="effects[kind]"> ✓</span></button></div>
+      <div class="effect-list"><button v-for="kind in EFFECT_KINDS" :key="kind" type="button" :class="{ selected: selected === kind, present: effects[kind] }" @click="add(kind)">{{ t(EFFECT_NAMES[kind]) }}<span v-if="effects[kind]"> ✓</span></button></div>
       <template v-if="current">
-        <label class="check"><input :checked="current.enabled !== false" type="checkbox" @change="current.enabled = ($event.target as HTMLInputElement).checked">Enabled</label>
-        <label>Color<input v-model="color" type="color"></label>
-        <label class="effect-param"><span>Opacity</span><input v-model.number="current.opacity" aria-label="Effect opacity slider" type="range" min="0" max="1" step=".01"><CommitInput :value="Math.round(current.opacity*100)" label="Effect opacity" :min="0" :max="100" :step="1" scrub-label="%" @preview="parameter('opacity',String(Number($event)/100))" @commit="parameter('opacity',String(Number($event)/100))"/></label>
-        <label v-if="hasSize" class="effect-param"><span>Size</span><input v-model.number="current.size" aria-label="Effect size slider" type="range" min="0" max="500" step="1"><CommitInput :value="Number(current.size??0)" label="Effect size" :min="0" :max="500" :step="1" scrub-label="px" @preview="parameter('size',$event)" @commit="parameter('size',$event)"/></label>
-        <label v-if="selected === 'stroke'" class="check"><input v-model="current.inside" type="checkbox">Inside</label>
-        <template v-if="hasShadow"><label class="effect-param"><span>Light angle</span><input v-model.number="current.angle" aria-label="Effect angle slider" type="range" min="-360" max="360" step="1"><CommitInput :value="Number(current.angle??0)" label="Effect angle" :min="-360" :max="360" :step="1" scrub-label="°" @preview="parameter('angle',$event)" @commit="parameter('angle',$event)"/></label><label class="effect-param"><span>Distance</span><input v-model.number="current.distance" aria-label="Effect distance slider" type="range" min="0" max="5000" step="1"><CommitInput :value="Number(current.distance??0)" label="Effect distance" :min="0" :max="5000" :step="1" scrub-label="px" @preview="parameter('distance',$event)" @commit="parameter('distance',$event)"/></label><label class="effect-param"><span>Blur</span><input v-model.number="current.blur" aria-label="Effect blur slider" type="range" min="0" max="500" step="1"><CommitInput :value="Number(current.blur??0)" label="Effect blur" :min="0" :max="500" :step="1" scrub-label="px" @preview="parameter('blur',$event)" @commit="parameter('blur',$event)"/></label></template>
-        <button type="button" @click="remove">Remove {{ EFFECT_NAMES[selected] }}</button>
+        <label class="check"><input :checked="current.enabled !== false" type="checkbox" @change="current.enabled = ($event.target as HTMLInputElement).checked">{{ t('Enabled') }}</label>
+        <label>{{ t('Color') }}<input v-model="color" type="color"></label>
+        <label class="effect-param"><span>{{ t('Opacity') }}</span><input v-model.number="current.opacity" :aria-label="t('Effect opacity slider')" type="range" min="0" max="1" step=".01"><CommitInput :value="Math.round(current.opacity*100)" :label="t('Effect opacity')" :min="0" :max="100" :step="1" scrub-label="%" @preview="parameter('opacity',String(Number($event)/100))" @commit="parameter('opacity',String(Number($event)/100))"/></label>
+        <label v-if="hasSize" class="effect-param"><span>{{ t('Size') }}</span><input v-model.number="current.size" :aria-label="t('Effect size slider')" type="range" min="0" max="500" step="1"><CommitInput :value="Number(current.size??0)" :label="t('Effect size')" :min="0" :max="500" :step="1" scrub-label="px" @preview="parameter('size',$event)" @commit="parameter('size',$event)"/></label>
+        <label v-if="selected === 'stroke'" class="check"><input v-model="current.inside" type="checkbox">{{ t('Inside') }}</label>
+        <template v-if="hasShadow"><label class="effect-param"><span>{{ t('Light angle') }}</span><input v-model.number="current.angle" :aria-label="t('Effect angle slider')" type="range" min="-360" max="360" step="1"><CommitInput :value="Number(current.angle??0)" :label="t('Effect angle')" :min="-360" :max="360" :step="1" scrub-label="°" @preview="parameter('angle',$event)" @commit="parameter('angle',$event)"/></label><label class="effect-param"><span>{{ t('Distance') }}</span><input v-model.number="current.distance" :aria-label="t('Effect distance slider')" type="range" min="0" max="5000" step="1"><CommitInput :value="Number(current.distance??0)" :label="t('Effect distance')" :min="0" :max="5000" :step="1" scrub-label="px" @preview="parameter('distance',$event)" @commit="parameter('distance',$event)"/></label><label class="effect-param"><span>{{ t('Blur') }}</span><input v-model.number="current.blur" :aria-label="t('Effect blur slider')" type="range" min="0" max="500" step="1"><CommitInput :value="Number(current.blur??0)" :label="t('Effect blur')" :min="0" :max="500" :step="1" scrub-label="px" @preview="parameter('blur',$event)" @commit="parameter('blur',$event)"/></label></template>
+        <button type="button" @click="remove">{{ t('Remove {effect}', {effect:t(EFFECT_NAMES[selected])}) }}</button>
       </template>
-      <p v-else>Choose an effect to add it.</p>
-      <label class="check"><input v-model="live" type="checkbox">Live preview</label>
-      <div class="buttons"><button type="button" @click="cancel">Cancel</button><button type="submit">Apply effects</button></div>
+      <p v-else>{{ t('Choose an effect to add it.') }}</p>
+      <label class="check"><input v-model="live" type="checkbox">{{ t('Live preview') }}</label>
+      <div class="buttons"><button type="button" @click="cancel">{{ t('Cancel') }}</button><button type="submit">{{ t('Apply effects') }}</button></div>
     </fieldset>
   </form>
 </template>

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import {computed,onBeforeUnmount,onMounted,toRaw} from 'vue'
 import {CROP_HANDLES,cropDragRectangle,validCropRect,type CropRect,type CropHandle} from './crop-geometry'
 import type {SnapOptions} from './view-geometry'
@@ -42,9 +44,9 @@ onBeforeUnmount(()=>{document.removeEventListener('keydown',keydown,true);docume
 </script>
 <template>
  <svg v-if="shade" class="crop-shade" :style="{left:`${shade.left}px`,top:`${shade.top}px`}" :width="shade.width" :height="shade.height" :viewBox="shade.viewBox" aria-hidden="true"><path :d="shade.path" fill="black" fill-opacity="0.6" fill-rule="evenodd"/></svg>
- <div class="crop-frame" :style="frameStyle" aria-label="Move crop" title="Drag to move the crop frame. Alt resizes from the center; Ctrl temporarily disables snapping." @pointerdown.stop="start($event,'move')" @pointermove.stop="move" @pointerup.stop="finish" @pointercancel.stop="end(true)" @lostpointercapture="end(true)">
+ <div class="crop-frame" :style="frameStyle" :aria-label="t('Move crop')" :title="t('Drag to move the crop frame. Alt resizes from the center; Ctrl temporarily disables snapping.')" @pointerdown.stop="start($event,'move')" @pointermove.stop="move" @pointerup.stop="finish" @pointercancel.stop="end(true)" @lostpointercapture="end(true)">
   <div class="crop-thirds" aria-hidden="true"><span/><span/><span/><span/></div>
-  <button v-for="handle in CROP_HANDLES" :key="handle" type="button" :class="['crop-handle',handle]" :style="{pointerEvents:disabled||spacePan?'none':'auto'}" :aria-label="`Resize crop ${handle}`" :disabled="disabled" @pointerdown.stop="start($event,handle)" @pointermove.stop="move" @pointerup.stop="finish" @pointercancel.stop="end(true)" @lostpointercapture.stop="end(true)"/>
+  <button v-for="handle in CROP_HANDLES" :key="handle" type="button" :class="['crop-handle',handle]" :style="{pointerEvents:disabled||spacePan?'none':'auto'}" :aria-label="t('Resize crop {handle}', {handle:t(handle)})" :disabled="disabled" @pointerdown.stop="start($event,handle)" @pointermove.stop="move" @pointerup.stop="finish" @pointercancel.stop="end(true)" @lostpointercapture.stop="end(true)"/>
  </div>
 </template>
 <style scoped>

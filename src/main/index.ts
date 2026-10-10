@@ -16,6 +16,8 @@ import {totalmem} from 'node:os'
 import {calculateTrimBounds} from '../shared/trim'
 import {PNG} from 'pngjs'
 import { ModelSettingsStore } from './model-settings'
+import { LocaleSettingsStore } from './locale-settings'
+import { isLocale, translate, translateMessage, type Locale, type TranslationParams } from '../shared/i18n'
 import { AgentController } from './agent-controller'
 import { ForeignController } from './foreign-controller'
 import { PhotoshopController } from './photoshop-controller'
@@ -97,8 +99,41 @@ function interactionBusy(sessionId: string): boolean {
   if (!leases.size) interactions.delete(sessionId)
   return leases.size > 0
 }
+let applicationLocale: Locale = 'en'
+const localeSettings = new LocaleSettingsStore(join(app.getPath('userData'), 'language-settings.json'))
+const t = (source: string, params?: TranslationParams) => translate(applicationLocale, source, params)
 let nativeMenuTemplate:Electron.MenuItemConstructorOptions[]=[]
-function installShortcuts(overrides:Record<string,string>={}):void{const adjust=(items:Electron.MenuItemConstructorOptions[]):Electron.MenuItemConstructorOptions[]=>items.map(original=>{const item={...original};if(item.id&&item.id in overrides){const chord=overrides[item.id];item.accelerator=chord&&!/^[a-z]$/i.test(chord)?chord.split('+').map(part=>({Primary:'CmdOrCtrl',Meta:'Command',Ctrl:'Control',space:'Space',escape:'Esc'})[part]??part).join('+'):undefined}if(Array.isArray(item.submenu))item.submenu=adjust(item.submenu);return item});Menu.setApplicationMenu(Menu.buildFromTemplate(adjust(nativeMenuTemplate)))}
+let shortcutOverrides: Record<string, string> = {}
+function installShortcuts(overrides?: Record<string, string>): void {
+  if (overrides) shortcutOverrides = { ...overrides }
+  const adjust = (items: Electron.MenuItemConstructorOptions[]): Electron.MenuItemConstructorOptions[] => items.map(original => {
+    const item = { ...original }
+    if (item.label) item.label = t(item.label, { version: app.getVersion() })
+    if (item.id === 'locale:zh-CN' || item.id === 'locale:en') item.checked = applicationLocale === item.id.slice(7)
+    if (item.id && item.id in shortcutOverrides) {
+      const chord = shortcutOverrides[item.id]
+      item.accelerator = chord && !/^[a-z]$/i.test(chord) ? chord.split('+').map(part => ({ Primary: 'CmdOrCtrl', Meta: 'Command', Ctrl: 'Control', space: 'Space', escape: 'Esc' })[part] ?? part).join('+') : undefined
+    }
+    if (Array.isArray(item.submenu)) item.submenu = adjust(item.submenu)
+    return item
+  })
+  Menu.setApplicationMenu(Menu.buildFromTemplate(adjust(nativeMenuTemplate)))
+}
+async function setApplicationLocale(locale: Locale): Promise<{ locale: Locale }> {
+  // Persist first: failed writes cannot leave menus and the saved preference out of sync.
+  try { await localeSettings.save(locale) } catch { throw new EditorError('SETTINGS_WRITE_FAILED', 'Could not save language settings.') }
+  applicationLocale = locale
+  installShortcuts()
+  window?.webContents.send('editor:action', 'localeChanged')
+  renderWindow?.webContents.send('editor:action', 'localeChanged')
+  return { locale }
+}
+function changeMenuLocale(locale: Locale): void {
+  void setApplicationLocale(locale).catch(error => {
+    if (window && !window.isDestroyed()) void dialog.showMessageBox(window, { type: 'error', title: t('Could not change language'), message: translateMessage(applicationLocale, error instanceof Error ? error.message : String(error)), buttons: [t('OK')] })
+  })
+}
+
 const editorRpc = new EditorRpc(message => editor.postMessage(message))
 const renderQueue = new RenderQueue()
 const renders = new Map<string, { resolve: (value: RpcResult<PreviewResult>) => void; timer: NodeJS.Timeout }>()
@@ -161,7 +196,7 @@ async function requireWritable(sessionId = lastState?.sessionId): Promise<void> 
 async function discardConfirmed(sessionId = lastState.sessionId): Promise<boolean> {
   const state = await required<EditorState>('state', { sessionId })
   if (!state.modified) return true
-  const response = await dialog.showMessageBox(window!, { type: 'question', buttons: ['Save', 'Discard changes', 'Cancel'], defaultId: 0, cancelId: 2, message: `Save changes to ${state.title}?` })
+  const response = await dialog.showMessageBox(window!, { type: 'question', buttons: ['Save', 'Discard changes', 'Cancel'].map(label => t(label)), defaultId: 0, cancelId: 2, message: t('Save changes to {title}?', { title: state.title }) })
   if (response.response === 2) return false
   if (response.response === 1) return true
   await dispatch('saveCurrent', { sessionId }, 'user')
@@ -203,6 +238,14 @@ async function dispatch(method: string, params: unknown, source: 'user' | 'agent
     if (closing || sessionId && closingDocuments.has(sessionId)) throw new EditorError('DOCUMENT_BUSY', 'The document is awaiting a close decision.')
   }
   switch (method) {
+    case 'localeGet':
+      if (source !== 'user') throw new EditorError('FORBIDDEN', 'Application language is available only to the local editor.')
+      return { locale: applicationLocale }
+    case 'localeSet': {
+      if (source !== 'user') throw new EditorError('FORBIDDEN', 'Application language is available only to the local editor.')
+      const { locale } = z.object({ locale: z.custom<Locale>(isLocale, { message: 'Unsupported interface language.' }) }).strict().parse(params)
+      return setApplicationLocale(locale)
+    }
     case 'textEdit': {
       if (source !== 'user') throw new EditorError('FORBIDDEN', 'Text editing is available only to the local editor.')
       const { command } = z.object({ command: z.enum(['copy', 'cut', 'paste', 'selectAll', 'undo', 'redo']) }).strict().parse(params)
@@ -241,7 +284,7 @@ async function dispatch(method: string, params: unknown, source: 'user' | 'agent
     }
     case 'photoshopExportDialog':{
       const input=z.object({sessionId:z.string().uuid(),expectedRevision:z.number().int().nonnegative(),psb:z.boolean().default(false)}).strict().parse(params),state=await required<EditorState>('state',{sessionId:input.sessionId}),png=await renderPreview({sessionId:input.sessionId,expectedRevision:input.expectedRevision},true)
-      const snapshot=await required<PhotoshopSnapshot>('photoshopSnapshot',input),encoded=await encodePhotoshopAsync(snapshot,new Uint8Array(Buffer.from(png.data,'base64')),input.psb,{workerPath:join(here,'photoshop.js')}),extension=input.psb?'psb':'psd',choice=await dialog.showSaveDialog(window!,{title:`Export ${extension.toUpperCase()}`,defaultPath:`${state.title}.${extension}`,filters:[{name:extension.toUpperCase(),extensions:[extension]}]})
+      const snapshot=await required<PhotoshopSnapshot>('photoshopSnapshot',input),encoded=await encodePhotoshopAsync(snapshot,new Uint8Array(Buffer.from(png.data,'base64')),input.psb,{workerPath:join(here,'photoshop.js')}),extension=input.psb?'psb':'psd',choice=await dialog.showSaveDialog(window!,{title:t('Export {format}',{format:extension.toUpperCase()}),defaultPath:`${state.title}.${extension}`,filters:[{name:extension.toUpperCase(),extensions:[extension]}]})
       if(choice.canceled||!choice.filePath)return null;await writeFile(choice.filePath,Buffer.from(encoded.bytes));return {path:choice.filePath,warnings:encoded.warnings}
     }
     case 'externalState': return sourceWatch.snapshot()
@@ -353,7 +396,7 @@ async function dispatch(method: string, params: unknown, source: 'user' | 'agent
       const png=await renderPreview({sessionId:input.sessionId,expectedRevision:input.expectedRevision},true)
       const encoded=await encodeExport(Buffer.from(png.data,'base64'),input.options,(bytes,quality)=>nativeImage.createFromBuffer(bytes).toJPEG(Math.round(quality*100)))
       if(method==='exportPreview')return {requestId:input.requestId,url:`data:${input.options.format==='jpeg'?'image/jpeg':'image/png'};base64,${(input.options.format==='jpeg'?encoded.data:encoded.previewPNG).toString('base64')}`,bytes:encoded.data.length}
-      const choice=await dialog.showSaveDialog(window!,{title:'Export As',defaultPath:`${state.title}.${encoded.extension}`,filters:[{name:input.options.format.toUpperCase(),extensions:[encoded.extension]}]})
+      const choice=await dialog.showSaveDialog(window!,{title:t('Export As'),defaultPath:`${state.title}.${encoded.extension}`,filters:[{name:input.options.format.toUpperCase(),extensions:[encoded.extension]}]})
       if(choice.canceled||!choice.filePath)return null
       await writeFile(choice.filePath,encoded.data);return {path:choice.filePath,revision:png.revision,bytes:encoded.data.length}
     }
@@ -396,11 +439,11 @@ async function dispatch(method: string, params: unknown, source: 'user' | 'agent
       // Windows native dialogs cannot select files and folders in one picker.
       let photoshop = false
       if (process.platform === 'win32') {
-        const format = await dialog.showMessageBox(window!, { type: 'question', title: 'Open project', message: 'Choose the project format to open.', buttons: ['Compositor project (.comp)', 'Photoshop document (.psd / .psb)', 'Cancel'], defaultId: 0, cancelId: 2 })
+        const format = await dialog.showMessageBox(window!, { type: 'question', title: t('Open project'), message: t('Choose the project format to open.'), buttons: ['Compositor project (.comp)', 'Photoshop document (.psd / .psb)', 'Cancel'].map(label => t(label)), defaultId: 0, cancelId: 2 })
         if (format.response === 2) return null
         photoshop = format.response === 1
       }
-      const choice = await dialog.showOpenDialog(window!, { title: photoshop ? 'Open Photoshop document' : 'Open Compositor project', properties: process.platform==='darwin'?['openFile','openDirectory','treatPackageAsDirectory']:photoshop?['openFile']:['openDirectory','treatPackageAsDirectory'], ...(photoshop ? { filters: [{ name: 'Photoshop document', extensions: ['psd', 'psb'] }] } : {}) })
+      const choice = await dialog.showOpenDialog(window!, { title: t(photoshop ? 'Open Photoshop document' : 'Open Compositor project'), properties: process.platform==='darwin'?['openFile','openDirectory','treatPackageAsDirectory']:photoshop?['openFile']:['openDirectory','treatPackageAsDirectory'], ...(photoshop ? { filters: [{ name: t('Photoshop document'), extensions: ['psd', 'psb'] }] } : {}) })
       if (choice.canceled) return null
       return openProjectFile(choice.filePaths[0])
     }
@@ -411,7 +454,7 @@ async function dispatch(method: string, params: unknown, source: 'user' | 'agent
     case 'importDialog': {
       await requireIdle()
       const target = z.object({ sessionId: z.string().uuid() }).strict().parse(params ?? { sessionId: lastState.sessionId })
-      const choice = await dialog.showOpenDialog(window!, { properties: ['openFile', 'multiSelections'], filters: [{ name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'tif', 'tiff', 'psd', 'psb', 'bmp', 'gif', 'webp', 'svg', 'heic', 'heif', 'hif', ...RAW_EXTENSIONS] }] })
+      const choice = await dialog.showOpenDialog(window!, { title: t('Import images'), properties: ['openFile', 'multiSelections'], filters: [{ name: t('Images'), extensions: ['png', 'jpg', 'jpeg', 'tif', 'tiff', 'psd', 'psb', 'bmp', 'gif', 'webp', 'svg', 'heic', 'heif', 'hif', ...RAW_EXTENSIONS] }] })
       if (choice.canceled) return null
       for (const path of choice.filePaths) { if (await importImage(path, target.sessionId) === null) break; if (/\.ps[db]$/i.test(path)) target.sessionId = lastState.sessionId }
       return required('state')
@@ -427,7 +470,7 @@ async function dispatch(method: string, params: unknown, source: 'user' | 'agent
       const state = await required<EditorState>('state', target)
       if (method === 'saveCurrent' && state.projectPath) { const rendered=await renderPreview({sessionId:state.sessionId,expectedRevision:state.revision,maxDimension:1024}),preview={revision:rendered.revision,bytes:nativeImage.createFromBuffer(Buffer.from(rendered.data,'base64')).toJPEG(85)};const value=await required('save', {...target,preview}); await recentFiles.record(state.projectPath); app.addRecentDocument(state.projectPath); return value }
       const copy = method === 'saveCopyDialog'
-      const choice = await dialog.showSaveDialog(window!, { title: copy ? 'Save a project copy' : 'Save project as', defaultPath: `${state.title}${copy ? ' copy' : ''}.comp`, filters: [{ name: 'Compositor project', extensions: ['comp'] }] })
+      const choice = await dialog.showSaveDialog(window!, { title: t(copy ? 'Save a project copy' : 'Save project as'), defaultPath: `${state.title}${copy ? ' copy' : ''}.comp`, filters: [{ name: t('Compositor project'), extensions: ['comp'] }] })
       if (choice.canceled || !choice.filePath) return null
       const current=await required<EditorState>('state',target),rendered=await renderPreview({sessionId:current.sessionId,expectedRevision:current.revision,maxDimension:1024}),preview={revision:rendered.revision,bytes:nativeImage.createFromBuffer(Buffer.from(rendered.data,'base64')).toJPEG(85)};const value=await required(copy ? 'saveCopy' : 'saveAs', { ...target, path: choice.filePath,preview }); await recentFiles.record(choice.filePath); app.addRecentDocument(choice.filePath); return value
       } finally { savingDocuments.delete(target.sessionId); sourceWatch.requestCheck(target.sessionId) }
@@ -441,7 +484,7 @@ async function dispatch(method: string, params: unknown, source: 'user' | 'agent
     case 'discardRecovery': return required('discardRecovery', z.object({ id: z.string().uuid() }).strict().parse(params))
     case 'exportDialog': {
       const state = await required<EditorState>('state', z.object({ sessionId: z.string().uuid() }).strict().parse(params ?? { sessionId: lastState.sessionId }))
-      const choice = await dialog.showSaveDialog(window!, { title: 'Export PNG', defaultPath: `${state.title}.png`, filters: [{ name: 'PNG image', extensions: ['png'] }] })
+      const choice = await dialog.showSaveDialog(window!, { title: t('Export PNG'), defaultPath: `${state.title}.png`, filters: [{ name: t('PNG image'), extensions: ['png'] }] })
       if (choice.canceled || !choice.filePath) return null
       const result = await renderPreview({ sessionId: state.sessionId, expectedRevision: state.revision, maxDimension: 1024 }, true)
       const encoded=await encodeExport(Buffer.from(result.data,'base64'),{format:'png',width:state.manifest.width,height:state.manifest.height,resolution:state.manifest.resolution,quality:1,background:null});await writeFile(choice.filePath,encoded.data)
@@ -475,6 +518,7 @@ async function startBridge(): Promise<void> {
 
 app.whenReady().then(async () => {
   if (!primaryInstance) return
+  applicationLocale = await localeSettings.load(app.getPreferredSystemLanguages()[0] ?? app.getLocale(), process.env.COMPOSITOR_TEST === '1')
   subjectWorker=new SubjectWorker({workerPath:join(here,'subject.worker.cjs'),cacheDir:join(app.getPath('userData'),'models'),bundledModelPath:app.isPackaged?join(process.resourcesPath,'models','u2netp.onnx'):join(app.getAppPath(),'fixtures/models/u2netp.onnx')})
   editor = utilityProcess.fork(join(here, 'editor.js'), [], { serviceName: 'Compositor Editor', stdio: 'pipe' })
   editor.stdout?.on('data', data => process.stdout.write(data)); editor.stderr?.on('data', data => process.stderr.write(data))
@@ -504,7 +548,7 @@ app.whenReady().then(async () => {
     if (event.sender !== window?.webContents && event.sender !== renderWindow?.webContents) return failure(new EditorError('FORBIDDEN', 'Unknown UI sender.'))
     try {
       const parsed = z.object({ method: z.string(), params: z.unknown().optional() }).strict().parse(input)
-      if (event.sender === renderWindow?.webContents && !['state','fontCatalog'].includes(parsed.method)) throw new EditorError('FORBIDDEN', 'The render service cannot edit documents.')
+      if (event.sender === renderWindow?.webContents && !['state','fontCatalog','localeGet'].includes(parsed.method)) throw new EditorError('FORBIDDEN', 'The render service cannot edit documents.')
       return { ok: true, value: await dispatch(parsed.method, parsed.params, 'user') }
     } catch (error) { return failure(error) }
   })
@@ -523,18 +567,26 @@ app.whenReady().then(async () => {
   const send = (action: string): void => window?.webContents.send('editor:action', action)
   const item = (label: string, action: string, accelerator?: string): Electron.MenuItemConstructorOptions => ({ id:action, label, accelerator, click: () => send(action) })
   nativeMenuTemplate=[
-    ...(process.platform === 'darwin' ? [{ role: 'appMenu' as const }] : []),
+    ...(process.platform === 'darwin' ? [{ label: 'Compositor Electron', submenu: [
+      { role: 'about' as const, label: 'About Compositor Electron' }, { type: 'separator' as const },
+      { role: 'services' as const, label: 'Services' }, { type: 'separator' as const },
+      { role: 'hide' as const, label: 'Hide Compositor Electron' }, { role: 'hideOthers' as const, label: 'Hide Others' }, { role: 'unhide' as const, label: 'Show All' },
+      { type: 'separator' as const }, { role: 'quit' as const, label: 'Quit Compositor Electron' }
+    ] }] : []),
     { label: 'File', submenu: [item('New Canvas…', 'new', 'CmdOrCtrl+N'), item('Open Project…', 'openDialog', 'CmdOrCtrl+O'), item('Recent Projects…','recent-projects'),
       item('Import Images…', 'importDialog', 'CmdOrCtrl+I'), { type: 'separator' }, item('Save As…', 'saveDialog', 'CmdOrCtrl+Shift+S'),
       item('Save', 'saveCurrent', 'CmdOrCtrl+S'), item('Save a Copy…', 'saveCopyDialog'), item('Export PNG…', 'exportDialog'),item('Export As…','export-as','CmdOrCtrl+Shift+E'),item('Export PSD…','export-psd'),item('Export PSB…','export-psb'), { type: 'separator' }, item('Close Project', 'closeDocument', 'CmdOrCtrl+W')] },
     { label: 'Edit', submenu: [item('Undo', 'undo', 'CmdOrCtrl+Z'), item('Redo', 'redo', 'CmdOrCtrl+Shift+Z'), { type: 'separator' }, item('Cut','cut','CmdOrCtrl+X'),item('Copy','copy','CmdOrCtrl+C'),item('Paste','paste','CmdOrCtrl+V'),item('Fill…','fill'),item('Copy Merged','copy-merged','CmdOrCtrl+Shift+C')] },
     { label: 'View', submenu: [item('Fit Canvas', 'fit', 'CmdOrCtrl+0'), item('Actual Pixels', 'actual', 'CmdOrCtrl+1'), item('Zoom In', 'zoom-in', 'CmdOrCtrl+Plus'), item('Zoom Out', 'zoom-out', 'CmdOrCtrl+-'),
-      { type: 'separator' }, item('Show Controls', 'controls'),item('Canvas Only Fullscreen','canvas-only'),item('Rulers','rulers','CmdOrCtrl+R'),item('Grid','grid'),item('Guides','guides'),item('Lock Guides','lock-guides'),item('Clear Guides','clear-guides'),item('Snapping','snap'),item('Navigator','navigator'), item('Agent / MCP', 'automation', 'CmdOrCtrl+Shift+A'), { role: 'togglefullscreen' }] },
-    {label:'Select',submenu:[item('Select All','select-all','CmdOrCtrl+A'),item('Deselect','deselect','CmdOrCtrl+D'),item('Invert','invert-selection','CmdOrCtrl+Shift+I'),item('Color Range…','color-range'),item('Select Subject…','subject-tools'),item('Content-Aware Fill…','content-fill'),item('Expand…','selection-expand'),item('Contract…','selection-contract'),item('Feather…','selection-feather')]},
+      { type: 'separator' }, item('Show Controls', 'controls'),item('Canvas Only Fullscreen','canvas-only'),item('Rulers','rulers','CmdOrCtrl+R'),item('Grid','grid'),item('Guides','guides'),item('Lock Guides','lock-guides'),item('Clear Guides','clear-guides'),item('Snapping','snap'),item('Navigator','navigator'), item('Agent / MCP', 'automation', 'CmdOrCtrl+Shift+A'), { role: 'togglefullscreen', label: 'Toggle Full Screen' }] },
+    {label:'Select',submenu:[item('Select All','select-all','CmdOrCtrl+A'),item('Deselect','deselect','CmdOrCtrl+D'),item('Invert selection','invert-selection','CmdOrCtrl+Shift+I'),item('Color Range…','color-range'),item('Select Subject…','subject-tools'),item('Content-Aware Fill…','content-fill'),item('Expand…','selection-expand'),item('Contract…','selection-contract'),item('Feather…','selection-feather')]},
     {label:'Image',submenu:[item('Canvas Size…','canvas-size'),item('Image Size…','image-size'),item('Trim…','trim-canvas'),item('Rotate Canvas 90°','rotate-canvas'),item('Flip Canvas Horizontal','flip-canvas')]},
     {label:'Filter',submenu:[...Object.entries(FILTER_NAMES).map(([kind,label])=>item(`${label}…`,`filter:${kind}`)),{type:'separator'},item('Repeat Last Filter','repeat-filter')]},
     { label: 'Layer', submenu: [item('New Blank Layer', 'blank', 'CmdOrCtrl+Shift+N'), item('Duplicate Layer or Folder', 'duplicate', 'CmdOrCtrl+J'), item('New Folder', 'folder', 'CmdOrCtrl+G'), item('Ungroup Layers', 'ungroup', 'CmdOrCtrl+Shift+G'), item('Delete Layer', 'delete'),item('Transform / Merge…','layer-actions'),item('Transform Selected Pixels','transform-selection','CmdOrCtrl+T'),item('Free Distort…','distort'),item('Layer Effects…','effects'),{label:'New Adjustment Layer',submenu:Object.entries(NATIVE_ADJUSTMENT_KINDS).map(([kind,label])=>item(`${label}…`,`adjustment:${kind}`))}] },
-    { role: 'windowMenu' }, { label: 'Help', submenu: [{ label: `Compositor Electron ${app.getVersion()} · Early Build`, enabled: false }, item('Search Commands…','palette','CmdOrCtrl+Shift+P'),item('Keyboard Shortcuts…','shortcuts'),item('MCP Connection', 'automation')] }
+    { label: 'Window', submenu: [{ role: 'minimize', label: 'Minimize' }, { role: 'zoom', label: 'Zoom' }, ...(process.platform === 'darwin' ? [{ type: 'separator' as const }, { role: 'front' as const, label: 'Bring All to Front' }] : [{ role: 'close' as const, label: 'Close' }])] }, { label: 'Help', submenu: [{ label: 'Compositor Electron {version} · Early Build', enabled: false }, item('Search Commands…','palette','CmdOrCtrl+Shift+P'),item('Keyboard Shortcuts…','shortcuts'),item('MCP Connection', 'automation'), { type: 'separator' }, { label: 'Language', submenu: [
+      { id: 'locale:zh-CN', label: '简体中文', type: 'radio', click: () => changeMenuLocale('zh-CN') },
+      { id: 'locale:en', label: 'English', type: 'radio', click: () => changeMenuLocale('en') }
+    ] }] }
   ]
   installShortcuts()
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
@@ -557,7 +609,7 @@ app.whenReady().then(async () => {
         console.error(error)
         if (window && !window.isDestroyed()) {
           const engineStopped = error instanceof EditorError && error.code === 'ENGINE_UNAVAILABLE'
-          const response = await dialog.showMessageBox(window, { type: 'error', title: 'Could not close project', message: error instanceof Error ? error.message : String(error), detail: engineStopped ? 'Saving is unavailable. Quit keeps the existing automatic recovery files; edits after the latest recovery may be missing.' : 'The window has been kept open. Resolve the operation or save error, then try closing again.', buttons: engineStopped ? ['Keep application open', 'Quit and keep recovery files'] : ['OK'], defaultId: 0, cancelId: 0 })
+          const response = await dialog.showMessageBox(window, { type: 'error', title: t('Could not close project'), message: translateMessage(applicationLocale, error instanceof Error ? error.message : String(error)), detail: t(engineStopped ? 'Saving is unavailable. Quit keeps the existing automatic recovery files; edits after the latest recovery may be missing.' : 'The window has been kept open. Resolve the operation or save error, then try closing again.'), buttons: (engineStopped ? ['Keep application open', 'Quit and keep recovery files'] : ['OK']).map(label => t(label)), defaultId: 0, cancelId: 0 })
           if (engineStopped && response.response === 1) { closeConfirmed = true; window.close() }
         }
       }

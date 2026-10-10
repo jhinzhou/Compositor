@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
 import { computed, nextTick, ref, watch } from 'vue'
 import { searchCommands, shortcutFor, shortcutLabel } from './command-shortcuts'
 import type { ShortcutOverrides, WorkspaceCommand } from './command-shortcuts'
+const { t } = useI18n()
 const props = withDefaults(defineProps<{ open: boolean; commands: WorkspaceCommand[]; overrides?: ShortcutOverrides; platform?: 'mac' | 'other' }>(), { overrides: () => ({}), platform: 'other' })
 const emit = defineEmits<{ execute: [id: string]; close: [] }>()
 const query = ref(''), selected = ref(0), input = ref<HTMLInputElement>(), results = ref<HTMLElement>()
@@ -23,15 +25,15 @@ async function keydown(event: KeyboardEvent): Promise<void> {
 </script>
 <template>
   <div v-if="open" class="command-palette-backdrop" @pointerdown.self="emit('close')" @keydown.stop="keydown">
-    <section class="command-palette" role="dialog" aria-modal="true" aria-label="Search commands">
-      <input ref="input" v-model="query" role="combobox" aria-label="Search commands" aria-autocomplete="list" aria-controls="command-results" :aria-activedescendant="matches[selected] ? `command-${selected}` : undefined" :aria-expanded="true" placeholder="Search commands…" />
+    <section class="command-palette" role="dialog" aria-modal="true" :aria-label="t('Search commands')">
+      <input ref="input" v-model="query" role="combobox" :aria-label="t('Search commands')" aria-autocomplete="list" aria-controls="command-results" :aria-activedescendant="matches[selected] ? `command-${selected}` : undefined" :aria-expanded="true" :placeholder="t('Search commands…')" />
       <div ref="results" id="command-results" class="command-results" role="listbox">
         <button v-for="(command, index) in matches" :id="`command-${index}`" :key="command.id" :data-index="index" role="option" :aria-selected="index === selected" :aria-disabled="command.enabled === false" :class="{ selected: index === selected, unavailable: command.enabled === false }" @pointermove="selected = index" @click="execute(command.id)">
           <span><small>{{ command.category }}</small><strong>{{ command.title }}</strong><em v-if="command.description">{{ command.description }}</em></span><kbd>{{ shortcutLabel(shortcutFor(command, overrides), platform) }}</kbd>
         </button>
-        <p v-if="!matches.length">No matching commands.</p>
+        <p v-if="!matches.length">{{ t('No matching commands.') }}</p>
       </div>
-      <footer>↑ ↓ Choose · Return Run · Esc Close</footer>
+      <footer>{{ t('↑ ↓ Choose · Return Run · Esc Close') }}</footer>
     </section>
   </div>
 </template>

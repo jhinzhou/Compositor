@@ -2,6 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
+import { resolve } from 'node:path'
 import { parse, compileScript } from '@vue/compiler-sfc'
 import { transformSync } from 'esbuild'
 import { nextTick } from 'vue'
@@ -12,7 +13,7 @@ function chat(callbacks: Callbacks = {}) {
   const { descriptor } = parse(readFileSync(filename, 'utf8'), { filename })
   const compiled = transformSync(compileScript(descriptor, { id: 'agent-submit' }).content, { loader: 'ts', format: 'cjs' }).code
   const module = { exports: {} as any }
-  new Function('module', 'exports', 'require', compiled)(module, module.exports, createRequire(import.meta.url))
+  new Function('module', 'exports', 'require', compiled)(module, module.exports, createRequire(resolve(filename)))
   const emitted: { event: string; value: unknown }[] = []
   const setup = module.exports.default.setup({ conversation: [], config: undefined, configured: true, status: 'idle', tools: [], streamingText: '', ...callbacks }, { expose() {}, emit: (event: string, value: unknown) => emitted.push({ event, value }) })
   setup.endpoint.value = 'https://model.test/v1'

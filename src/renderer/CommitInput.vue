@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import { onBeforeUnmount, ref, watch } from 'vue'
 const props = defineProps<{ value: number | string; disabled?: boolean; type?: string; label: string; min?: number; max?: number; scrubLabel?: string; sensitivity?: number; step?: number }>()
 const emit = defineEmits<{ commit: [value: string]; preview: [value: string]; editing: [active: boolean] }>()
@@ -30,8 +32,8 @@ function cancelKey(event:KeyboardEvent):void {if(event.key==='Escape'){event.pre
 onBeforeUnmount(()=>endScrub(true))
 </script>
 <template>
- <span v-if="scrubLabel" class="commit-field"><span class="scrub-label" :aria-label="`Drag ${label}`" :class="{disabled}" @pointerdown="startScrub" @pointermove="moveScrub" @pointerup="endScrub()" @pointercancel="endScrub(true)">{{scrubLabel}}</span><input v-model="draft" :type="type??'number'" :aria-label="label" :disabled="disabled" :min="min" :max="max" :step="step??'any'" @input="preview" @focus="focus" @blur="blur" @keydown.enter="($event.target as HTMLInputElement).blur()" @keydown.escape.stop.prevent="escape();($event.target as HTMLInputElement).blur()" /></span>
- <input v-else v-model="draft" :type="type??'number'" :aria-label="label" :disabled="disabled" :min="min" :max="max" :step="step??'any'" @input="preview" @focus="focus" @blur="blur" @keydown.enter="($event.target as HTMLInputElement).blur()" @keydown.escape.stop.prevent="escape();($event.target as HTMLInputElement).blur()" />
+ <span v-if="scrubLabel" class="commit-field"><span class="scrub-label" :aria-label="t('Drag {label}', {label:t(label)})" :class="{disabled}" @pointerdown="startScrub" @pointermove="moveScrub" @pointerup="endScrub()" @pointercancel="endScrub(true)">{{t(scrubLabel)}}</span><input v-model="draft" :type="type??'number'" :aria-label="t(label)" :disabled="disabled" :min="min" :max="max" :step="step??'any'" @input="preview" @focus="focus" @blur="blur" @keydown.enter="($event.target as HTMLInputElement).blur()" @keydown.escape.stop.prevent="escape();($event.target as HTMLInputElement).blur()" /></span>
+ <input v-else v-model="draft" :type="type??'number'" :aria-label="t(label)" :disabled="disabled" :min="min" :max="max" :step="step??'any'" @input="preview" @focus="focus" @blur="blur" @keydown.enter="($event.target as HTMLInputElement).blur()" @keydown.escape.stop.prevent="escape();($event.target as HTMLInputElement).blur()" />
 </template>
 <style scoped>
 .commit-field {display:flex;align-items:center;gap:4px;min-width:0}.scrub-label {cursor:ew-resize;touch-action:none;user-select:none;white-space:nowrap}.scrub-label.disabled {cursor:default}

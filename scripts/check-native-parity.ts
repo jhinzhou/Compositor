@@ -5,7 +5,7 @@ import {join} from 'node:path'
 
 // Own development runtime only; every smoke creates a throwaway profile/project.
 // Keep all pointer/keyboard processes serial to avoid foreground focus interference.
-const directory='artifacts/native-parity-final';await mkdir(directory,{recursive:true})
+const directory=process.argv[2]??'artifacts/native-parity-final';await mkdir(directory,{recursive:true})
 const scripts=['smoke-upstream-delta.ts','smoke-native-parity.ts','smoke-image-size.ts','smoke-interaction.ts','smoke-pointer-brush.ts','smoke-parity-protocol.ts','smoke-parity-subject.ts','smoke-camera-preview.ts','smoke-parity-render.ts','smoke-upstream.ts']
 const reports:{script:string;exitCode:number|null;durationMs:number;log:string}[]=[]
 await writeFile(join(directory,'acceptance.json'),JSON.stringify({status:'RUNNING',startedAt:new Date().toISOString(),reports},null,2))

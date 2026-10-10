@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t } = useI18n()
 defineProps<{start:[number,number];end:[number,number];zoom:number;radial:boolean}>()
 defineEmits<{down:[event:PointerEvent,endpoint:'start'|'end'];move:[event:PointerEvent];up:[];cancel:[]}>()
 </script>
@@ -9,7 +11,7 @@ defineEmits<{down:[event:PointerEvent,endpoint:'start'|'end'];move:[event:Pointe
       <line :x1="start[0]*zoom" :y1="start[1]*zoom" :x2="end[0]*zoom" :y2="end[1]*zoom" class="under"/>
       <line :x1="start[0]*zoom" :y1="start[1]*zoom" :x2="end[0]*zoom" :y2="end[1]*zoom"/>
     </svg>
-    <button v-for="(point,name) in {start,end}" :key="name" :class="['endpoint',name]" :aria-label="`Gradient ${name} handle`" :style="{left:`${point[0]*zoom}px`,top:`${point[1]*zoom}px`}" @pointerdown.stop="$emit('down',$event,name)" @pointermove.stop="$emit('move',$event)" @pointerup.stop="$emit('up')" @pointercancel.stop="$emit('cancel')"/>
+    <button v-for="(point,name) in {start,end}" :key="name" :class="['endpoint',name]" :aria-label="t(name==='start'?'Gradient start handle':'Gradient end handle')" :style="{left:`${point[0]*zoom}px`,top:`${point[1]*zoom}px`}" @pointerdown.stop="$emit('down',$event,name)" @pointermove.stop="$emit('move',$event)" @pointerup.stop="$emit('up')" @pointercancel.stop="$emit('cancel')"/>
   </div>
 </template>
 <style scoped>

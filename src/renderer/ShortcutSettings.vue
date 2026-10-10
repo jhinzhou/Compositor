@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
 import { computed, nextTick, ref, watch } from 'vue'
 import { eventChord, searchCommands, shortcutFor, shortcutLabel, shortcutProblem } from './command-shortcuts'
 import type { ShortcutOverrides, WorkspaceCommand } from './command-shortcuts'
+const { t, tm } = useI18n()
 const props = withDefaults(defineProps<{ open: boolean; commands: WorkspaceCommand[]; overrides?: ShortcutOverrides; platform?: 'mac' | 'other' }>(), { overrides: () => ({}), platform: 'other' })
 const emit = defineEmits<{ save: [overrides: ShortcutOverrides]; close: [] }>()
 const draft = ref<ShortcutOverrides>({}), query = ref(''), recording = ref<string>(), search = ref<HTMLInputElement>()
@@ -19,12 +21,12 @@ function save(): void { if (!problem.value && !recording.value) { emit('save', {
 </script>
 <template>
   <div v-if="open" class="shortcut-backdrop" @pointerdown.self="emit('close')" @keydown.esc.stop="recording ? recording = undefined : emit('close')">
-    <section class="shortcut-dialog" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
-      <h2>Keyboard shortcuts</h2><p>Click a shortcut and press keys. Delete clears it. Esc cancels recording.</p>
-      <input ref="search" v-model="query" aria-label="Search shortcuts" placeholder="Search commands…" />
-      <div class="shortcut-list"><div v-for="command in matches" :key="command.id" class="shortcut-row"><span><small>{{ command.category }}</small>{{ command.title }}</span><button :aria-label="`Shortcut for ${command.title}`" :class="{ recording: recording === command.id }" @click="recording = command.id" @keydown="record($event, command)">{{ recording === command.id ? 'Press keys…' : shortcutLabel(shortcutFor(command, draft), platform) }}</button><button :aria-label="`Reset ${command.title} shortcut`" @click="delete draft[command.id]">Reset</button></div></div>
-      <p v-if="problem" class="shortcut-error" role="alert">{{ problem }}</p>
-      <footer><button @click="draft = {}; recording = undefined">Restore Defaults</button><span /><button @click="emit('close')">Cancel</button><button :disabled="!!problem || !!recording" @click="save">Save</button></footer>
+    <section class="shortcut-dialog" role="dialog" aria-modal="true" :aria-label="t('Keyboard shortcuts')">
+      <h2>{{ t('Keyboard shortcuts') }}</h2><p>{{ t('Click a shortcut and press keys. Delete clears it. Esc cancels recording.') }}</p>
+      <input ref="search" v-model="query" :aria-label="t('Search shortcuts')" :placeholder="t('Search commands…')" />
+      <div class="shortcut-list"><div v-for="command in matches" :key="command.id" class="shortcut-row"><span><small>{{ command.category }}</small>{{ command.title }}</span><button :aria-label="t('Shortcut for {name}',{name:command.title})" :class="{ recording: recording === command.id }" @click="recording = command.id" @keydown="record($event, command)">{{ recording === command.id ? t('Press keys…') : shortcutLabel(shortcutFor(command, draft), platform) }}</button><button :aria-label="t('Reset {name} shortcut',{name:command.title})" @click="delete draft[command.id]">{{ t('Reset') }}</button></div></div>
+      <p v-if="problem" class="shortcut-error" role="alert">{{ tm(problem) }}</p>
+      <footer><button @click="draft = {}; recording = undefined">{{ t('Restore Defaults') }}</button><span /><button @click="emit('close')">{{ t('Cancel') }}</button><button :disabled="!!problem || !!recording" @click="save">{{ t('Save') }}</button></footer>
     </section>
   </div>
 </template>

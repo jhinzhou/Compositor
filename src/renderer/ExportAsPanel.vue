@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from './i18n'
+const { t, tm } = useI18n()
 import {LIMITS} from '../shared/limits'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { exportOptionsSchema, type ExportOptions, type ExportPreview } from '../shared/export-options'
@@ -12,7 +14,7 @@ const options = computed(() => exportOptionsSchema.safeParse({ format: format.va
 const validation = computed(() => options.value.success ? '' : options.value.error.issues[0]?.message ?? 'Invalid export settings.')
 const current = computed(() => props.preview?.requestId === requestId.value ? props.preview : null)
 const ready = computed(() => options.value.success && !!current.value && !current.value.error)
-const pageSize = computed(() => `${(width.value / resolution.value).toFixed(2)} × ${(height.value / resolution.value).toFixed(2)} in at ${resolution.value} DPI`)
+const pageSize = computed(() => t('{width} × {height} in at {resolution} DPI', { width:(width.value / resolution.value).toFixed(2), height:(height.value / resolution.value).toFixed(2), resolution:resolution.value }))
 const byteSize = computed(() => { const bytes = current.value?.bytes ?? 0; return bytes >= 1_048_576 ? `${(bytes / 1_048_576).toFixed(2)} MB` : `${(bytes / 1024).toFixed(1)} KB` })
 const imageStyle = computed(() => zoom.value === null ? {} : { width: `${width.value * zoom.value}px`, height: `${height.value * zoom.value}px`, maxWidth: 'none', maxHeight: 'none', imageRendering: zoom.value >= 1 ? 'pixelated' : 'auto' } as const)
 function changeWidth(event: Event): void {
@@ -61,20 +63,20 @@ onBeforeUnmount(() => clearTimeout(timer))
 <template>
   <div class="export-backdrop" @pointerdown.stop @keydown.stop="keydown">
     <form ref="panel" class="export-panel" role="dialog" aria-modal="true" aria-labelledby="export-heading" @submit.prevent="save">
-      <header><h2 id="export-heading">Export As</h2><div class="export-zoom"><button type="button" :class="{ active: zoom === null }" @click="zoom = null">Fit</button><button type="button" :class="{ active: zoom === 1 }" @click="zoom = 1">100%</button><button type="button" aria-label="Zoom out preview" @click="zoom = Math.max(.125, (zoom ?? 1) / 2)">−</button><button type="button" aria-label="Zoom in preview" @click="zoom = Math.min(8, (zoom ?? 1) * 2)">+</button></div></header>
+      <header><h2 id="export-heading">{{ t('Export As') }}</h2><div class="export-zoom"><button type="button" :class="{ active: zoom === null }" @click="zoom = null">{{ t('Fit') }}</button><button type="button" :class="{ active: zoom === 1 }" @click="zoom = 1">100%</button><button type="button" :aria-label="t('Zoom out preview')" @click="zoom = Math.max(.125, (zoom ?? 1) / 2)">−</button><button type="button" :aria-label="t('Zoom in preview')" @click="zoom = Math.min(8, (zoom ?? 1) * 2)">+</button></div></header>
       <div ref="viewport" class="export-preview" :class="{ fitted: zoom === null, pannable: zoom !== null }" @dblclick="zoom = zoom === null ? 1 : null" @pointerdown="panStart" @pointermove="panMove" @pointerup="panEnd" @pointercancel="panEnd">
-        <div v-if="preview?.url" class="export-image-space"><img :src="preview.url" :style="imageStyle" alt="Export preview" draggable="false" /></div>
-        <span v-if="!current && !validation" class="export-updating" role="status">Updating preview…</span>
+        <div v-if="preview?.url" class="export-image-space"><img :src="preview.url" :style="imageStyle" :alt="t('Export preview')" draggable="false" /></div>
+        <span v-if="!current && !validation" class="export-updating" role="status">{{ t('Updating preview…') }}</span>
       </div>
       <div class="export-fields">
-        <label for="export-format">Format</label><select id="export-format" v-model="format"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="pdf">PDF</option></select>
-        <label for="export-width">Size</label><div class="export-size"><input id="export-width" :value="width" type="number" min="1" :max="LIMITS.maxSide" step="1" aria-label="Export width" @input="changeWidth" /><span>×</span><input :value="height" type="number" min="1" :max="LIMITS.maxSide" step="1" aria-label="Export height" @input="changeHeight" /><span>px</span><button type="button" :aria-pressed="locked" title="Lock aspect ratio" @click="locked = !locked">{{ locked ? 'Linked' : 'Unlinked' }}</button><select aria-label="Export scale" @change="setScale"><option disabled selected>Scale</option><option v-for="scale in [.25, .5, .75, 1, 2]" :key="scale" :value="scale">{{ scale * 100 }}%</option></select></div>
-        <label for="export-resolution">Resolution</label><div class="export-size"><input id="export-resolution" v-model.number="resolution" type="number" min="1" max="9600" aria-label="Export DPI" /><span>DPI</span></div>
-        <template v-if="format === 'jpeg'"><label for="export-quality">Quality</label><div class="export-quality"><input id="export-quality" v-model.number="quality" type="range" min="0" max="100" step="1" /><output>{{ quality }}%</output></div></template>
-        <template v-if="format !== 'png'"><label for="export-background">Background</label><div class="export-size"><input id="export-background" v-model="background" type="color" :disabled="transparent && format === 'pdf'" aria-label="Export background color" /><label v-if="format === 'pdf'" class="export-transparent"><input v-model="transparent" type="checkbox" /> Keep transparency</label></div></template>
-        <template v-if="format === 'pdf'"><span>Page</span><span class="export-muted">{{ pageSize }}</span></template>
+        <label for="export-format">{{ t('Format') }}</label><select id="export-format" v-model="format"><option value="png">PNG</option><option value="jpeg">JPEG</option><option value="pdf">PDF</option></select>
+        <label for="export-width">{{ t('Size') }}</label><div class="export-size"><input id="export-width" :value="width" type="number" min="1" :max="LIMITS.maxSide" step="1" :aria-label="t('Export width')" @input="changeWidth" /><span>×</span><input :value="height" type="number" min="1" :max="LIMITS.maxSide" step="1" :aria-label="t('Export height')" @input="changeHeight" /><span>px</span><button type="button" :aria-pressed="locked" :title="t('Lock aspect ratio')" @click="locked = !locked">{{ t(locked ? 'Linked' : 'Unlinked') }}</button><select :aria-label="t('Export scale')" @change="setScale"><option :value="'Scale'" disabled selected>{{ t('Scale') }}</option><option v-for="scale in [.25, .5, .75, 1, 2]" :key="scale" :value="scale">{{ scale * 100 }}%</option></select></div>
+        <label for="export-resolution">{{ t('Resolution') }}</label><div class="export-size"><input id="export-resolution" v-model.number="resolution" type="number" min="1" max="9600" :aria-label="t('Export DPI')" /><span>DPI</span></div>
+        <template v-if="format === 'jpeg'"><label for="export-quality">{{ t('Quality') }}</label><div class="export-quality"><input id="export-quality" v-model.number="quality" type="range" min="0" max="100" step="1" /><output>{{ quality }}%</output></div></template>
+        <template v-if="format !== 'png'"><label for="export-background">{{ t('Background') }}</label><div class="export-size"><input id="export-background" v-model="background" type="color" :disabled="transparent && format === 'pdf'" :aria-label="t('Export background color')" /><label v-if="format === 'pdf'" class="export-transparent"><input v-model="transparent" type="checkbox" /> {{ t('Keep transparency') }}</label></div></template>
+        <template v-if="format === 'pdf'"><span>{{ t('Page') }}</span><span class="export-muted">{{ pageSize }}</span></template>
       </div>
-      <footer><span class="export-muted">{{ format === 'png' || format === 'pdf' && transparent ? 'Transparency kept · sRGB' : 'sRGB' }}</span><span v-if="validation || current?.error" class="export-error" role="alert">{{ validation || current?.error }}</span><span v-else class="export-estimate">{{ current ? byteSize : 'Updating…' }}</span><button type="button" @click="emit('cancel')">Cancel</button><button class="export-primary" type="submit" :disabled="!ready">Export…</button></footer>
+      <footer><span class="export-muted">{{ t(format === 'png' || format === 'pdf' && transparent ? 'Transparency kept · sRGB' : 'sRGB') }}</span><span v-if="validation || current?.error" class="export-error" role="alert">{{ tm(validation || current?.error || '') }}</span><span v-else class="export-estimate">{{ current ? byteSize : t('Updating…') }}</span><button type="button" @click="emit('cancel')">{{ t('Cancel') }}</button><button class="export-primary" type="submit" :disabled="!ready">{{ t('Export…') }}</button></footer>
     </form>
   </div>
 </template>
