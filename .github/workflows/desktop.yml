@@ -1,0 +1,38 @@
+name: Desktop checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run test:desktop
+      - name: Package macOS directory
+        if: runner.os == 'macOS'
+        run: npx electron-builder --mac dir --config.electronDist=node_modules/electron/dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Package Windows directory
+        if: runner.os == 'Windows'
+        run: npx electron-builder --win dir --x64 --config.electronDist=node_modules/electron/dist
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: desktop-${{ matrix.os }}
+          path: |
+            artifacts/desktop-*.png
+            artifacts/desktop-validation.json
+            artifacts/mcp-preview.png
+            release/**

@@ -1,0 +1,10 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import {floatingCorners,moveFloatingCorner,resizeFloatingCorner,rasterSelectionMatrix} from '../src/shared/floating-transform'
+import type {Transform} from '../src/shared/contracts'
+const source:Transform={origin:[10,20],size:[100,50],rotation:90,flipX:true,flipY:false,sampling:'Nearest'}
+const near=(a:number[],b:number[])=>a.forEach((v,i)=>assert.ok(Math.abs(v-b[i]!)<1e-8))
+test('floating corner order matches native world geometry independently of source mirrors',()=>{const c=floatingCorners(source);near(c[0],[85,-5]);near(c[1],[85,95]);near(c[2],[35,95]);near(c[3],[35,-5]);assert.deepEqual(c,floatingCorners({...source,flipX:false}))})
+test('each resize corner fixes its opposite world anchor through rotation and Shift unlocks aspect ratio',()=>{for(let corner=0;corner<4;corner++){const before=floatingCorners(source),after=resizeFloatingCorner(source,corner,[15,35]),points=floatingCorners(after);near(points[(corner+2)%4]!,before[(corner+2)%4]!);assert.ok(Math.abs(after.size[0]/after.size[1]-2)<1e-10)}const unlocked=resizeFloatingCorner(source,2,[15,35],true);assert.notEqual(unlocked.size[0]/unlocked.size[1],2);assert.equal(source.size[0],100)})
+test('free distort corner constrains dominant axis without mutating geometry; folded corners remain permitted',()=>{const c=floatingCorners(source),moved=moveFloatingCorner(c,0,[5,30],true);near(moved[0],[85,25]);near(c[0],[85,-5]);near(moveFloatingCorner(c,2,[100,-5],true)[2],[135,95]);assert.throws(()=>moveFloatingCorner(c,4,[0,0]),/Invalid/);assert.throws(()=>moveFloatingCorner(c,0,[NaN,0]),/Invalid/)})
+test('raster selection SVG matrix includes center rotation and both mirrors',()=>{const matrix=rasterSelectionMatrix(source,10,5),values=matrix.slice(7,-1).split(' ').map(Number),[a,b,c,d,e,f]=values;near([e!+a!*5+c!*2.5,f!+b!*5+d!*2.5],[60,45]);near([e!,f!],[85,95]);const flipped=rasterSelectionMatrix({...source,flipY:true},10,5);assert.notEqual(flipped,matrix)})

@@ -1,0 +1,130 @@
+{
+  "name": "compositor-electron",
+  "version": "0.3.0-alpha.6",
+  "description": "Cross-platform Compositor editor with a shared command service and MCP automation",
+  "private": true,
+  "type": "module",
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build && tsx scripts/build-mcp.ts && tsx scripts/build-subject.ts",
+    "start": "electron-vite preview",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "test:desktop": "tsx scripts/smoke-desktop.ts",
+    "test:v2": "tsx scripts/smoke-v2.ts",
+    "test:upstream": "tsx scripts/smoke-upstream.ts",
+    "fixtures": "tsx scripts/create-fixtures.ts",
+    "mcp": "node out/mcp/server.cjs",
+    "package:mac": "npm run build && electron-builder --mac dir",
+    "package:win": "npm run build && electron-builder --win dir --x64 && tsx scripts/fix-windows-resources.ts release/win-unpacked",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "build": {
+    "appId": "com.compositor.electron",
+    "productName": "Compositor Electron",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "package.json",
+      "LICENSE",
+      "THIRD_PARTY_NOTICES.md",
+      "licenses/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "fixtures/demo.comp",
+        "to": "demo.comp"
+      },
+      {
+        "from": "fixtures/models",
+        "to": "models",
+        "filter": [
+          "*.onnx",
+          "*.json"
+        ]
+      },
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.graphics-design",
+      "target": "dir",
+      "icon": "build/icon.icns"
+    },
+    "win": {
+      "target": "dir",
+      "signExecutable": false,
+      "extraFiles": [
+        {
+          "from": "scripts/windows-runtime-setup.ps1",
+          "to": "Install-VisualCppRuntime.ps1"
+        },
+        {
+          "from": "docs/WINDOWS-RELEASE.md",
+          "to": "Windows-Readme.md"
+        }
+      ]
+    },
+    "asarUnpack": [
+      "node_modules/onnxruntime-node/bin/**"
+    ],
+    "fileAssociations": [
+      {
+        "ext": "comp",
+        "name": "Compositor Project",
+        "description": "Compositor image editing project",
+        "role": "Editor",
+        "rank": "Owner",
+        "isPackage": true
+      },
+      {
+        "ext": [
+          "psd",
+          "psb"
+        ],
+        "name": "Adobe Photoshop Document",
+        "description": "Layered Photoshop image",
+        "role": "Editor",
+        "rank": "Alternate"
+      }
+    ],
+    "icon": "build/icon.png"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "dependencies": {
+    "@lucide/vue": "1.53.0",
+    "@modelcontextprotocol/client": "2.3.1",
+    "@modelcontextprotocol/server": "2.3.1",
+    "ag-psd": "31.0.3",
+    "canvaskit-wasm": "0.42.0",
+    "libheif-js": "1.23.5",
+    "libraw-wasm": "1.6.0",
+    "onnxruntime-node": "1.30.0",
+    "pako": "2.1.0",
+    "pngjs": "7.0.0",
+    "vue": "3.5.43",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0",
+    "@types/node": "26.6.4",
+    "@types/pngjs": "6.0.5",
+    "@vitejs/plugin-vue": "6.0.9",
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "electron-vite": "5.0.0",
+    "esbuild": "0.28.2",
+    "resedit": "1.7.2",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vite": "7.3.7",
+    "vue-tsc": "3.3.12"
+  }
+}

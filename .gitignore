@@ -1,0 +1,79 @@
+# Dependencies and package-manager caches
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/cache/
+.yarn/unplugged/
+
+# Generated Electron/Vite bundles and packaged applications
+/out/
+/dist/
+/release/
+*.app/
+*.asar
+*.asar.unpacked/
+*.dmg
+*.exe
+*.msi
+*.msix
+*.AppImage
+*.tsbuildinfo
+
+# Test evidence, generated reference executables, screenshots and benchmarks
+/artifacts/
+/test-results/
+/playwright-report/
+/blob-report/
+/coverage/
+.nyc_output/
+
+# Local runtime data, recovery copies and temporary workspaces
+/user-data/
+/profiles/
+/recovery/
+/backups/
+/tmp/
+/temp/
+/scratch/
+/.runtime/
+.cache/
+.vite/
+.electron-cache/
+*.log
+*.local
+*.tmp
+*.temp
+*.swp
+*.swo
+*.stackdump
+*.crash
+*.dmp
+
+# Private environment settings and signing credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.mobileprovision
+
+# Python/C reference-generator outputs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.o
+*.obj
+
+# OS and local IDE metadata
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+.idea/
+
+# Keep build/icon.*, fixtures/models/*.onnx, source reference fixtures,
+# package-lock.json and licenses/codec-sources/*.tar.gz under version control.
+# These are reproducible source/runtime inputs, not compiled release outputs.

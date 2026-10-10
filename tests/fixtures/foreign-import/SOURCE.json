@@ -1,0 +1,36 @@
+{
+  "raw": {
+    "row": [
+      "Canon",
+      "EOS 5D Mark III",
+      "14bit 14bit (2.3471882640587)",
+      1.57,
+      "Compressed MLV",
+      "<a href='https://creativecommons.org/publicdomain/zero/1.0/' title='Creative Commons 0 - Public Domain' class='cc'>co</a>",
+      "2018-01-08",
+      "<a href='https://raw.pixls.us/getfile.php/2204/nice/Canon - EOS 5D Mark III - 14bit 14bit (2.3471882640587).dng'>Canon - EOS 5D Mark III - 14bit 14bit (2.3471882640587).dng</a><div class='checksumdata'><span title='sha256 Checksum'>1d77dcc6cdb839b10c1948f0b4471984ab48cf15e973fb77520584cee72b603e</span>&nbsp;(1.47MB)</div>",
+      "<a target='_blank' href='https://raw.pixls.us/getfile.php/2204/exif/compress.dng.exif.txt'>exifdata</a>"
+    ],
+    "url": "https://raw.pixls.us/getfile.php/2204/nice/Canon - EOS 5D Mark III - 14bit 14bit (2.3471882640587).dng",
+    "file": "sample.dng",
+    "license": "CC0-1.0",
+    "licensePage": "https://raw.pixls.us/"
+  },
+  "heic": {
+    "url": "https://heic.best/samples/heic/",
+    "license": "CC0-1.0",
+    "licensePage": "https://heic.best/heic-samples",
+    "files": [
+      {
+        "file": "still-tiny.heic",
+        "url": "https://heic.best/samples/heic/still-tiny.heic",
+        "sha256": "55af20f9ecd8a110cc6c028c1765bbb451b0aec722578ea89a75a15f7c1b6428"
+      },
+      {
+        "file": "rotated-cw90.heic",
+        "url": "https://heic.best/samples/heic/rotated-cw90.heic",
+        "sha256": "59c43919a46fcef76f1bd19f86d7a81d41a98e947064611edd8b0d8d1ea586e6"
+      }
+    ]
+  }
+}

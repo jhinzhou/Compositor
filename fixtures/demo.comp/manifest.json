@@ -1,0 +1,127 @@
+{
+  "format": "com.compositor.project",
+  "version": 11,
+  "colorSpace": "sRGB",
+  "documentID": "6C186E72-DEFF-4540-B420-4FF56EB929FF",
+  "width": 1200,
+  "height": 900,
+  "resolution": 72,
+  "activeLayerID": "C094A7DC-7AB1-4D4C-B9D0-719BF849821A",
+  "layers": [
+    {
+      "id": "47A40C59-046F-4920-A736-995AE42EBA87",
+      "name": "Sky",
+      "imageFile": "47A40C59-046F-4920-A736-995AE42EBA87.png",
+      "isVisible": true,
+      "isGroup": false,
+      "opacity": 1,
+      "blendMode": "Normal",
+      "transform": {
+        "origin": [
+          0,
+          0
+        ],
+        "size": [
+          1200,
+          900
+        ],
+        "rotation": 0,
+        "flipX": false,
+        "flipY": false,
+        "sampling": "High quality"
+      }
+    },
+    {
+      "id": "C094A7DC-7AB1-4D4C-B9D0-719BF849821A",
+      "name": "Sun",
+      "imageFile": "C094A7DC-7AB1-4D4C-B9D0-719BF849821A.png",
+      "isVisible": true,
+      "isGroup": false,
+      "opacity": 1,
+      "blendMode": "Normal",
+      "transform": {
+        "origin": [
+          0,
+          0
+        ],
+        "size": [
+          1200,
+          900
+        ],
+        "rotation": 0,
+        "flipX": false,
+        "flipY": false,
+        "sampling": "High quality"
+      }
+    },
+    {
+      "id": "BC34C44F-13E3-4667-B9FF-F528C7114B20",
+      "name": "Distant ridge",
+      "imageFile": "BC34C44F-13E3-4667-B9FF-F528C7114B20.png",
+      "isVisible": true,
+      "isGroup": false,
+      "opacity": 1,
+      "blendMode": "Normal",
+      "transform": {
+        "origin": [
+          0,
+          0
+        ],
+        "size": [
+          1200,
+          900
+        ],
+        "rotation": 0,
+        "flipX": false,
+        "flipY": false,
+        "sampling": "High quality"
+      }
+    },
+    {
+      "id": "EDF74630-4F01-43D7-8D71-8FF824878DF6",
+      "name": "Mountain",
+      "imageFile": "EDF74630-4F01-43D7-8D71-8FF824878DF6.png",
+      "isVisible": true,
+      "isGroup": false,
+      "opacity": 1,
+      "blendMode": "Normal",
+      "transform": {
+        "origin": [
+          0,
+          0
+        ],
+        "size": [
+          1200,
+          900
+        ],
+        "rotation": 0,
+        "flipX": false,
+        "flipY": false,
+        "sampling": "High quality"
+      }
+    },
+    {
+      "id": "36742782-74FA-48FD-A92A-DAF50FECC44B",
+      "name": "Foreground",
+      "imageFile": "36742782-74FA-48FD-A92A-DAF50FECC44B.png",
+      "isVisible": true,
+      "isGroup": false,
+      "opacity": 1,
+      "blendMode": "Normal",
+      "transform": {
+        "origin": [
+          0,
+          0
+        ],
+        "size": [
+          1200,
+          900
+        ],
+        "rotation": 0,
+        "flipX": false,
+        "flipY": false,
+        "sampling": "High quality"
+      }
+    }
+  ]
+}

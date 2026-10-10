@@ -1,0 +1,26 @@
+[
+  {
+    "file": "LibRaw-0.22.1.tar.gz",
+    "url": "https://codeload.github.com/LibRaw/LibRaw/tar.gz/refs/tags/0.22.1",
+    "bytes": 604601,
+    "sha256": "e676248284075605aa2697a66eeed7dc258820bd1d4988c724d29edffd726726"
+  },
+  {
+    "file": "libheif-1.23.5.tar.gz",
+    "url": "https://codeload.github.com/strukturag/libheif/tar.gz/refs/tags/v1.23.5",
+    "bytes": 2220699,
+    "sha256": "3be49950c75d3fd9318ba775e8253248dd9e08c61ea955fca81b6b89c02d6b2b"
+  },
+  {
+    "file": "libde265-1.0.15.tar.gz",
+    "url": "https://codeload.github.com/strukturag/libde265/tar.gz/refs/tags/v1.0.15",
+    "bytes": 438453,
+    "sha256": "d4e55706dfc5b2c5c9702940b675ce2d3e7511025c6894eaddcdbaf0b15fd3f3"
+  },
+  {
+    "file": "lcms2-2.19.1.tar.gz",
+    "url": "https://codeload.github.com/mm2/Little-CMS/tar.gz/refs/tags/lcms2.19.1",
+    "bytes": 5731108,
+    "sha256": "267705e278e2f7c2fb886c259dadcbaeb2be52748bcbc71c79f08aacacb7a709"
+  }
+]
