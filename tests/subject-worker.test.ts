@@ -40,9 +40,22 @@ test('cancel terminates an active inference and the next operation recreates a w
 test('worker patch fill matches native C reference and returns a decodable PNG', async () => {
   const { worker, directory } = await backend()
   try {
-    const fixture = JSON.parse(await readFile('fixtures/parity/native-1.4.8-content-fill.json', 'utf8')).samples[0]
-    const input = Buffer.from(fixture.inputRGBA, 'base64'), mask = Buffer.from(fixture.selection, 'base64')
+    const fixture = JSON.parse(await readFile('fixtures/parity/native-6aea90a-patch.json', 'utf8')).rows.find((row:{seed:number})=>row.seed===0)
+    const input = Buffer.from(fixture.inputRGBA, 'base64'), mask = Buffer.from(fixture.coverage, 'base64')
     const result = await worker.fill({ width: fixture.width, height: fixture.height, data: input }, { width: fixture.width, height: fixture.height, coverage: mask })
     assert.deepEqual(Buffer.from(result.data), Buffer.from(fixture.expectedRGBA, 'base64')); assert.deepEqual(PNG.sync.read(Buffer.from(result.bytes)).data, Buffer.from(result.data)); assert.deepEqual(input, Buffer.from(fixture.inputRGBA, 'base64'))
   } finally { await worker.dispose(); await rm(directory, { recursive: true, force: true }) }
+})
+import type {ChildProcess} from 'node:child_process'
+import {EditorError} from '../src/shared/errors'
+test('latest PatchMatch cancellation kills the executing process; timeout restarts with no partial publication',async()=>{
+ const {worker,directory}=await backend(),fixture=JSON.parse(await readFile('fixtures/parity/native-6aea90a-patch.json','utf8')).rows.find((row:{seed:number})=>row.seed===0),input=Buffer.from(fixture.inputRGBA,'base64'),mask=Buffer.from(fixture.coverage,'base64'),image={width:fixture.width,height:fixture.height,data:input},selection={width:fixture.width,height:fixture.height,coverage:mask},controller=new AbortController();let old:ChildProcess|undefined
+ const code=(value:string)=>(error:unknown)=>error instanceof EditorError&&error.code===value
+ try{
+  await assert.rejects(worker.fill(image,selection,{signal:controller.signal,onProgress:progress=>{if(progress.phase==='inference'){old=(worker as unknown as {worker?:ChildProcess}).worker;controller.abort()}}}),code('CANCELED'))
+  assert.ok(old?.pid);const restored=await worker.fill(image,selection);assert.equal(old.signalCode,'SIGKILL');assert.deepEqual(Buffer.from(restored.data),Buffer.from(fixture.expectedRGBA,'base64'))
+  const timed=worker.fill(image,selection,{timeoutMs:1}),timedChild=(worker as unknown as {worker?:ChildProcess}).worker;await assert.rejects(timed,code('TIMEOUT'));await worker.fill(image,selection);assert.equal(timedChild?.signalCode,'SIGKILL')
+  await assert.rejects(worker.fill(image,selection,{maximumWork:20_000}),code('RESOURCE_LIMIT'));await worker.fill(image,selection)
+  assert.deepEqual(input,Buffer.from(fixture.inputRGBA,'base64'));assert.deepEqual(mask,Buffer.from(fixture.coverage,'base64'))
+ }finally{await worker.dispose();await rm(directory,{recursive:true,force:true})}
 })

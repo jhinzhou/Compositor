@@ -1,13 +1,19 @@
 /** Native 1.4.8 MetalBrushCoverage continuousBrush translated to portable CPU math (MIT).
  * Produces stroke-wide coverage before selection/opacity. No pointer-event-dependent dabs. */
+import {pencilStrokeCoverage} from './pencil-coverage'
 import {compactStroke,strokeSegments} from './stroke-compaction'
-import type {Transform} from './contracts'
 import {LIMITS} from './limits'
-interface BrushGrid {width:number;height:number;transform:Transform;canvasWidth?:number;canvasHeight?:number}
+import {dynamicBrushCoverage,type BrushDynamics,type BrushGrid} from './brush-dynamics'
 const clamp=(v:number,lo=0,hi=1)=>Math.min(hi,Math.max(lo,v))
-export function brushStrokeCoverage(grid:BrushGrid,points:[number,number][],size:number,hardness:number):Uint8Array {
+export function brushStrokeCoverage(grid:BrushGrid,points:[number,number][],size:number,hardness:number,dynamics:BrushDynamics={}):Uint8Array {
  const {width,height,transform:t}=grid
  if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width>LIMITS.maxSide||height>LIMITS.maxSide||width*height>LIMITS.maxSurfacePixels||!points.length||points.length>100_000||points.some(p=>p.some(v=>!Number.isFinite(v)))||!Number.isFinite(size)||size<1||size>4096||!Number.isFinite(hardness)||hardness<0||hardness>1)throw Error('Invalid brush coverage parameters.')
+ if(dynamics.flow!==undefined&&(!Number.isFinite(dynamics.flow)||dynamics.flow<0||dynamics.flow>1))throw Error('Invalid brush flow.')
+ if(dynamics.spacing!==undefined&&(!Number.isFinite(dynamics.spacing)||dynamics.spacing<.01||dynamics.spacing>10))throw Error('Invalid brush spacing.')
+ if(dynamics.brushModel!==undefined&&dynamics.brushModel!=='compositor'&&dynamics.brushModel!=='photoshop')throw Error('Invalid brush model.')
+ if(dynamics.pressures&&(dynamics.pressures.length!==points.length||dynamics.pressures.some(value=>!Number.isFinite(value)||value<0||value>1)))throw Error('Invalid brush pressure.')
+ if(dynamics.tip==='pencil')return pencilStrokeCoverage(grid,points,size,dynamics)
+ if(dynamics.brushModel==='photoshop'||dynamics.spacing!==undefined||dynamics.flow!==undefined&&dynamics.flow!==1||dynamics.pressures&&(dynamics.pressureSize!==false||dynamics.pressureOpacity))return dynamicBrushCoverage(grid,points,size,hardness,dynamics)
  const radius=size/2,antialias=Math.max(.001,Math.min(t.size[0]/width,t.size[1]/height)),spacing=Math.max(.25,size*(hardness>=1?.015:.025)),radiusSquared=radius*radius,angle=t.rotation*Math.PI/180,cos=Math.cos(angle),sin=Math.sin(angle),output=new Uint8Array(width*height),expEdge=Math.exp(-2.5),nodes=[.1834346425,.5255324099,.7966664774,.9602898565],weights=[.3626837834,.3137066459,.2223810345,.1012285363]
  const compacted=compactStroke(points,Math.min(.125,size*.005)),segments=strokeSegments(compacted,Math.max(8,size))
  const source=(x:number,y:number):[number,number]=>{const dx=x-t.origin[0]-t.size[0]/2,dy=y-t.origin[1]-t.size[1]/2;return [((dx*cos+dy*sin)*(t.flipX?-1:1)/t.size[0]+.5)*width,((-dx*sin+dy*cos)*(t.flipY?-1:1)/t.size[1]+.5)*height]}

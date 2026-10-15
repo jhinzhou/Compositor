@@ -1,0 +1,2 @@
+#target photoshop
+(function(){var previous=app.displayDialogs;app.displayDialogs=DialogModes.NO;try{if(app.documents.length&&app.activeDocument.activeLayer.name==='alpha26-tools-owned')app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);var d=app.open(new File('/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/alpha26-sampling/perspective-sampling-holdout.png'));d.activeLayer.name='alpha26-tools-owned';d.selection.deselect();}finally{app.displayDialogs=previous;}})();

@@ -8,3 +8,42 @@
 .folder-toggle,.folder-toggle-spacer{width:13px;flex-shrink:0;padding:0}.folder-toggle svg.collapsed{transform:rotate(-90deg)}.layer-row{gap:7px}
 .feature-panel{position:absolute;right:267px;top:90px;width:340px;max-height:calc(100vh - 130px);overflow:auto;background:#292929;border:1px solid #555;border-radius:8px;box-shadow:0 12px 40px #0008;padding:12px;z-index:5;user-select:text}.modal-backdrop{position:absolute;inset:0;z-index:10;background:#0007;display:flex;align-items:center;justify-content:center}.size-dialog{width:350px;background:#292929;border:1px solid #555;padding:24px;border-radius:9px;display:flex;flex-wrap:wrap;gap:15px}.size-dialog h2{width:100%;font-size:16px}.size-dialog label{display:flex;gap:10px;align-items:center;width:100%}.size-dialog input{width:150px}.size-dialog input[type=checkbox]{width:auto}.mask-actions{display:flex;gap:5px;flex-wrap:wrap;padding:8px}.mask-actions strong,.mask-actions label{width:100%}.mask-actions select{max-width:200px}.raster-toolbar label{display:flex;align-items:center;gap:5px}.raster-toolbar input[type=number]{width:60px}.raster-toolbar input[type=color]{width:32px;padding:2px}.selection-outline{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:visible}.selection-outline .marching{fill:none;stroke:white;stroke-width:1;stroke-dasharray:4 4;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 1px #000)}
 .agent-panel{position:absolute;right:15px;top:50px;bottom:45px;width:min(420px,calc(100vw - 30px));z-index:7;border:1px solid #555;border-radius:9px;box-shadow:0 12px 40px #0008;overflow:hidden;user-select:text}
+/* Keep long tool options reachable without exposing a permanent scrollbar. */
+.transform-toolbar{overflow-x:auto;overflow-y:hidden;scrollbar-width:none}.transform-toolbar::-webkit-scrollbar{display:none}.transform-toolbar>*{flex-shrink:0}
+.layer-controls{min-width:0;padding-left:8px;padding-right:8px}.layer-controls>label{min-width:0;gap:5px}.layer-controls .opacity-slider{width:0;min-width:12px}.layer-controls>label>input[type=number]{flex:0 1 46px;max-width:46px;min-width:32px}.layer-controls .blend-menu>button{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.layer-controls .blend-menu>button>span{flex-shrink:0}.layer-footer{min-width:0;gap:7px;padding-left:8px;padding-right:8px;flex-wrap:wrap;height:auto;min-height:48px}.layer-footer button{flex-shrink:0}
+.navigation-toolbar .zoom-control{display:inline-flex;align-items:center;gap:5px;flex:none;white-space:nowrap;min-width:0}
+.navigation-toolbar .zoom-control .commit-field{flex:none;white-space:nowrap}
+.navigation-toolbar .zoom-control input{width:82px;height:27px;text-align:right;flex:none}
+.navigation-toolbar .zoom-unit{flex:none;white-space:nowrap;color:#b7b7b7}
+/* Dialog actions do not inherit editor status/footer geometry. */
+.size-dialog{max-width:calc(100vw - 32px);max-height:calc(100vh - 48px);overflow:auto}
+.size-dialog>p{width:100%;line-height:1.5;overflow-wrap:anywhere}
+.size-dialog>button,.size-dialog .dialog-actions>button{min-height:32px;padding:6px 14px;border:1px solid #555;border-radius:6px;background:#353535;white-space:nowrap}
+.size-dialog>button:hover:not(:disabled),.size-dialog .dialog-actions>button:hover:not(:disabled){background:#424242}
+.size-dialog>button[type=submit],.size-dialog .dialog-actions>button.primary{background:#087ff5;border-color:#087ff5;color:#fff}
+.size-dialog>button[type=submit]:hover:not(:disabled),.size-dialog .dialog-actions>button.primary:hover:not(:disabled){background:#2190ff}
+.size-dialog .dialog-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;width:100%;padding-top:14px;margin-top:4px;border-top:1px solid #3d3d3d;line-height:1.4}
+.recent-dialog{display:flex;flex-direction:column;flex-wrap:nowrap;gap:18px;width:min(440px,calc(100vw - 32px))}
+.recent-dialog>header,.recent-dialog-body{width:100%;min-width:0}
+.recent-empty{color:#aaa;line-height:1.6;padding:12px 0}
+.recent-project-list{display:flex;flex-direction:column;gap:6px;max-height:45vh;overflow:auto}
+.recent-project{display:flex;justify-content:space-between;width:100%;gap:14px;min-height:38px;padding:8px 10px;background:#323232;border:1px solid #454545;border-radius:6px;text-align:left}
+.recent-project>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recent-project>small{flex:none;color:#aaa}
+
+.rail-tools>button{position:relative}.tool-group-indicator{position:absolute;right:3px;bottom:3px;width:4px;height:4px;font-size:0;line-height:0;clip-path:polygon(100% 0,100% 100%,0 100%);background:#aeb0b2;pointer-events:none}
+
+.selection-modify-panel{display:flex;flex-wrap:wrap;align-items:center;gap:12px;max-width:calc(100vw - 110px)}.selection-modify-panel>strong{flex-basis:100%}.selection-modify-panel>label{display:flex;align-items:center;gap:8px;white-space:nowrap}.selection-modify-panel input{width:90px}.selection-modify-panel>button{padding:6px 12px;border:1px solid #555;border-radius:5px;background:#303030}.selection-modify-panel>button:disabled{opacity:.45}
+
+/* Laptop-height tool rail: all primary tools remain visible at 700–840 px.
+   Glyph size and hit targets are independent; compact buttons stay >=28 px. */
+:root{--tool-rail-width:44px}
+.tool-rail{width:var(--tool-rail-width);min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.rail-tools{padding:6px 0;gap:2px}
+.rail-tools>button{width:30px;height:30px;min-width:28px;min-height:28px;border-radius:5px}
+.rail-tools>button>svg{width:18px;height:18px}
+.color-swatches{width:36px;height:36px;margin:2px 0;flex:none}
+.foreground-swatch,.background-swatch{width:28px;height:28px;border-radius:5px}
+.warning-bar,.recovery-warning{left:var(--tool-rail-width)}
+@media(max-height:740px){.rail-tools{gap:1px}.rail-tools>button{width:28px;height:28px}.rail-tools>button>svg{width:17px;height:17px}}
+@media(max-height:640px){:root{--tool-rail-width:72px}.rail-tools{display:grid;grid-template-columns:repeat(2,28px);justify-content:center;gap:3px 4px}.rail-tools>.color-swatches{grid-column:1 / -1;justify-self:center}.tool-group-indicator{right:1px;bottom:1px}}

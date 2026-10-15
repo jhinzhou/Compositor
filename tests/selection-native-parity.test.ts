@@ -97,10 +97,10 @@ test('100MP inverted and compound rectangle outlines remain complete without a d
  assert.equal((path.match(/M/g)??[]).length,2);assert.match(path,/10000/)
 })
 
-test('compound vector outline enclosed area matches independently evaluated final geometry',()=>{
+test('non-antialiased compound vector outline enclosed area matches independently evaluated final geometry',()=>{
  function area(path:string):number {let total=0;for(const loop of path.split('M').slice(1)){const tokens=loop.match(/[HVZ]|-?\d+(?:\.\d+)?/g)!,points:[number,number][]=[[Number(tokens[0]),Number(tokens[1])]];let x=points[0][0],y=points[0][1];for(let i=2;i<tokens.length;i++){if(tokens[i]==='H')x=Number(tokens[++i]);else if(tokens[i]==='V')y=Number(tokens[++i]);else continue;points.push([x,y])}for(let i=0;i<points.length;i++){const a=points[i],b=points[(i+1)%points.length];total+=(a[0]*b[1]-a[1]*b[0])/2}}return total}
  for(const operation of ['add','subtract','intersect'] as const)for(const inverted of [false,true]){
-  const selection:Selection={inverted,shapes:[{kind:'ellipse',operation:'replace',bounds:[1,1,12,9],feather:0},{kind:'polygon',operation,feather:0,bounds:[3,0,14,13],points:[[3,0],[17,4],[14,13],[5,12]]}]}
+  const selection:Selection={inverted,antialiased:false,shapes:[{kind:'ellipse',operation:'replace',bounds:[1,1,12,9],feather:0},{kind:'polygon',operation,feather:0,bounds:[3,0,14,13],points:[[3,0],[17,4],[14,13],[5,12]]}]}
   let expected=0;for(let y=0;y<15;y++)for(let x=0;x<20;x++)if(selectionGeometryCoverage(selection,x+.5,y+.5)>=.5)expected++
   assert.equal(area(selectionOutline(selection,20,15)),expected,`${operation}/${inverted}`)
  }

@@ -1,5 +1,19 @@
 // English phrases are stable IDs; enum values and user content are never translated.
 export const panelsZhCN: Record<string, string> = {
+  'Finish the pending Camera Raw imports before starting another.':'请先完成等待处理的 Camera Raw 导入。',
+  'Camera Raw…':'Camera Raw…',
+  'Import, then open the Camera Raw Filter':'导入图像后打开 Camera Raw 滤镜',
+  'The imported RAW layer is no longer available.':'导入的 RAW 图层已不可用。',
+  'Camera Raw Shadows exceeds its 512 MiB working budget.':'Camera Raw 阴影调整超出 512 MiB 工作内存预算。',
+  'Progressive Blur exceeds its bounded multiscale working budget.':'渐进模糊超出了多尺度计算或内存预算。',
+  'Invalid Progressive Blur surface.':'渐进模糊的图像尺寸或半径无效。',
+  'Invalid Progressive Blur source.':'渐进模糊的源像素数据无效。',
+  'Invalid Progressive Blur endpoint mapping.':'渐进模糊的端点坐标映射无效。',
+
+  'Progressive Blur':'渐进模糊',
+  'Blur changes from the start of the line to its end. Blur amounts are layer pixels; coordinates are document pixels.':'模糊强度从起点渐变到终点。模糊半径单位为图层像素，坐标单位为文档像素。',
+  'From blur':'起点模糊', 'To blur':'终点模糊', 'Start point':'起点', 'End point':'终点',
+
   "histogram": "直方图",
   "vectorscope": "矢量示波器",
   "0 uses automatic 120% leading": "0 表示自动使用字号的 120% 作为行距",
@@ -549,6 +563,11 @@ export const panelsZhCN: Record<string, string> = {
   "Texture": "纹理",
   "The message was not accepted. Check the application error and try again.": "消息未被接受。请查看应用错误后重试。",
   "Thickness": "厚度",
+  "Posterize": "色调分离",
+  "Level": "级别",
+  "Convert brightness below the level to black and brightness at or above it to white. Supports 8/16-bit images.": "低于阈值的亮度变为黑色，达到或高于阈值的亮度变为白色。支持 8/16 位图像。",
+  "Reduce each RGB channel to the selected number of levels. Supports 8/16-bit images.": "将每个 RGB 通道缩减为指定数量的色阶。支持 8/16 位图像。",
+  "Threshold and Posterize support only 8/16-bit images. HDR source values are kept unchanged.": "阈值和色调分离仅支持 8/16 位图像，HDR 原始数据保持不变。",
   "Threshold": "阈值",
   "Timeout (s)": "超时（秒）",
   "Tint": "色调",
@@ -637,5 +656,13 @@ export const panelsZhCN: Record<string, string> = {
   "{effect} · Option/Alt-drag to copy to another layer · Click to edit": "{effect} · 按住 Option/Alt 拖动复制到另一图层 · 单击编辑",
   "{stage} agent edit": "{stage}助手编辑",
   "{width} × {height} in at {resolution} DPI": "{width} × {height} 英寸，{resolution} DPI",
-  "{width} × {height} px · {layers} layers · {groups} folders": "{width} × {height} 像素 · {layers} 个图层 · {groups} 个文件夹"
+  "{width} × {height} px · {layers} layers · {groups} folders": "{width} × {height} 像素 · {layers} 个图层 · {groups} 个文件夹",
+  "Preserve fine edges": "保留细边",
+  "Edge guide": "边缘引导",
+  "Matte edge guide": "蒙版边缘引导",
+  "Color detail": "颜色细节",
+  "Original luminance": "原版亮度",
+  "Color refinement preserves contrasting fine edges. It cannot recover hair absent from the initial mask.": "颜色细化保留与背景有颜色差异的细边，无法恢复初始蒙版已漏掉的发丝。",
+  "Matte feather": "蒙版羽化",
+  "Matte feather value": "蒙版羽化数值"
 }

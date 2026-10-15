@@ -130,6 +130,8 @@ export function encodePDF(source: ExportRaster, resolution = 72, background: str
 
 /** Callers may supply a full canvas PNG; this function resizes without changing the document. */
 export async function encodeExport(png: Uint8Array, input: unknown, jpegEncoder?: JPEGEncoder): Promise<EncodedExport> {
+  const precision=exportOptionsSchema.parse(input)
+  if(precision.format==='exr'||precision.bitDepth===16)throw new Error('High-depth export requires original source composition; an 8-bit preview cannot encode it.')
   const options = exportOptionsSchema.parse(input), resized = resizeExportRaster(decodeExportPNG(png), options.width, options.height)
   const preview = options.format === 'png' || options.background === null && options.format === 'pdf' ? resized : flattenExportRaster(resized, options.background ?? '#ffffff')
   const previewPNG = encodePNG(preview, options.resolution)

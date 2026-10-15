@@ -4,6 +4,8 @@ import { basename, dirname, join, resolve } from 'node:path'
 import { z } from 'zod'
 import { EditorError, type Manifest } from '../shared/contracts'
 import { fingerprintProject, saveProject, writeDurable, type Asset } from './project-io'
+import {assertDeepAssetBudget,countAssetBytes,deepAssetWorkingBytes} from './deep-assets'
+import {hdrAssetWorkingBytes} from './hdr-assets'
 
 const journalSchema = z.object({ id: z.string().uuid(), destination: z.string(), oldHash: z.string().regex(/^[a-f0-9]{64}$/), newHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict()
 type Journal = z.infer<typeof journalSchema>
@@ -41,15 +43,15 @@ async function acquireLock(path: string, id: string): Promise<() => Promise<void
   }
   throw new EditorError('SAVE_BUSY', 'Could not acquire the project lock.')
 }
-async function hashIfPresent(path: string): Promise<string | undefined> { return await exists(path) ? fingerprintProject(path) : undefined }
-async function recoverOne(journal: Journal, journalFile: string): Promise<void> {
+async function hashIfPresent(path: string,retainedAssets?:readonly Asset[]): Promise<string | undefined> { return await exists(path) ? fingerprintProject(path,retainedAssets) : undefined }
+async function recoverOne(journal: Journal, journalFile: string,retainedAssets?:readonly Asset[]): Promise<void> {
   const { destination, staging, backup } = paths(journal)
-  const targetHash = await hashIfPresent(destination), backupHash = await hashIfPresent(backup)
+  const targetHash = await hashIfPresent(destination,retainedAssets), backupHash = await hashIfPresent(backup,retainedAssets)
   if (backupHash && backupHash !== journal.oldHash) throw new EditorError('SAVE_CONFLICT', 'The save backup was modified; it has been preserved.')
   if (targetHash && targetHash !== journal.oldHash && targetHash !== journal.newHash) throw new EditorError('SAVE_CONFLICT', 'The project changed during recovery; all candidates have been preserved.')
   if (!targetHash) {
     if (backupHash === journal.oldHash) await rename(backup, destination)
-    else if (await hashIfPresent(staging) === journal.newHash) await rename(staging, destination)
+    else if (await hashIfPresent(staging,retainedAssets) === journal.newHash) await rename(staging, destination)
     else throw new EditorError('SAVE_RECOVERY_FAILED', 'No complete project candidate was found.')
   }
   if (await exists(backup)) await rm(backup, { recursive: true })
@@ -58,40 +60,48 @@ async function recoverOne(journal: Journal, journalFile: string): Promise<void> 
 }
 
 export async function replaceProject(destination: string, manifest: Manifest, assets: Map<string, Asset>, expectedHash: string, journalDirectory: string,
-  onPhase?: (phase: 'prepared' | 'backed_up' | 'installed') => Promise<void>,previewJPEG?:Buffer): Promise<string> {
+  onPhase?: (phase: 'prepared' | 'backed_up' | 'installed') => Promise<void>,previewJPEG?:Buffer,retainedAssets:Iterable<Asset>=assets.values()): Promise<string> {
   destination = resolve(destination)
-  const id = randomUUID(), template = { id, destination, oldHash: expectedHash, newHash: expectedHash }
+  const baseline=[...retainedAssets],id = randomUUID(), template = { id, destination, oldHash: expectedHash, newHash: expectedHash }
   const location = paths(template)
   await mkdir(journalDirectory, { recursive: true })
   const release = await acquireLock(location.lock, id), journalFile = join(journalDirectory, `${id}.json`)
   let journal: Journal | undefined
   try {
-    if (await fingerprintProject(destination) !== expectedHash) throw new EditorError('SAVE_CONFLICT', 'The project was modified outside this application. Save a copy or reopen it.')
+    // saveProject's staging verification retains the snapshot; live history and
+    // other documents also coexist. Bound their aggregate before staging loads.
+    if(baseline.some(asset=>asset.bitDepth===16)||[...assets.values()].some(asset=>asset.bitDepth===16)){
+      const files=new Set(manifest.layers.flatMap(layer=>[layer.imageFile,layer.maskFile]).filter((file):file is string=>!!file))
+      let candidateBytes=0,largestWorkingBytes=0
+      for(const file of files){const asset=assets.get(file);if(!asset)throw new EditorError('INVALID_PROJECT','The save candidate is missing an image asset.');candidateBytes+=countAssetBytes(asset);const working=asset.hdr?hdrAssetWorkingBytes(asset.bytes):asset.deep?deepAssetWorkingBytes(asset.bytes):asset.bytes.length*2+asset.width*asset.height*20+asset.height*7;largestWorkingBytes=Math.max(largestWorkingBytes,working)}
+      assertDeepAssetBudget(baseline,candidateBytes+largestWorkingBytes)
+    }
+    if (await fingerprintProject(destination,baseline) !== expectedHash) throw new EditorError('SAVE_CONFLICT', 'The project was modified outside this application. Save a copy or reopen it.')
     await saveProject(location.staging, manifest, assets,previewJPEG)
-    journal = { ...template, newHash: await fingerprintProject(location.staging) }
+    journal = { ...template, newHash: await fingerprintProject(location.staging,baseline) }
     await writeDurable(journalFile, JSON.stringify(journal))
     await onPhase?.('prepared')
-    if (await fingerprintProject(destination) !== expectedHash) throw new EditorError('SAVE_CONFLICT', 'The project changed while saving. Your edits are still open.')
+    if (await fingerprintProject(destination,baseline) !== expectedHash) throw new EditorError('SAVE_CONFLICT', 'The project changed while saving. Your edits are still open.')
     await rename(destination, location.backup)
     await onPhase?.('backed_up')
     await rename(location.staging, destination)
     await onPhase?.('installed')
-    await recoverOne(journal, journalFile)
+    await recoverOne(journal, journalFile,baseline)
     return destination
   } catch (error) {
     if (journal) {
       try {
-        await recoverOne(journal, journalFile)
-        if (await fingerprintProject(destination) === journal.newHash && journal.newHash !== journal.oldHash) return destination
+        await recoverOne(journal, journalFile,baseline)
+        if (await fingerprintProject(destination,baseline) === journal.newHash && journal.newHash !== journal.oldHash) return destination
       } catch { /* Keep journal and complete candidates for startup recovery. */ }
     } else await rm(location.staging, { recursive: true, force: true })
     throw error
   } finally { await release() }
 }
 
-export async function recoverSaveJournals(directory: string): Promise<SaveRecovery[]> {
+export async function recoverSaveJournals(directory: string,retainedAssets?:Iterable<Asset>): Promise<SaveRecovery[]> {
   await mkdir(directory, { recursive: true })
-  const results: SaveRecovery[] = []
+  const results: SaveRecovery[] = [],baseline=retainedAssets?[...retainedAssets]:undefined
   for (const file of await readdir(directory)) {
     if (!/^[a-f0-9-]{36}\.json$/.test(file)) continue
     let destination = ''
@@ -102,7 +112,7 @@ export async function recoverSaveJournals(directory: string): Promise<SaveRecove
       if (file !== `${journal.id}.json`) throw new Error('Save journal identity mismatch.')
       destination = journal.destination
       const release = await acquireLock(paths(journal).lock, journal.id)
-      try { await recoverOne(journal, path) } finally { await release() }
+      try { await recoverOne(journal, path,baseline) } finally { await release() }
       results.push({ id: journal.id, destination, status: 'recovered' })
     } catch (error) { results.push({ id: file.slice(0, -5), destination, status: 'attention', message: error instanceof Error ? error.message : String(error) }) }
   }

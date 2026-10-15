@@ -13,9 +13,9 @@ const id='data-v-crop-audit'
 const component=compileScript(descriptor,{id,inlineTemplate:true}).content.replace('export default','const CropOverlay =')
 const source=`import {createApp,h,reactive} from 'vue';\n${component}\n
 CropOverlay.__scopeId='${id}';
-const state=reactive({draft:{x:80,y:60,width:160,height:120},zoom:1,spacePan:false,interaction:false,updates:0,backgroundClicks:0});
+const state=reactive({draft:{x:80,y:60,width:160,height:120},zoom:1,spacePan:false,interaction:false,updates:0,backgroundClicks:0,cancels:0,before:null});
 window.cropAudit=state;
-createApp({render:()=>h('div',{class:'canvas-wrap audit-canvas',style:{width:320*state.zoom+'px',height:240*state.zoom+'px'},onPointerdown:()=>state.backgroundClicks++},[h(CropOverlay,{draft:state.draft,zoom:state.zoom,spacePan:state.spacePan,snap:{document:{width:320,height:240}},onUpdate:rect=>{state.draft=rect;state.updates++},onInteraction:active=>state.interaction=active})])}).mount('#app');`
+createApp({render:()=>h('div',{class:'canvas-wrap audit-canvas',style:{width:320*state.zoom+'px',height:240*state.zoom+'px'},onPointerdown:()=>state.backgroundClicks++},[h(CropOverlay,{draft:state.draft,zoom:state.zoom,spacePan:state.spacePan,snap:{document:{width:320,height:240}},onUpdate:rect=>{state.draft=rect;state.updates++},onCancel:()=>{state.cancels++;if(state.before)state.draft=state.before},onInteraction:active=>{if(active)state.before=JSON.parse(JSON.stringify(state.draft));state.interaction=active;if(!active)state.before=null}})])}).mount('#app');`
 const bundle=await build({stdin:{contents:source,loader:'ts',resolveDir:resolve('src/renderer')},bundle:true,write:false,format:'iife',platform:'browser',define:{'process.env.NODE_ENV':'"production"'}})
 const styles=compileStyle({filename,source:descriptor.styles[0].content,id,scoped:true})
 assert.equal(styles.errors.length,0)
@@ -51,6 +51,7 @@ try {
  await page.keyboard.press('Escape');await page.mouse.up();await page.keyboard.up('Control')
  assert.equal(await page.evaluate(()=>(window as any).cropAudit.draft.width),160)
  assert.equal(await page.evaluate(()=>(window as any).cropAudit.interaction),false)
+ assert.equal(await page.evaluate(()=>(window as any).cropAudit.cancels),1)
  await page.mouse.click(80,80)
  assert.equal(await page.evaluate(()=>(window as any).cropAudit.backgroundClicks),1)
  await page.evaluate(()=>{const state=(window as any).cropAudit;state.zoom=1;state.draft={x:-20,y:40,width:140,height:120};state.spacePan=true})

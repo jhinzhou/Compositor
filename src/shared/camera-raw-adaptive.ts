@@ -1,6 +1,7 @@
 import {inflate} from 'pako'
 import { CAMERA_RAW_TABLE_PLANES_ZLIB,CAMERA_RAW_TABLE_METADATA } from './camera-raw-table-data'
 import { cameraMap, validateCameraImage, type CameraImage, type CameraCurve, type CameraMixer, type CameraGrading, type CameraCalibration, cameraCurveTables } from './camera-raw-kernels'
+import {cameraRawShadows} from './camera-raw-shadows'
 
 export type CameraRawLightSettings = { exposure: number; temperature: number; tint: number; contrast: number; highlights: number; shadows: number; whites: number; blacks: number; saturation: number; vibrance: number }
 export type CameraRawColorSettings = CameraRawLightSettings & {curve?:CameraCurve;mixer?:CameraMixer;grading?:CameraGrading;calibration?:CameraCalibration}
@@ -53,7 +54,7 @@ export function cameraRawBrightness(image: CameraImage): CameraRawBrightness {
   }
   return weight ? { brightest: encode(brightest / weight) * 255, luminance: encode(luminance / weight) * 255, logBrightest: encode(Math.exp(logBrightest / weight) - .0003) * 255 } : { brightest: 127.5, luminance: 127.5, logBrightest: 127.5 }
 }
-export function cameraRawStages(settings: CameraRawColorSettings, brightness: CameraRawBrightness): CameraRawStage[] {
+export function cameraRawStages(settings: CameraRawColorSettings, brightness: CameraRawBrightness,part?:'beforeShadows'|'afterShadows'): CameraRawStage[] {
   const stages: CameraRawStage[] = []
   const adaptive = (start: number, value: number, level: number) => { const [row, down] = cameraRawBetween(level, [53, 80, 104, 130, 160, 190, 224]), [column, across] = cameraRawBetween(value, [-100, -50, -25, 0, 25, 50, 100]); return four(start + row * 7 + column, 7, down, across) }
   if(settings.calibration)for(const [i,value] of [settings.calibration.redHue,settings.calibration.redSaturation,settings.calibration.greenHue,settings.calibration.greenSaturation,settings.calibration.blueHue,settings.calibration.blueSaturation].entries())if(value)stages.push(cameraRawStage(405+i*5,value,-100,50,5))
@@ -61,10 +62,10 @@ export function cameraRawStages(settings: CameraRawColorSettings, brightness: Ca
   if (settings.temperature || settings.tint) stages.push(cameraRawWhiteBalanceStage(settings.temperature, settings.tint))
   if (settings.contrast) stages.push(adaptive(138, settings.contrast, brightness.brightest))
   if (settings.highlights) stages.push(adaptive(187, settings.highlights, brightness.logBrightest))
-  if (settings.shadows) stages.push(adaptive(236, settings.shadows, brightness.luminance))
+  const beforeShadows=stages.length
   for (const [key, start] of [['whites', 102], ['blacks', 111], ['saturation', 120], ['vibrance', 129]] as const) if (settings[key]) stages.push(cameraRawStage(start, settings[key], -100, 25, 9))
   if(settings.curve&&cameraRawMeasuredDividers(settings.curve))for(const [i,value] of [settings.curve.shadows,settings.curve.darks,settings.curve.lights,settings.curve.highlights].entries())if(value)stages.push(cameraRawStage(435+i*5,value,-100,50,5))
-  return stages
+  return part==='beforeShadows'?stages.slice(0,beforeShadows):part==='afterShadows'?stages.slice(beforeShadows):stages
 }
 export function cameraRawLookup(table: Uint8Array | Float32Array, offset: number, dimension: number, color: number[], divisor: number): number[] {
   const p = color.map(value => clamp(value) * (dimension - 1)), i = p.map(value => value >= dimension - 1 ? dimension - 2 : Math.floor(value)), f = p.map((value, axis) => value - i[axis]), output = [0, 0, 0]
@@ -89,10 +90,11 @@ export function cameraRawCompose(stages: CameraRawStage[]): Float32Array | undef
   if (composedCache.size >= 8) composedCache.delete(composedCache.keys().next().value!)
   composedCache.set(key, output); return output
 }
-export function cameraRawLightColor(image: CameraImage, settings: CameraRawColorSettings, clipping?: 'highlights' | 'shadows',foldColor=false,knownBrightness?:CameraRawBrightness): CameraImage {
+export function cameraRawLightColor(image: CameraImage, settings: CameraRawColorSettings, clipping?: 'highlights' | 'shadows',foldColor=false,knownBrightness?:CameraRawBrightness,samplingScale=1): CameraImage {
   validateCameraImage(image)
-  const adaptive=settings.contrast||settings.highlights||settings.shadows
-  let table = cameraRawCompose(cameraRawStages(settings,knownBrightness??(adaptive?cameraRawBrightness(image):{brightest:128,luminance:128,logBrightest:128})))
+  const adaptive=settings.contrast||settings.highlights,brightness=knownBrightness??(adaptive?cameraRawBrightness(image):{brightest:128,luminance:128,logBrightest:128})
+  if(settings.shadows){const before=cameraRawCompose(cameraRawStages(settings,brightness,'beforeShadows'));if(before)image=cameraMap(image,color=>cameraRawLookup(before,0,grid,color,1).map(clamp));image=cameraRawShadows(image,settings.shadows,samplingScale)}
+  let table = cameraRawCompose(cameraRawStages(settings,brightness,settings.shadows?'afterShadows':undefined))
   if(foldColor)table=cameraRawFoldColor(table,settings)
   if (!table && !clipping) return image
   return cameraMap(image, color => { if (table) color = cameraRawLookup(table, 0, grid, color, 1).map(clamp); if (clipping === 'highlights') return color.map(value => value >= 254.5 / 255 ? 1 : 0); if (clipping === 'shadows') return color.map(value => value <= .5 / 255 ? 0 : 1); return color })

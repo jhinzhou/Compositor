@@ -1,0 +1,204 @@
+{
+  "date": "2026-10-14",
+  "application": "Adobe Photoshop",
+  "version": "27.11.0",
+  "referenceKind": "native-actionmanager",
+  "limits": [
+    "Six root-approved automatic size fields; no output target supplied.",
+    "No pixel holdout file is read. Existing automatic size model is frozen; results do not fit or tune it."
+  ],
+  "cases": [
+    {
+      "name": "auto-gentle-left",
+      "corners": [
+        [
+          42,
+          26
+        ],
+        [
+          343,
+          38
+        ],
+        [
+          326,
+          229
+        ],
+        [
+          52,
+          222
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 301,
+      "height": 196,
+      "referenceKind": "native-actionmanager",
+      "geometryVerified": true,
+      "creationMode": "Direct perspectiveCrop with no output dimensions; native automatic size"
+    },
+    {
+      "name": "auto-gentle-right",
+      "corners": [
+        [
+          41,
+          38
+        ],
+        [
+          342,
+          26
+        ],
+        [
+          332,
+          222
+        ],
+        [
+          58,
+          229
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 301,
+      "height": 196,
+      "referenceKind": "native-actionmanager",
+      "geometryVerified": true,
+      "creationMode": "Direct perspectiveCrop with no output dimensions; native automatic size"
+    },
+    {
+      "name": "auto-strong-left",
+      "corners": [
+        [
+          66,
+          17
+        ],
+        [
+          350,
+          65
+        ],
+        [
+          300,
+          239
+        ],
+        [
+          34,
+          209
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 311,
+      "height": 216,
+      "referenceKind": "native-actionmanager",
+      "geometryVerified": true,
+      "creationMode": "Direct perspectiveCrop with no output dimensions; native automatic size"
+    },
+    {
+      "name": "auto-strong-right",
+      "corners": [
+        [
+          34,
+          65
+        ],
+        [
+          318,
+          17
+        ],
+        [
+          350,
+          209
+        ],
+        [
+          84,
+          239
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 311,
+      "height": 216,
+      "referenceKind": "native-actionmanager",
+      "geometryVerified": true,
+      "creationMode": "Direct perspectiveCrop with no output dimensions; native automatic size"
+    },
+    {
+      "name": "auto-gentle-translate",
+      "corners": [
+        [
+          54,
+          17
+        ],
+        [
+          355,
+          29
+        ],
+        [
+          338,
+          220
+        ],
+        [
+          64,
+          213
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 301,
+      "height": 196,
+      "referenceKind": "native-actionmanager",
+      "geometryVerified": true,
+      "creationMode": "Direct perspectiveCrop with no output dimensions; native automatic size"
+    },
+    {
+      "name": "auto-gentle-half-turn",
+      "corners": [
+        [
+          58,
+          27
+        ],
+        [
+          332,
+          34
+        ],
+        [
+          342,
+          230
+        ],
+        [
+          41,
+          218
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 301,
+      "height": 196,
+      "referenceKind": "native-actionmanager",
+      "geometryVerified": true,
+      "creationMode": "Direct perspectiveCrop with no output dimensions; native automatic size"
+    }
+  ]
+}

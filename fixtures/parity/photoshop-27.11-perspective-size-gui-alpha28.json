@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-14",
+  "photoshopVersion": "27.11.0",
+  "referenceKind": "native-gui-event",
+  "referenceRole": "independent-after-candidate-freeze",
+  "source": {
+    "width": 512,
+    "height": 384
+  },
+  "limits": [
+    "Actual Photoshop C-tool mouse handles and Return; geometry comes from captured ActionDescriptor, not manually estimated screenshot coordinates.",
+    "Size-only fixture; native PNG is inspected for IHDR dimensions and hash, never pixel decoded.",
+    "Output is verified after the original nearest-depth candidate freeze; it does not tune a pixel correction."
+  ],
+  "provenance": {
+    "eventPath": "artifacts/photoshop-native/outputs/crop-events-alpha28/crop-event-1791957901905.json",
+    "eventSHA256": "01ad2d987b8be9c5b033eee183def51565af1615a9e566b0870e1945ae62ede0",
+    "nativeImagePath": "artifacts/photoshop-native/outputs/gui-alpha28/alpha28-gui-owned-crop.png",
+    "nativeImageSHA256": "20a11a272b447ce332a4938466cec9c381b59b0751f32de224037b8ea76f5ed4"
+  },
+  "case": {
+    "name": "actual-gui-strong-alpha28",
+    "corners": [
+      [
+        88,
+        33
+      ],
+      [
+        457,
+        117
+      ],
+      [
+        383,
+        347
+      ],
+      [
+        49,
+        298
+      ]
+    ],
+    "sourceCenter": [
+      256,
+      192
+    ],
+    "width": 421,
+    "height": 306,
+    "baseline": {
+      "width": 420,
+      "height": 306
+    },
+    "productionAtFreeze": {
+      "width": 420,
+      "height": 306
+    }
+  }
+}

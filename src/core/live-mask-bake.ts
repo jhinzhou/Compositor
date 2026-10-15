@@ -2,7 +2,7 @@
  * Bake only a copied target's external dependency; its own mask and appearance stay editable. */
 import { PNG } from 'pngjs'
 import { EditorError, LIMITS, type Layer, type Manifest } from '../shared/contracts'
-import { maskBackground } from '../shared/mask-pixels'
+import {effectiveMaskPixels,effectiveMaskTransform,sampleEffectiveMask,type EffectiveMask} from '../shared/mask-properties'
 import { sourcePoint } from '../shared/selection-coverage'
 import { documentPoint } from './raster-edit'
 import { makeAsset, type Asset } from './project-io'
@@ -24,6 +24,7 @@ export function bakeExternalClipping(manifest: Manifest, assets: Map<string,Asse
     const cached=decoded.get(file);if(cached)return cached
     const asset=assets.get(file);if(!asset)throw new EditorError('INVALID_PROJECT',`Missing clipping source asset: ${file}`)
     if(asset.width<1||asset.height<1||asset.width>LIMITS.maxSide||asset.height>LIMITS.maxSide||asset.width*asset.height>LIMITS.maxSurfacePixels)throw new EditorError('RESOURCE_LIMIT','Clipping source exceeds the raster budget.')
+    if(asset.bitDepth===16)throw new EditorError('UNSUPPORTED_FEATURE','Baking external clipping does not yet preserve 16-bit data. Copy the clipping sources together instead.');
     const result=PNG.sync.read(asset.bytes,{checkCRC:true});decoded.set(file,result);return result
   }
   const effectiveOpacity=(layer:Layer)=>{
@@ -42,12 +43,12 @@ export function bakeExternalClipping(manifest: Manifest, assets: Map<string,Asse
       const source=records.get(id);if(!source||source.isGroup||source.adjustment||!source.imageFile)throw new EditorError('INVALID_PROJECT','Missing or unsupported live clipping source.')
       visiting.add(id)
       const pixels=image(source.imageFile),alpha=new Uint8Array(pixels.width*pixels.height)
-      let mask:PNG|undefined,maskValues:Uint8Array|undefined,background=255
-      if(source.maskFile&&source.maskEnabled!==false){mask=image(source.maskFile);maskValues=new Uint8Array(mask.width*mask.height);for(let i=0;i<maskValues.length;i++)maskValues[i]=mask.data[i*4];background=maskBackground({width:mask.width,height:mask.height,data:new Uint8ClampedArray(mask.data)})}
+      let mask:EffectiveMask|undefined,maskPlacement=source.maskPlacement??source.transform
+      if(source.maskFile&&source.maskEnabled!==false){const raw=image(source.maskFile);mask=effectiveMaskPixels({width:raw.width,height:raw.height,data:new Uint8ClampedArray(raw.data)},source);maskPlacement=effectiveMaskTransform(maskPlacement,raw,mask.inset)}
       visits+=alpha.length+count;if(visits>80_000_000)throw new EditorError('RESOURCE_LIMIT','Live clipping bake exceeds the compute budget.')
       for(let y=0;y<pixels.height;y++)for(let x=0;x<pixels.width;x++){
         let value=pixels.data[(y*pixels.width+x)*4+3]
-        if(mask&&maskValues){const p=source.maskPlacement?sourcePoint({transform:source.maskPlacement},...documentPoint(source,x+.5,y+.5,pixels.width,pixels.height),mask.width,mask.height):[(x+.5)*mask.width/pixels.width,(y+.5)*mask.height/pixels.height];value*=sample(maskValues,mask.width,mask.height,source.maskPlacement?p[0]:Math.max(.5,Math.min(mask.width-.5,p[0])),source.maskPlacement?p[1]:Math.max(.5,Math.min(mask.height-.5,p[1])),false,background)/255}
+        if(mask)value*=sampleEffectiveMask(mask,maskPlacement,...documentPoint(source,x+.5,y+.5,pixels.width,pixels.height))/255
         alpha[y*pixels.width+x]=byte(value)
       }
       const inherited=source.maskSourceID?coverage(source.maskSourceID):undefined,result=new Uint8Array(count),opacity=effectiveOpacity(source)

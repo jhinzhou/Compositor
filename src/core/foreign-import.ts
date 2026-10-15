@@ -1,3 +1,5 @@
+import {DEFAULT_RAW_SETTINGS,normalizeRawSettings,type RawImportSettings} from '../shared/raw-settings'
+export {DEFAULT_RAW_SETTINGS,normalizeRawSettings,type RawImportSettings} from '../shared/raw-settings'
 import { Worker } from 'node:worker_threads'
 import { createRequire } from 'node:module'
 import { basename, dirname, join } from 'node:path'
@@ -5,18 +7,11 @@ import { FOREIGN_WORKER_SOURCE } from './foreign-worker-source'
 import { inspectHeif } from './foreign-color'
 import { LIMITS } from '../shared/limits'
 export const FOREIGN_CODEC_LIMITS = { maxInputBytes: 64 * 1024 * 1024, wasmBytes: 512 * 1024 * 1024, maxDecodedPixels: Math.floor(512 * 1024 * 1024 / 16) } as const
-export interface RawImportSettings { whiteBalance: 'camera' | 'auto'; exposureEV: number; autoBright: boolean; halfSize: boolean; highlightMode: 0 | 1 | 2 }
-export const DEFAULT_RAW_SETTINGS: RawImportSettings = { whiteBalance: 'camera', exposureEV: 0, autoBright: true, halfSize: false, highlightMode: 0 }
 export interface ForeignImage { width: number; height: number; rgba: Uint8Array; png: Uint8Array; sourceName: string; format: 'raw' | 'heif'; colorProfile: string; orientationApplied: true; metadata: Record<string, unknown>; warnings: string[] }
 export interface ForeignMetadata { width: number; height: number; metadata: Record<string, unknown> }
 export interface ForeignDecodeOptions { format?: 'raw' | 'heif'; raw?: Partial<RawImportSettings>; signal?: AbortSignal; timeoutMs?: number; maxSide?: number; maxPixels?: number; onMetadata?: (value: { width: number; height: number; metadata: Record<string, unknown> }) => void; codecPaths?: { rawModule?: string; rawWasm?: string; heifModule?: string; heifWasm?: string } }
 export const RAW_EXTENSIONS = ['dng', 'arw', 'cr2', 'cr3', 'nef', 'nrw', 'orf', 'raf', 'rw2', 'rwl', 'pef', 'srw', 'erf', '3fr', 'fff', 'iiq', 'kdc', 'mrw', 'mos', 'x3f', 'raw', 'crw', 'mdc'] as const
 export function safeSourceName(filename: string): string { return basename(filename.replaceAll('\\', '/')).replace(/[\x00-\x1f\x7f/:*?"<>|]/g, '_').trim().slice(0, 200) || 'Imported image' }
-export function normalizeRawSettings(input: Partial<RawImportSettings> = {}): RawImportSettings {
-  const s = { ...DEFAULT_RAW_SETTINGS, ...input }
-  if (!['camera', 'auto'].includes(s.whiteBalance) || !Number.isFinite(s.exposureEV) || s.exposureEV < -5 || s.exposureEV > 5 || ![0, 1, 2].includes(s.highlightMode) || typeof s.halfSize !== 'boolean' || typeof s.autoBright !== 'boolean') throw new Error('Invalid RAW import settings')
-  return s
-}
 /** One isolated worker per import. Main thread never executes native/WASM decoding. */
 export async function decodeForeign(bytes: Uint8Array, filename: string, options: ForeignDecodeOptions = {}): Promise<ForeignImage> { return await foreignWorker(bytes, filename, options, false) as ForeignImage }
 export async function readRawMetadata(bytes: Uint8Array, filename: string, options: ForeignDecodeOptions = {}): Promise<ForeignMetadata> { return await foreignWorker(bytes, filename, { ...options, format: 'raw' }, true) as ForeignMetadata }

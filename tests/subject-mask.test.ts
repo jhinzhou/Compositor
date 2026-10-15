@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import {PNG} from 'pngjs'
 import {Editor} from '../src/core/editor'
 import {prepareSubjectMask} from '../src/core/subject-mask'
+import {refineSubjectMatte} from '../src/shared/subject-matte'
+import {actionSchema} from '../src/shared/contracts'
 import {blankPNG,encodeRaster} from '../src/core/raster-edit'
 import {makeAsset} from '../src/core/project-io'
 import type {EditAction,Layer} from '../src/shared/contracts'
@@ -32,4 +34,19 @@ test('subject mask preview helper produces the exact committed asset and metadat
   const before=editor.snapshot(),selected=before.manifest.layers[0],source=before.assets.get(selected.imageFile!)!,mask={width:2,height:1,coverage:new Uint8Array([51,204])},expected=prepareSubjectMask(selected,source,mask,editor.state().selection!,'source',before.assets.get(selected.maskFile!)),result=editor.commitPrepared({...editor.identity(),action:{type:'selection.subject',layerId:id,removeBackground:true}},{coverage:mask}),after=editor.snapshot()
   assert.deepEqual(after.manifest.layers[0],expected.layer);assert.deepEqual(after.assets.get(expected.file)!.bytes,expected.bytes);assert.deepEqual(after.assets.get(selected.imageFile!),source);editor.history({...editor.identity(),direction:'undo',transactionId:result.transactionId});assert.deepEqual(editor.snapshot(),before)
  }
+})
+
+test('color/feather action parameters survive schema and give identical preview and committed masks',()=>{
+ const width=25,height=3,png=blankPNG(width,height,255),coarse={width,height,coverage:new Uint8Array(width*height)}
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){const i=y*width+x;png.data.set(x<12?[255,0,0,255]:[0,76,0,255],i*4);coarse.coverage[i]=x<8?0:x>16?255:Math.round((x-8)/8*255)}
+ const editor=new Editor();editor.create(width,height);editor.importPNG(encodeRaster(png),'colored edge');const layerId=editor.state().manifest.activeLayerID!
+ const action=actionSchema.parse({type:'selection.subject',layerId,removeBackground:true,matteQuality:'advanced',edgeMode:'color',refineEdges:4,matteContrast:0,shiftEdge:0,feather:1.5})
+ assert.equal(action.type,'selection.subject');if(action.type!=='selection.subject')throw new Error('Wrong action')
+ assert.equal(action.edgeMode,'color');assert.equal(action.feather,1.5)
+ const refined=refineSubjectMatte(coarse,{width,height,data:png.data},{quality:action.matteQuality,edgeMode:action.edgeMode,refineEdges:action.refineEdges,matteContrast:action.matteContrast,shiftEdge:action.shiftEdge,feather:action.feather})
+ const before=editor.snapshot(),selected=before.manifest.layers[0],source=before.assets.get(selected.imageFile!)!,preview=prepareSubjectMask(selected,source,refined,null)
+ const committed=editor.commitPrepared({...editor.identity(),action},{coverage:refined}),after=editor.snapshot()
+ assert.deepEqual(after.assets.get(preview.file)!.bytes,preview.bytes);assert.deepEqual(after.assets.get(selected.imageFile!),source)
+ editor.history({...editor.identity(),direction:'undo',transactionId:committed.transactionId});assert.deepEqual(editor.snapshot(),before)
+ assert.throws(()=>actionSchema.parse({...action,feather:21}));assert.throws(()=>actionSchema.parse({...action,edgeMode:'invented'}))
 })

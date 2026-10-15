@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-10T10:38:26.750Z",
+  "generatorVersion": "sips-316",
+  "system": "ProductName:\t\tmacOS\nProductVersion:\t\t27.0\nBuildVersion:\t\t26A428",
+  "commands": [
+    "sips -s format psd <original-synthetic.png> --out <fixture.psd>",
+    "sips -s format png <fixture.psd> --out <independent-reference.png>"
+  ],
+  "limitations": [
+    "Single raster layer only. Not Photoshop-authored or Photoshop visual acceptance.",
+    "This sips build produced malformed layer PackBits rows; check layerValidation. These are independent negative inputs, not successful compatibility specimens.",
+    "sips may attach a profile or transform low-alpha RGB. Reference is decoded from the PSD independently, not assumed identical to source PNG.",
+    "These four files do not exercise groups, vector paths, text, styles, adjustment layers or smart objects."
+  ],
+  "records": [
+    {
+      "id": "C01",
+      "name": "opaque-color-grid",
+      "origin": "independent-application",
+      "generator": "Apple ImageIO via sips",
+      "source": "opaque-color-grid.source.png",
+      "file": "opaque-color-grid.psd",
+      "reference": "opaque-color-grid.imageio.png",
+      "license": "Original synthetic pixels, licensed under the repository MIT LICENSE; no third-party image content.",
+      "expected": {
+        "width": 8,
+        "height": 6,
+        "layerCount": 1,
+        "bitsPerChannel": 8
+      },
+      "layerValidation": {
+        "valid": false,
+        "errors": [
+          "channel1 row0: truncated PackBits packet",
+          "channel1 row0: expanded width0, expected8",
+          "channel1 row1: truncated PackBits packet",
+          "channel1 row1: expanded width0, expected8",
+          "channel1 row2: expanded row exceeds width",
+          "channel1 row2: expanded width65, expected8"
+        ]
+      },
+      "sha256": {
+        "source": "1a7e6be6192fb3cba3cb09708027cf197b3cf39c9f8e3ec31e136765767b0660",
+        "file": "4a74141399645bb0092da86bb0215cc01c7fa24e37b1866353af414078127e92",
+        "reference": "2209c3cbbbee74a4f724598fbf067c87b53ef4405b82faafda6f4dd0d66d1c81"
+      }
+    },
+    {
+      "id": "C02",
+      "name": "alpha-coverage",
+      "origin": "independent-application",
+      "generator": "Apple ImageIO via sips",
+      "source": "alpha-coverage.source.png",
+      "file": "alpha-coverage.psd",
+      "reference": "alpha-coverage.imageio.png",
+      "license": "Original synthetic pixels, licensed under the repository MIT LICENSE; no third-party image content.",
+      "expected": {
+        "width": 8,
+        "height": 6,
+        "layerCount": 1,
+        "bitsPerChannel": 8
+      },
+      "layerValidation": {
+        "valid": false,
+        "errors": [
+          "channel0 row0: truncated PackBits packet",
+          "channel0 row0: expanded width0, expected8",
+          "channel0 row1: truncated PackBits packet",
+          "channel0 row1: expanded width0, expected8",
+          "channel0 row2: expanded width3, expected8"
+        ]
+      },
+      "sha256": {
+        "source": "c8dc2a93735065a7ca0ba481e71f12dfe1b65fc24ec84ce945111c96e6afa0f4",
+        "file": "02f45af83f9f80bf47fc7c5d23b2870cb3426432755bccd0368f3a4f35901265",
+        "reference": "183e65ba5c8377ac105a2c194915a476756be08bb75d66a5dfc89c375b84ece4"
+      }
+    },
+    {
+      "id": "C03",
+      "name": "hard-edge-checker",
+      "origin": "independent-application",
+      "generator": "Apple ImageIO via sips",
+      "source": "hard-edge-checker.source.png",
+      "file": "hard-edge-checker.psd",
+      "reference": "hard-edge-checker.imageio.png",
+      "license": "Original synthetic pixels, licensed under the repository MIT LICENSE; no third-party image content.",
+      "expected": {
+        "width": 8,
+        "height": 6,
+        "layerCount": 1,
+        "bitsPerChannel": 8
+      },
+      "layerValidation": {
+        "valid": false,
+        "errors": [
+          "channel1 row0: truncated PackBits packet",
+          "channel1 row0: expanded width7, expected8",
+          "channel2 row0: truncated PackBits packet",
+          "channel2 row0: expanded width5, expected8"
+        ]
+      },
+      "sha256": {
+        "source": "203acc54f93eb747dd8011ab4faccdee4b937fae4f1874e32e877ad3eb605f62",
+        "file": "d2d504e2f07f3f4a8a9fc9f6df4d16bc5b0893caa7c095d6e0fa7a8091293ed1",
+        "reference": "c22d5e26d02575f224fefb0de707f1e07f933066ddb8905abc582ae17d861390"
+      }
+    },
+    {
+      "id": "C04",
+      "name": "transparent-border",
+      "origin": "independent-application",
+      "generator": "Apple ImageIO via sips",
+      "source": "transparent-border.source.png",
+      "file": "transparent-border.psd",
+      "reference": "transparent-border.imageio.png",
+      "license": "Original synthetic pixels, licensed under the repository MIT LICENSE; no third-party image content.",
+      "expected": {
+        "width": 8,
+        "height": 6,
+        "layerCount": 1,
+        "bitsPerChannel": 8
+      },
+      "layerValidation": {
+        "valid": false,
+        "errors": [
+          "channel1 row0: truncated PackBits packet",
+          "channel1 row0: expanded width0, expected8",
+          "channel1 row1: truncated PackBits packet",
+          "channel1 row1: expanded width0, expected8",
+          "channel1 row2: expanded row exceeds width",
+          "channel1 row2: expanded width107, expected8"
+        ]
+      },
+      "sha256": {
+        "source": "fe4f801e95e41bc4f9b8f5783e971b9f6e8cc2f81358105180f1b18e2e0bb94b",
+        "file": "d14d5034884d621eb2864773e7b7480dbe6d33a2f65619ded3a345ede7f7d3f0",
+        "reference": "4294c6a618ecb11301fb36d5ee6157069cfa22536b55b6d9a43452e214d2beb3"
+      }
+    }
+  ]
+}

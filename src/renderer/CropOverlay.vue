@@ -2,10 +2,11 @@
 import { useI18n } from './i18n'
 const { t, tm } = useI18n()
 import {computed,onBeforeUnmount,onMounted,toRaw} from 'vue'
-import {CROP_HANDLES,cropDragRectangle,validCropRect,type CropRect,type CropHandle} from './crop-geometry'
+import {CROP_HANDLES,cropDragRectangle,sameCropRect,validCropRect,type CropRect,type CropHandle} from './crop-geometry'
 import type {SnapOptions} from './view-geometry'
-const props=defineProps<{draft:CropRect;zoom:number;workspace?:CropRect;aspect?:number;snap?:SnapOptions;disabled?:boolean;spacePan?:boolean}>()
-const emit=defineEmits<{update:[CropRect];interaction:[boolean]}>()
+import {rotateVector} from './rotated-view'
+const props=defineProps<{draft:CropRect;zoom:number;workspace?:CropRect;aspect?:number;snap?:SnapOptions;disabled?:boolean;spacePan?:boolean;viewAngle?:number}>()
+const emit=defineEmits<{update:[CropRect];interaction:[boolean];cancel:[]}>()
 let drag:{pointer:number;target:HTMLElement;point:[number,number];last:[number,number];zoom:number;initial:CropRect;mode:'move'|CropHandle}|undefined
 // A full-canvas initial frame lets a drag inside it create a new crop, as native
 // Compositor does. Its edge handles remain available for resizing.
@@ -32,21 +33,25 @@ function move(event:PointerEvent):void {
 }
 function update(alt:boolean,ctrl:boolean):void {
  if(!drag)return
- const next=cropDragRectangle(drag.initial,drag.mode,[(drag.last[0]-drag.point[0])/drag.zoom,(drag.last[1]-drag.point[1])/drag.zoom],props.aspect,alt,props.snap,ctrl)
- if(validCropRect(next))emit('update',next)
+ const delta=rotateVector({x:(drag.last[0]-drag.point[0])/drag.zoom,y:(drag.last[1]-drag.point[1])/drag.zoom},-(props.viewAngle??0))
+ const next=cropDragRectangle(drag.initial,drag.mode,[delta.x,delta.y],props.aspect,alt,props.snap,ctrl)
+ if(validCropRect(next)&&!sameCropRect(next,props.draft))emit('update',next)
 }
-function finish(event:PointerEvent):void {move(event);end()}
-function end(cancel=false):void {const current=drag;if(!current)return;drag=undefined;if(current.target.hasPointerCapture(current.pointer))current.target.releasePointerCapture(current.pointer);if(cancel)emit('update',current.initial);emit('interaction',false)}
+function finish(event:PointerEvent):void {if(event.pointerId!==drag?.pointer)return;move(event);end()}
+function cancelPointer(event:PointerEvent):void {if(event.pointerId===drag?.pointer)end(true)}
+function blur():void {end(true)}
+function end(cancel=false):void {const current=drag;if(!current)return;drag=undefined;if(current.target.hasPointerCapture(current.pointer))current.target.releasePointerCapture(current.pointer);if(cancel)emit('cancel');emit('interaction',false)}
+defineExpose({finish:end})
 function keydown(event:KeyboardEvent):void {if(!drag)return;if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();end(true)}else if(event.key==='Enter')end();else if(event.key==='Alt'||event.key==='Control')update(event.altKey,event.ctrlKey)}
 function keyup(event:KeyboardEvent):void {if(drag&&(event.key==='Alt'||event.key==='Control'))update(event.altKey,event.ctrlKey)}
-onMounted(()=>{document.addEventListener('keydown',keydown,true);document.addEventListener('keyup',keyup,true)})
-onBeforeUnmount(()=>{document.removeEventListener('keydown',keydown,true);document.removeEventListener('keyup',keyup,true);end()})
+onMounted(()=>{document.addEventListener('keydown',keydown,true);document.addEventListener('keyup',keyup,true);window.addEventListener('blur',blur)})
+onBeforeUnmount(()=>{document.removeEventListener('keydown',keydown,true);document.removeEventListener('keyup',keyup,true);window.removeEventListener('blur',blur);end()})
 </script>
 <template>
  <svg v-if="shade" class="crop-shade" :style="{left:`${shade.left}px`,top:`${shade.top}px`}" :width="shade.width" :height="shade.height" :viewBox="shade.viewBox" aria-hidden="true"><path :d="shade.path" fill="black" fill-opacity="0.6" fill-rule="evenodd"/></svg>
- <div class="crop-frame" :style="frameStyle" :aria-label="t('Move crop')" :title="t('Drag to move the crop frame. Alt resizes from the center; Ctrl temporarily disables snapping.')" @pointerdown.stop="start($event,'move')" @pointermove.stop="move" @pointerup.stop="finish" @pointercancel.stop="end(true)" @lostpointercapture="end(true)">
+ <div class="crop-frame" :style="frameStyle" :aria-label="t('Move crop')" :title="t('Drag to move the crop frame. Alt resizes from the center; Ctrl temporarily disables snapping.')" @pointerdown.stop="start($event,'move')" @pointermove.stop="move" @pointerup.stop="finish" @pointercancel.stop="cancelPointer" @lostpointercapture.stop="cancelPointer">
   <div class="crop-thirds" aria-hidden="true"><span/><span/><span/><span/></div>
-  <button v-for="handle in CROP_HANDLES" :key="handle" type="button" :class="['crop-handle',handle]" :style="{pointerEvents:disabled||spacePan?'none':'auto'}" :aria-label="t('Resize crop {handle}', {handle:t(handle)})" :disabled="disabled" @pointerdown.stop="start($event,handle)" @pointermove.stop="move" @pointerup.stop="finish" @pointercancel.stop="end(true)" @lostpointercapture.stop="end(true)"/>
+  <button v-for="handle in CROP_HANDLES" :key="handle" type="button" :class="['crop-handle',handle]" :style="{pointerEvents:disabled||spacePan?'none':'auto'}" :aria-label="t('Resize crop {handle}', {handle:t(handle)})" :disabled="disabled" @pointerdown.stop="start($event,handle)" @pointermove.stop="move" @pointerup.stop="finish" @pointercancel.stop="cancelPointer" @lostpointercapture.stop="cancelPointer"/>
  </div>
 </template>
 <style scoped>

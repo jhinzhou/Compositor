@@ -1,6 +1,6 @@
 {
   "name": "compositor-electron",
-  "version": "0.3.0-alpha.7",
+  "version": "0.3.0-alpha.29",
   "description": "Cross-platform Compositor editor with a shared command service and MCP automation",
   "private": true,
   "type": "module",
@@ -20,7 +20,9 @@
     "package:win": "npm run build && electron-builder --win dir --x64 && tsx scripts/fix-windows-resources.ts release/win-unpacked",
     "check": "npm run check:i18n && npm run typecheck && npm test && npm run build",
     "check:i18n": "tsx scripts/check-i18n.ts",
-    "test:i18n": "tsx scripts/smoke-i18n.ts"
+    "test:i18n": "tsx scripts/smoke-i18n.ts",
+    "test:photoshop-common": "tsx scripts/smoke-photoshop-common.ts",
+    "test:photoshop-workflow": "tsx scripts/smoke-photoshop-workflow.ts"
   },
   "build": {
     "appId": "com.compositor.electron",

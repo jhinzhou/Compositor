@@ -14,6 +14,7 @@ export function copyLayerComponent(stage:PixelStage,action:CopyAction):string{
   if(!asset)throw new EditorError('INVALID_ARGUMENT','The source layer has no raster mask.')
   const file=`${target.id.toUpperCase()}.mask.png`,replacing=!!target.maskFile
   stage.assets.set(file,makeAsset(file,asset.bytes));target.maskFile=file;target.maskEnabled=source.maskEnabled;target.maskLinked=source.maskLinked;target.maskPlacement=structuredClone(source.maskPlacement??source.transform);if(source.photoshopMaskDefault!==undefined)target.photoshopMaskDefault=source.photoshopMaskDefault;else delete target.photoshopMaskDefault
+  target.maskDensity=source.maskDensity;target.maskFeather=source.maskFeather;target.maskFeatherModel=source.maskFeatherModel;target.maskFeatherEdgeMode=source.maskFeatherEdgeMode
   stage.manifest.activeLayerID=target.id
   return replacing?'Replace layer mask':'Copy layer mask'
  }

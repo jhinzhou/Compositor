@@ -1,5 +1,9 @@
 import { z } from 'zod'
 import { pixelActionOptions, type Selection } from './pixel-contracts'
+import {namedSelectionsSchema} from './named-selections'
+import {documentInfoSchema} from './document-info'
+import {frameSchema} from './frame'
+import {vectorPathSchema} from './vector-path'
 
 export const MCP_TOOLS = ['app.get_capabilities', 'document.get_state', 'document.list', 'document.preview', 'document.apply', 'document.apply_batch', 'history.undo', 'task.begin', 'task.get_status', 'task.cancel', 'task.finish', 'history.undo_task'] as const
 export const BLEND_MODES = ['Normal', 'Darken', 'Multiply', 'Color Burn', 'Linear Burn', 'Lighten', 'Screen', 'Color Dodge', 'Linear Dodge (Add)', 'Overlay', 'Soft Light', 'Hard Light', 'Vivid Light', 'Linear Light', 'Pin Light', 'Hard Mix', 'Difference', 'Exclusion', 'Subtract', 'Divide', 'Hue', 'Saturation', 'Color', 'Luminosity'] as const
@@ -12,21 +16,29 @@ export const layerSchema = z.object({
   id: z.string().uuid(), name: z.string().trim().min(1).max(4096), isVisible: z.boolean(),
   transform: transformSchema, imageFile: z.string().optional(), parentID: z.string().uuid().optional(),
   isGroup: z.boolean().default(false), opacity: finite.min(0).max(1).default(1), blendMode: z.string().default('Normal'),
+  locked:z.boolean().optional(),positionLocked:z.boolean().optional(),
   maskFile: z.string().optional(), maskEnabled: z.boolean().optional(), maskSourceID: z.string().uuid().optional(), maskLinked: z.boolean().optional(), maskPlacement: transformSchema.optional(),
-  adjustment: z.unknown().optional(), effects: z.unknown().optional(), text: z.unknown().optional(), shape: z.unknown().optional()
+  maskDensity:finite.min(0).max(1).optional(),maskFeather:finite.min(0).max(250).optional(),maskFeatherModel:z.enum(['compositor','photoshop']).optional(),maskFeatherEdgeMode:z.enum(['clamp','default']).optional(),
+  adjustment: z.unknown().optional(), effects: z.unknown().optional(), text: z.unknown().optional(), shape: z.unknown().optional(),
+  frame:frameSchema.optional(),vectorMask:z.object({pathId:z.string().min(1).max(80),path:vectorPathSchema}).strict().optional()
 }).passthrough()
 export const manifestSchema = z.object({
-  format: z.literal('com.compositor.project'), version: z.number().int().min(1).max(11), colorSpace: z.literal('sRGB'),
+  format: z.literal('com.compositor.project'), version: z.number().int().min(1).max(13), colorSpace: z.literal('sRGB'),
   documentID: z.string().uuid(), width: z.number().int().min(1).max(LIMITS.maxSide),
   height: z.number().int().min(1).max(LIMITS.maxSide), resolution: finite.min(1).max(9600).default(72),
   guides: z.array(z.object({id: z.string().uuid(),axis: z.enum(['horizontal','vertical']),position: finite.min(-1_000_000).max(1_000_000)}).strict()).max(1000).optional(),
+  namedSelections:namedSelectionsSchema.optional(),
+  documentInfo:documentInfoSchema.optional(),
+  vectorPaths:z.array(z.object({id:z.string().min(1).max(80),name:z.string().trim().min(1).max(256),path:vectorPathSchema}).strict()).max(64).refine(paths=>new Set(paths.map(path=>path.id)).size===paths.length,{message:'Document path identities must be unique.'}).optional(),
   activeLayerID: z.string().uuid().nullable().optional(), layers: z.array(layerSchema).max(LIMITS.maxLayers)
-}).passthrough()
+}).passthrough().refine(manifest=>!manifest.namedSelections?.some(channel=>channel.width!==manifest.width||channel.height!==manifest.height),{message:'Named selections must match the document canvas.'})
 export type Transform = z.infer<typeof transformSchema>
 export type Layer = z.infer<typeof layerSchema>
 export type Manifest = z.infer<typeof manifestSchema>
 const clientRef = z.string().min(1).max(80).regex(/^[a-zA-Z][a-zA-Z0-9_-]*$/).optional()
 function actionOptions<T extends z.ZodType>(target: T) { return [
+  z.object({type:z.literal('layer.rasterize'),layerId:target}).strict(),
+  z.object({type:z.literal('layer.set_lock'),layerId:target,lock:z.enum(['all','position']),locked:z.boolean()}).strict(),
   z.object({ type: z.literal('layer.rename'), layerId: target, name: z.string().trim().min(1).max(4096) }).strict(),
   z.object({ type: z.literal('layer.set_visibility'), layerId: target, visible: z.boolean() }).strict(),
   z.object({ type: z.literal('layer.set_opacity'), layerId: target, opacity: finite.min(0).max(1) }).strict(),
@@ -65,15 +77,22 @@ export const historySchema = z.object({
 }).strict()
 export type Mutation = z.infer<typeof mutationSchema>
 export type HistoryRequest = z.infer<typeof historySchema>
-export interface EditResult { status: 'applied' | 'no_change'; revision: number; previousRevision: number; transactionId?: string; undoable: boolean; createdIds?: Record<string, string> }
-export interface AssetInfo { file: string; hash: string; width: number; height: number }
+export interface EditResult { mixerReservoir?:import('./mixer-brush').MixerBrushReservoir;status: 'applied' | 'no_change'; revision: number; previousRevision: number; transactionId?: string; undoable: boolean; createdIds?: Record<string, string> }
+export interface AssetInfo {
+  file: string; hash: string; width: number; height: number
+  bitDepth?: 8 | 16
+  displayHash?: string
+  pixelFormat?: 'rgba16-premultiplied-srgb' | 'rgba32f-premultiplied-extended-srgb'
+  isHDR?: true
+}
 export interface Activity { id: string; label: string; source: 'user' | 'agent' | 'system'; revision: number; at: string }
 export interface EditorState {
   sessionId: string; revision: number; manifest: Manifest; title: string; projectPath?: string;
-  modified: boolean; canUndo: boolean; canRedo: boolean; undoTransactionId?: string; redoTransactionId?: string;
+  modified: boolean; canUndo: boolean; canRedo: boolean; canReselect?: boolean; undoTransactionId?: string; redoTransactionId?: string;
   warnings: string[]; assets: AssetInfo[]; activity: Activity[]
   workspace?: WorkspaceState
   recoveryError?: string
+  historyBrush?: {sourceId:string|null;snapshots:{id:string;label:string;sessionId:string;revision:number;documentId:string;width:number;height:number}[]}
   selection?: Selection | null
 }
 export interface DocumentSummary { sessionId: string; documentId: string; title: string; revision: number; modified: boolean; projectPath?: string; width: number; height: number; empty: boolean }

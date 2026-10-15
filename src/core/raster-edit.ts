@@ -1,4 +1,5 @@
 import {brushStrokeCoverage} from '../shared/brush-coverage'
+import type {BrushDynamics} from '../shared/brush-dynamics'
 import {LIMITS} from '../shared/limits'
 import { PNG } from 'pngjs'
 import type { Layer } from '../shared/contracts'
@@ -33,8 +34,8 @@ function blend(png:PNG,index:number,color:RGBA,coverage:number,erase:boolean,mas
   for(let c=0;c<3;c++)png.data[index+c]=Math.round((color[c]*sa+png.data[index+c]/255*da*(1-sa))/a*255)
   png.data[index+3]=Math.round(a*255)
 }
-export function paintRaster(png:PNG,layer:Layer,points:[number,number][],color:RGBA,size:number,hardness:number,opacity:number,erase:boolean,selection:Selection|null,mask=false,canvasSize?:[number,number]):void {
-  const coverage=brushStrokeCoverage({width:png.width,height:png.height,transform:layer.transform,...(canvasSize?{canvasWidth:canvasSize[0],canvasHeight:canvasSize[1]}:{})},points,size,hardness)
+export function paintRaster(png:PNG,layer:Layer,points:[number,number][],color:RGBA,size:number,hardness:number,opacity:number,erase:boolean,selection:Selection|null,mask=false,canvasSize?:[number,number],dynamics:BrushDynamics={}):void {
+  const coverage=brushStrokeCoverage({width:png.width,height:png.height,transform:layer.transform,...(canvasSize?{canvasWidth:canvasSize[0],canvasHeight:canvasSize[1]}:{})},points,size,hardness,dynamics)
   for(let y=0;y<png.height;y++)for(let x=0;x<png.width;x++){const i=y*png.width+x;if(!coverage[i])continue;const point=documentPoint(layer,x+.5,y+.5,png.width,png.height);blend(png,i*4,color,coverage[i]/255*selectionCoverage(selection,...point)*opacity,erase,mask)}
 }
 export function fillRaster(png:PNG,layer:Layer,color:RGBA,selection:Selection|null,mask=false):void {

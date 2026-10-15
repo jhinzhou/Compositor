@@ -12,7 +12,11 @@ test('unchanged adjustments match independently compiled v1.4.8 native C pixels'
   const failures: string[] = []
   for (const row of fixtures.rows) {
     // Camera Raw changed after v1.4.8; its full pipeline uses the newer C oracle in camera-raw-upstream.test.ts.
-    if (imageFilterSchema.parse(row.spec).kind === 'cameraRaw') continue
+    const spec=imageFilterSchema.parse(row.spec)
+    if (spec.kind === 'cameraRaw') continue
+    // Normal HSL Lightness follows actual PS 27.11 references now; keep the old
+    // native fixture immutable and limit this historical check to unchanged cases.
+    if (spec.kind==='hsl'&&!spec.colorize&&(spec.lightness!==0||spec.hueRanges.some(v=>v.lightness!==0))) continue
     const actual = applyImageFilter(image(row.width, row.height, row.rgba), row.spec)
     const differences = row.expectedPremul.map((value, index) => Math.abs(value - (index % 4 === 3 ? actual.data[index] : Math.round(actual.data[index] * actual.data[Math.floor(index / 4) * 4 + 3] / 255))))
     const maximum = Math.max(...differences)
@@ -64,7 +68,7 @@ test('all nine Dither styles produce quantized nontrivial patterns and retain al
   assert.ok(colors.data.every((value, index) => index % 4 !== 1 || value === 0))
 })
 test('filters and their effect controls modify pixels, deterministic grain/noise can be repeated exactly', () => {
-  const settings: Record<ImageFilterKind, unknown> = { levels: { kind: 'levels', ranges: [{ black: 30 }, {}, {}, {}] }, curves: { kind: 'curves', channels: [[{ x: 0, y: 255 }, { x: 255, y: 0 }], ...Array.from({ length: 3 }, () => [{ x: 0, y: 0 }, { x: 255, y: 255 }])] }, hsl: { kind: 'hsl', hue: 70 }, exposure: { kind: 'exposure', exposure: 1 }, gradientMap: { kind: 'gradientMap', shadows: '#ff0000', highlights: '#0000ff' }, grain: { kind: 'grain', amount: 50 }, invert: { kind: 'invert' }, blackWhite: { kind: 'blackWhite' }, colorBalance: { kind: 'colorBalance', midtones: [60, -20, 20] }, gaussianBlur: { kind: 'gaussianBlur', radius: 2 }, motionBlur: { kind: 'motionBlur', distance: 9 }, addNoise: { kind: 'addNoise', amount: 40, seed: 148 }, vignette: { kind: 'vignette', amount: 80 }, bloom: { kind: 'bloom', amount: 60 }, tonalContrast: { kind: 'tonalContrast', amount: 90 }, lensCorrection: { kind: 'lensCorrection', distortion: 80 }, dither: { kind: 'dither' }, scanlines: { kind: 'scanlines', split: 4, displace: 30 }, cameraRaw: { kind: 'cameraRaw', exposure: 1, clarity: 50 } }
+  const settings: Record<ImageFilterKind, unknown> = { levels: { kind: 'levels', ranges: [{ black: 30 }, {}, {}, {}] }, curves: { kind: 'curves', channels: [[{ x: 0, y: 255 }, { x: 255, y: 0 }], ...Array.from({ length: 3 }, () => [{ x: 0, y: 0 }, { x: 255, y: 255 }])] }, hsl: { kind: 'hsl', hue: 70 }, exposure: { kind: 'exposure', exposure: 1 }, gradientMap: { kind: 'gradientMap', shadows: '#ff0000', highlights: '#0000ff' }, grain: { kind: 'grain', amount: 50 }, invert: { kind: 'invert' }, threshold:{kind:'threshold',level:128}, posterize:{kind:'posterize',levels:4}, blackWhite: { kind: 'blackWhite' }, colorBalance: { kind: 'colorBalance', midtones: [60, -20, 20] }, gaussianBlur: { kind: 'gaussianBlur', radius: 2 }, motionBlur: { kind: 'motionBlur', distance: 9 }, progressiveBlur:{kind:'progressiveBlur',from:0,to:2}, addNoise: { kind: 'addNoise', amount: 40, seed: 148 }, vignette: { kind: 'vignette', amount: 80 }, bloom: { kind: 'bloom', amount: 60 }, tonalContrast: { kind: 'tonalContrast', amount: 90 }, lensCorrection: { kind: 'lensCorrection', distortion: 80 }, dither: { kind: 'dither' }, scanlines: { kind: 'scanlines', split: 4, displace: 30 }, cameraRaw: { kind: 'cameraRaw', exposure: 1, clarity: 50 } }
   assert.deepEqual(Object.keys(settings).sort(), Object.keys(FILTER_NAMES).sort())
   for (const [kind, spec] of Object.entries(settings)) assert.notDeepEqual(applyImageFilter(ramp, spec).data, ramp.data, kind)
   for (const kind of ['grain', 'addNoise'] as const) {
@@ -73,9 +77,13 @@ test('filters and their effect controls modify pixels, deterministic grain/noise
   }
   assert.notDeepEqual(applyImageFilter(ramp, { kind: 'grain', size: 1 }).data, applyImageFilter(ramp, { kind: 'grain', size: 8 }).data)
 })
-test('Camera Raw Shadows and Highlights are monotonic across the full gray ramp', () => {
+test('Camera Raw individual Shadows/Highlights and scalar black-white controls are monotonic across the full gray ramp', () => {
   const gray = image(256, 1, Array.from({ length: 256 }, (_, value) => [value, value, value, 255]).flat())
-  for (const settings of [{ shadows: 100 }, { highlights: -100 }, { shadows: 80, highlights: -90 }, { blacks: 100, whites: -100 }]) {
+  // A spatial Shadows pass after byte-quantized Highlights is no longer one
+  // composed scalar curve. Its mixed case is gated by the pinned actual C
+  // RGBA reference and explicit one-level drops in camera-raw-shadows-alpha27.
+  // Keep strict monotonicity for each standalone tone control and scalar group.
+  for (const settings of [{ shadows: 100 }, { shadows: -100 }, { highlights: -100 }, { blacks: 100, whites: -100 }]) {
     const result = applyImageFilter(gray, { kind: 'cameraRaw', ...settings })
     for (let value = 1; value < 256; value++) assert.ok(result.data[value * 4] >= result.data[(value - 1) * 4], `tone ${value}`)
   }

@@ -1,5 +1,5 @@
 import {selectionGeometryBounds} from './selection-bounds'
-import {gaussianSelectionCoverage} from './selection-gaussian'
+import {gaussianSelectionCoverage,selectionFeatherAmount,selectionFeatherHalo} from './selection-gaussian'
 import {EditorError} from './contracts'
 import {LIMITS} from './limits'
 import type {Layer} from './contracts'
@@ -69,7 +69,7 @@ const feathered=new WeakMap<Selection,CoverageCache>()
 export function invalidateSelectionCoverage(selection:Selection):void{feathered.delete(selection)}
 function softCoverage(selection:Selection):CoverageCache {
  const previous=feathered.get(selection);if(previous)return previous
- const amount=selection.feather??Math.max(0,...selection.shapes.map(shape=>shape.feather)),halo=Math.ceil(amount*2)+1
+ const amount=selectionFeatherAmount(selection),halo=selectionFeatherHalo(selection)
  let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity
  for(const shape of selection.shapes){const [x,y,w,h]=shape.bounds;if(shape.raster){const t=shape.raster.transform,cx=t.origin[0]+t.size[0]/2,cy=t.origin[1]+t.size[1]/2,a=t.rotation*Math.PI/180,ex=Math.abs(Math.cos(a))*t.size[0]/2+Math.abs(Math.sin(a))*t.size[1]/2,ey=Math.abs(Math.sin(a))*t.size[0]/2+Math.abs(Math.cos(a))*t.size[1]/2;left=Math.min(left,cx-ex);top=Math.min(top,cy-ey);right=Math.max(right,cx+ex);bottom=Math.max(bottom,cy+ey)}else{left=Math.min(left,x);top=Math.min(top,y);right=Math.max(right,x+w);bottom=Math.max(bottom,y+h)}}
  if(selection.canvasSize){const bounds=selectionGeometryBounds(selection,...selection.canvasSize,halo);left=bounds[0];top=bounds[1];right=left+bounds[2];bottom=top+bounds[3]}else if(!Number.isFinite(left)){left=0;top=0;right=1;bottom=1}else{left=Math.floor(left)-halo;top=Math.floor(top)-halo;right=Math.ceil(right)+halo;bottom=Math.ceil(bottom)+halo}
@@ -77,7 +77,7 @@ function softCoverage(selection:Selection):CoverageCache {
  if(width>LIMITS.maxSide||height>LIMITS.maxSide||width*height>64_000_000)throw new EditorError('RESOURCE_LIMIT','Feathered selection exceeds the coverage budget.')
  const raw=new Uint8Array(width*height)
  for(let y=0;y<height;y++)for(let x=0;x<width;x++)raw[y*width+x]=Math.round(selectionHardPixelCoverage(selection,left+x+.5,top+y+.5)*255)
- const cached={left,top,width,height,coverage:gaussianSelectionCoverage(raw,width,height,amount)};feathered.set(selection,cached);return cached
+ const cached={left,top,width,height,coverage:gaussianSelectionCoverage(raw,width,height,amount,selection.featherModel)};feathered.set(selection,cached);return cached
 }
 export function selectionCoverage(selection:Selection|null|undefined,x:number,y:number):number {
  if(!selection)return 1
@@ -85,7 +85,7 @@ export function selectionCoverage(selection:Selection|null|undefined,x:number,y:
  if(!selection.shapes.length)return selection.inverted?1:0
  const only=selection.shapes.length===1?selection.shapes[0]:undefined
  if(selection.canvasSize&&only?.kind==='rectangle'&&only.operation==='replace'&&only.bounds[0]<=0&&only.bounds[1]<=0&&only.bounds[0]+only.bounds[2]>=selection.canvasSize[0]&&only.bounds[1]+only.bounds[3]>=selection.canvasSize[1])return selection.inverted?0:1
- const amount=selection.feather??Math.max(0,...selection.shapes.map(shape=>shape.feather))
+ const amount=selectionFeatherAmount(selection)
  if(!amount)return selectionHardPixelCoverage(selection,x,y)
  const cached=softCoverage(selection),ix=Math.floor(x-cached.left),iy=Math.floor(y-cached.top)
  if(ix<0||iy<0||ix>=cached.width||iy>=cached.height)return selection.inverted?1:0

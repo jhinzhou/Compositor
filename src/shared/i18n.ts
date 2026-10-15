@@ -1,15 +1,32 @@
+import {vectorFrameZhCN} from './locales/vector-frame.zh-CN'
+import {toolsAlpha29ZhCN} from './locales/tools-alpha29.zh-CN'
+import {upstreamAlpha25ZhCN} from './locales/upstream-alpha25.zh-CN'
+import {retouchAlpha25ZhCN} from './locales/retouch-alpha25.zh-CN'
+import {toolsAlpha24ZhCN} from './locales/tools-alpha24.zh-CN'
+import {photoshopMenuZhCN} from './locales/photoshop-menu.zh-CN'
+import {toolsAlpha23ZhCN} from './locales/tools-alpha23.zh-CN'
+import {upstreamUIZhCN} from './locales/upstream-ui.zh-CN'
+import {rasterizeZhCN} from './locales/rasterize.zh-CN'
+import {cropZhCN} from './locales/crop.zh-CN'
+import {deepZhCN} from './locales/deep.zh-CN'
+import {edgeRefinementZhCN} from './locales/edge-refinement.zh-CN'
 import { editorZhCN } from './locales/editor.zh-CN'
 import { panelsZhCN } from './locales/panels.zh-CN'
 import { desktopZhCN } from './locales/desktop.zh-CN'
 import { errorsZhCN } from './locales/errors.zh-CN'
 import { activityZhCN } from './locales/activity.zh-CN'
+import {photoshopBrushZhCN} from './locales/photoshop-brush.zh-CN'
+import {namedSelectionsZhCN} from './locales/named-selections.zh-CN'
+import {maskPropertiesZhCN} from './locales/mask-properties.zh-CN'
+import {selectionPaintZhCN} from './locales/selection-paint.zh-CN'
+import {photoshopZhCN} from './locales/photoshop.zh-CN'
 
 export const SUPPORTED_LOCALES = ['zh-CN', 'en'] as const
 export type Locale = typeof SUPPORTED_LOCALES[number]
 export type TranslationParams = Record<string, string | number>
 export const LOCALE_NAMES: Record<Locale, string> = { 'zh-CN': '简体中文', en: 'English' }
 // English source phrases are stable message IDs. Protocol enum values remain English.
-export const catalogs = [editorZhCN, panelsZhCN, desktopZhCN, errorsZhCN, activityZhCN]
+export const catalogs = [vectorFrameZhCN,toolsAlpha29ZhCN,editorZhCN, panelsZhCN, desktopZhCN, errorsZhCN, activityZhCN,photoshopBrushZhCN,photoshopZhCN,selectionPaintZhCN,namedSelectionsZhCN,maskPropertiesZhCN,edgeRefinementZhCN,deepZhCN,upstreamUIZhCN,rasterizeZhCN,cropZhCN,photoshopMenuZhCN,toolsAlpha23ZhCN,toolsAlpha24ZhCN,upstreamAlpha25ZhCN,retouchAlpha25ZhCN]
 export const zhCN: Readonly<Record<string, string>> = Object.freeze(Object.assign(Object.create(null), ...catalogs))
 export function isLocale(value: unknown): value is Locale { return value === 'zh-CN' || value === 'en' }
 export function normalizeLocale(value: unknown): Locale {

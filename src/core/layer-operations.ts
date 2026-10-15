@@ -146,7 +146,7 @@ export function pasteLayerClipboard(clipboard: LayerClipboard, destination: Mani
     layer.parentID = source.parentID && idMap[source.parentID] ? idMap[source.parentID] : options.parentId ?? undefined
     layer.transform.origin = [source.transform.origin[0] + dx, source.transform.origin[1] + dy]
     if (source.maskSourceID) layer.maskSourceID = idMap[source.maskSourceID]??(clipboard.sourceDocumentId===destination.documentID&&destination.layers.some(layer=>layer.id===source.maskSourceID)?source.maskSourceID:undefined)
-    if (source.imageFile) { layer.imageFile = `${layer.id.toUpperCase()}.png`; assetCopies.push({ sourceFile: source.imageFile, destinationFile: layer.imageFile }) }
+    if (source.imageFile) { layer.imageFile = `${layer.id.toUpperCase()}.${source.imageFile.toLowerCase().endsWith('.exr')?'exr':'png'}`; assetCopies.push({ sourceFile: source.imageFile, destinationFile: layer.imageFile }) }
     if (source.maskFile) { layer.maskFile = `${layer.id.toUpperCase()}.mask.png`; assetCopies.push({ sourceFile: source.maskFile, destinationFile: layer.maskFile }) }
     const placement = layer.maskPlacement as { origin?: [number, number] } | undefined
     if (placement?.origin) placement.origin = [placement.origin[0] + dx, placement.origin[1] + dy]
@@ -180,8 +180,20 @@ export function altDragPastePlan(manifest: Manifest, ids: readonly string[], del
   return plan
 }
 
-export interface MergePlan { roots: string[]; includedIds: string[]; parentId: string | null; insertionBeforeId: string | null; anchorId: string; name: string; renderLayers: Layer[] }
-export function mergeSelectionPlan(manifest: Manifest, ids: readonly string[], kind: 'selected' | 'down' | 'group' = 'selected'): MergePlan {
+export type MergeKind = 'selected'|'down'|'group'|'visible'|'stamp-visible'|'stamp-selected'
+export interface MergePlan { roots: string[]; includedIds: string[]; parentId: string | null; insertionBeforeId: string | null; anchorId: string; name: string; renderLayers: Layer[]; stamp?:boolean }
+export function mergeSelectionPlan(manifest: Manifest, ids: readonly string[], kind: MergeKind = 'selected'): MergePlan {
+  if(kind==='visible'||kind==='stamp-visible'){
+    const visible=(layer:Layer):boolean=>{
+      const seen=new Set<string>();let current:Layer|undefined=layer
+      while(current){if(!current.isVisible||seen.has(current.id))return false;seen.add(current.id);current=current.parentID?manifest.layers.find(item=>item.id===current!.parentID):undefined}return true
+    }
+    const leaves=manifest.layers.filter(layer=>!layer.isGroup&&visible(layer)),stamp=kind==='stamp-visible'
+    if(!leaves.length)throw new EditorError('INVALID_ARGUMENT','There are no visible layers to merge.')
+    const included=new Set(leaves.map(layer=>layer.id))
+    for(const layer of manifest.layers)if(layer.isGroup&&visible(layer)&&[...descendants(manifest,layer.id)].every(id=>id===layer.id||visible(manifest.layers.find(item=>item.id===id)!)))included.add(layer.id)
+    return {roots:leaves.map(layer=>layer.id),includedIds:[...included],parentId:null,insertionBeforeId:null,anchorId:leaves.at(-1)!.id,name:stamp?'Stamped Visible':'Merged Visible',renderLayers:structuredClone(manifest.layers),stamp}
+  }
   let roots = selectedRoots(manifest, ids)
   if (kind === 'group') {
     if (roots.length !== 1 || !roots[0].isGroup) throw new EditorError('INVALID_ARGUMENT', 'Merge Group requires exactly one folder.')
@@ -191,7 +203,7 @@ export function mergeSelectionPlan(manifest: Manifest, ids: readonly string[], k
     if (index < 1 || siblings[index - 1].isGroup || roots[0].isGroup) throw new EditorError('INVALID_ARGUMENT', 'Merge Down requires a pixel layer beneath the selected pixel layer.')
     roots = [siblings[index - 1], roots[0]]
   }
-  if (kind !== 'group' && roots.length < 2) throw new EditorError('INVALID_ARGUMENT', 'Select at least two layers to merge.')
+  if (!roots.length || kind !== 'group' && kind !== 'stamp-selected' && roots.length < 2) throw new EditorError('INVALID_ARGUMENT', 'Select at least two layers to merge.')
   const rootIds = roots.map(layer => layer.id), includedIds = selectedTree(manifest, rootIds).map(layer => layer.id)
   const included = new Set(includedIds), selected = new Set(rootIds)
   const renderLayers = manifest.layers.filter(layer => included.has(layer.id)).map(source => {
@@ -203,5 +215,5 @@ export function mergeSelectionPlan(manifest: Manifest, ids: readonly string[], k
   if (!renderLayers.some(layer => !layer.isGroup)) throw new EditorError('INVALID_ARGUMENT', 'An empty folder has no layers to merge.')
   const top = [...manifest.layers].reverse().find(layer => selected.has(layer.id))!, anchor = manifest.layers.findIndex(layer => layer.id === top.id)
   const next = manifest.layers.slice(anchor + 1).find(layer => !included.has(layer.id))
-  return { roots: rootIds, includedIds, parentId: top.parentID ?? null, insertionBeforeId: next?.id ?? null, anchorId: top.id, name: kind === 'down' ? roots[0].name : top.name, renderLayers }
+  return { roots: rootIds, includedIds, parentId: top.parentID ?? null, insertionBeforeId: next?.id ?? null, anchorId: top.id, name: kind === 'down' ? roots[0].name : top.name, renderLayers,stamp:kind==='stamp-selected' }
 }

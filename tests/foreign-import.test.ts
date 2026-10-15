@@ -34,7 +34,7 @@ test('timeout, abort before startup and abort during CPU processing terminate wo
 })
 test('untrusted bytes, extension, settings, limits and filenames are bounded', async () => {
   await assert.rejects(decodeForeign(new Uint8Array(15), 'a.dng'), /16 bytes/); await assert.rejects(decodeForeign(new Uint8Array(16), 'a.png'), /extension/); await assert.rejects(decodeForeign(new Uint8Array(16), 'a.dng'), /decode failed/)
-  await assert.rejects(decodeForeign(new Uint8Array(16), 'a.dng', { maxSide: 30001 }), /resource limits/); assert.throws(() => normalizeRawSettings({ exposureEV: NaN }), /settings/); assert.throws(() => normalizeRawSettings({ highlightMode: 9 as 0 }), /settings/)
+  await assert.rejects(decodeForeign(new Uint8Array(16), 'a.dng', { maxSide: 30001 }), /resource limits/); assert.throws(() => normalizeRawSettings({ exposureEV: NaN }), /settings/); assert.throws(() => normalizeRawSettings({ highlightMode: 10 as 0 }), /settings/)
   assert.equal(safeSourceName('C:\\private\\photo:*?\x00.dng'), 'photo____.dng'); assert.equal(safeSourceName(''), 'Imported image'); assert.throws(() => inspectICC(new Uint8Array(132)), /ICC/)
 })
 test('RAW TIFF orientation 6 rotates actual decoded pixels and swaps metadata dimensions', async () => {

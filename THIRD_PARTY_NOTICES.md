@@ -39,3 +39,7 @@ The deterministic ASCII raster atlas is derived from IBM Plex Mono Bold, distrib
 ## pako 2.1.0
 
 MIT licensed zlib inflation for the shared Camera Raw atlas; copyright Vitaly Puzrin and Andrei Tuputcyn. The license is included in `licenses/pako-MIT.txt`.
+
+## Compositor spatial Camera Raw Shadows
+
+The portable adaptive Shadows implementation and embedded CRS2 tables in `src/shared/camera-raw-shadows.ts` and `camera-raw-shadows-data.ts` are derived from Compositor commit `735c2cc23c0efe7c2c2f85a66741b253e053cf2b`, reviewed at upstream main `43d691b67995e924965bcd520f8b300f96b7d5b8`. The original `CameraRawShadows.bin` SHA-256 is `76578539bc45a32817aff669c4e41523d7040f3c691ad35adf0723a70a89a705`. These algorithms and tables remain covered by the retained Compositor MIT license in `licenses/Compositor-MIT.txt`.

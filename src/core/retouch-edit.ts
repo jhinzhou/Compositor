@@ -12,8 +12,9 @@ import {documentPoint,sourcePoint,selectionCoverage,encodeRaster} from './raster
 import {carryFilterMask} from './filter-edit'
 import {makeAsset} from './project-io'
 import {retouchRaster,type RGBAImage} from './selection-retouch'
+import {blendSampledHealing,sampleHealingDonor,SAMPLED_HEALING_LIMITS} from '../shared/sampled-healing'
 import type {PixelStage} from './pixel-actions'
-export type RetouchAction=Extract<EditAction,{type:'layer.retouch'}>
+export type RetouchAction=Extract<EditAction,{type:'layer.retouch'}>&{healingModel?:'compositor'|'photoshop'}
 export interface RetouchPrepared {png:Buffer;transform:Transform;target:'image'|'mask';maskPNG?:Buffer}
 const round=(v:number)=>v<0?-Math.round(-v):Math.round(v)
 function checked(width:number,height:number):void{if(width<1||height<1||width>LIMITS.maxSide||height>LIMITS.maxSide||width*height>LIMITS.maxSurfacePixels)throw new EditorError('RESOURCE_LIMIT','The retouch working raster exceeds its pixel budget.')}
@@ -30,6 +31,9 @@ export function prepareRetouch(stage:PixelStage,input:RetouchAction,composite?:R
  if(!mask&&(layer.isGroup||layer.adjustment))throw new EditorError('INVALID_ARGUMENT','Choose an image layer to retouch.')
  const file=mask?layer.maskFile:layer.imageFile,asset=file&&stage.assets.get(file)
  if(!asset)throw new EditorError('ASSET_NOT_FOUND',mask?'Add a raster mask before blurring it.':'The retouch image is missing.')
+ if(!mask&&(asset.deep||asset.hdr||asset.bitDepth===16))throw new EditorError('UNSUPPORTED_FEATURE','Sampled clone and healing require RGB8 pixels. The original high-depth pixels and history have been kept.')
+ if(action.opacity===0)return {png:asset.bytes,transform:structuredClone(mask?layer.maskPlacement??layer.transform:layer.transform),target}
+ if(action.kind==='heal'&&action.healingModel==='photoshop'&&asset.width*asset.height>SAMPLED_HEALING_LIMITS.pixels)throw new EditorError('RESOURCE_LIMIT','Sampled healing exceeds its raster budget; use a smaller image.')
  const original=PNG.sync.read(asset.bytes),oldTransform=structuredClone(mask?layer.maskPlacement??layer.transform:layer.transform)
  let transform=structuredClone(oldTransform);let png:PNG=original
  if(action.kind==='smear'&&action.points.length<2)return {png:asset.bytes,transform,target}
@@ -37,22 +41,35 @@ export function prepareRetouch(stage:PixelStage,input:RetouchAction,composite?:R
  if(action.sourceMode==='all-layers'&&action.kind!=='clone')throw new EditorError('INVALID_ARGUMENT','Sample All Layers is available for Clone Stamp.')
  if(action.sourceMode==='all-layers'&&(!composite||composite.width!==stage.manifest.width||composite.height!==stage.manifest.height||composite.data.length!==composite.width*composite.height*4))throw new EditorError('ASYNC_OPERATION_REQUIRED','Sample All Layers requires a revision-matched canvas composite.')
  const first=action.points[0],offset: [number,number]=action.aligned!==false&&action.sourceOffset? [round(action.sourceOffset[0]),round(action.sourceOffset[1])]:action.sourceAnchor?[round(action.sourceAnchor[0]-first[0]),round(action.sourceAnchor[1]-first[1])]:[0,0]
+ const healingOffset: [number,number]=action.aligned!==false&&action.sourceOffset?[...action.sourceOffset]:action.sourceAnchor?[action.sourceAnchor[0]-first[0],action.sourceAnchor[1]-first[1]]:[0,0]
  if(['clone','heal'].includes(action.kind)&&!action.sourceAnchor&&!action.sourceOffset)throw new EditorError('INVALID_ARGUMENT','Alt-click a source point before cloning or healing.')
  // A retouch tip can paint outside the old image, at the image's original pixel resolution.
  if(!mask&&['clone','blur','heal','smear'].includes(action.kind)&&!action.protectAlpha){const grown=growStrokeRaster(original,oldTransform,action.points,action.size+2);png=grown.png;transform=grown.transform}
  checked(png.width,png.height)
  const coverage=brushStrokeCoverage({width:png.width,height:png.height,transform,canvasWidth:stage.manifest.width,canvasHeight:stage.manifest.height},action.points,action.size,action.hardness)
  if(stage.selection)for(let y=0;y<png.height;y++)for(let x=0;x<png.width;x++){const doc=documentPoint({transform} as Layer,x+.5,y+.5,png.width,png.height),p=y*png.width+x;coverage[p]=Math.round(coverage[p]*selectionCoverage(stage.selection,...doc))}
- const base=premul(png),output=new Uint8Array(base)
- if(action.kind==='spot-heal')output.set(healPremultiplied(base,coverage,png.width,png.height,action.opacity,action.healingMode??'content-aware',action.seed??0))
+ const base=premul(png),output=new Uint8Array(base);let healedStraight:Uint8Array|undefined
+ if(action.kind==='spot-heal'){
+  output.set(healPremultiplied(base,coverage,png.width,png.height,action.opacity,action.healingMode??'content-aware',action.seed??0))
+  // Preserve the native inpainting kernel; the Photoshop-profile wrapper honors
+  // the explicit alpha lock instead of allowing its inferred alpha to grow holes.
+  if(action.healingModel==='photoshop'&&action.protectAlpha)for(let p=0;p<coverage.length;p++)if(coverage[p]){const at=p*4,alpha=output[at+3];for(let c=0;c<3;c++)output[at+c]=alpha?Math.round(output[at+c]*base[at+3]/alpha):base[at+c];output[at+3]=base[at+3]}
+ }
  else if(action.kind==='smear'){
   // Native Smudge/Liquify work on a document-sized copy; the final result returns to the layer's grid.
   const {width,height}=stage.manifest;checked(width,height);const working=new Uint8Array(width*height*4)
   for(let y=0;y<height;y++)for(let x=0;x<width;x++){const source=sourcePoint({transform},x+.5,y+.5,png.width,png.height);working.set(sample(base,png.width,png.height,...source).map(Math.round),(y*width+x)*4)}
   const warped=warpPremultiplied({width,height,data:working},{mode:action.smearMode??'smudge',points:action.points,size:action.size,hardness:action.hardness,strength:action.opacity})
   for(let y=0;y<png.height;y++)for(let x=0;x<png.width;x++){const doc=documentPoint({transform} as Layer,x+.5,y+.5,png.width,png.height),p=y*png.width+x;if(!coverage[p])continue;const color=sample(warped,width,height,...doc),amount=selectionCoverage(stage.selection,...doc);for(let c=0;c<4;c++)output[p*4+c]=Math.round(base[p*4+c]+(color[c]-base[p*4+c])*amount)}
+ }else if(action.kind==='heal'&&action.healingModel==='photoshop'){
+  // Frozen original donors avoid feedback; document offsets retain fractions and
+  // transformed layers use the same mapping as Clone. Coverage is applied once.
+  if(png.width*png.height>SAMPLED_HEALING_LIMITS.pixels)throw new EditorError('RESOURCE_LIMIT','Sampled healing exceeds its raster budget; use a smaller image.')
+  const donor=new Float32Array(png.width*png.height*4)
+  for(let y=0;y<png.height;y++)for(let x=0;x<png.width;x++){const doc=documentPoint({transform} as Layer,x+.5,y+.5,png.width,png.height),point=sourcePoint({transform:oldTransform},doc[0]+healingOffset[0],doc[1]+healingOffset[1],original.width,original.height);donor.set(sampleHealingDonor(original.data,original.width,original.height,...point),(y*png.width+x)*4)}
+  healedStraight=blendSampledHealing(png.data,donor,coverage,png.width,png.height,{opacity:action.opacity,protectAlpha:action.protectAlpha})
  }else if(action.kind==='heal'){
-  // The optional sampled Healing Brush remains available in addition to native Spot Healing modes.
+  // Legacy/default retains the established Compositor sampled-brush appearance.
   const points=action.points.map(p=>sourcePoint({transform},...p,png.width,png.height)),anchor=sourcePoint({transform},first[0]+offset[0],first[1]+offset[1],png.width,png.height),result=retouchRaster(png,{...action,points,sourceAnchor:anchor,size:action.size*Math.sqrt(png.width*png.height/(transform.size[0]*transform.size[1])),selection:{width:png.width,height:png.height,coverage}});output.set(premul(result))
  }else {
   let sampleImage:RGBAImage,sampleBytes:Uint8Array
@@ -63,7 +80,10 @@ export function prepareRetouch(stage:PixelStage,input:RetouchAction,composite?:R
    if(mask){const value=Math.round(png.data[at]+(color[0]-png.data[at])*amount);output.set([value,value,value,255],at)}else{const sa=color[3]/255*amount;if(action.protectAlpha){if(!base[at+3])continue;for(let c=0;c<3;c++)output[at+c]=Math.round(base[at+c]*(1-sa)+(color[3]?color[c]*base[at+3]/color[3]:0)*sa)}else{for(let c=0;c<3;c++)output[at+c]=Math.round(color[c]*amount+base[at+c]*(1-sa));output[at+3]=Math.round(color[3]*amount+base[at+3]*(1-sa))}}
   }
  }
- png.data=unpremul(output)
+ const finalData=healedStraight?Buffer.from(healedStraight):unpremul(output)
+ // Premultiply/unpremultiply must not round bytes outside the operation.
+ for(let p=0;p<coverage.length;p++)if(!coverage[p]||action.healingModel==='photoshop'&&action.protectAlpha&&png.data[p*4+3]===0)finalData.set(png.data.subarray(p*4,p*4+4),p*4)
+ png.data=finalData
  if(!mask){const trimmed=trimStrokeRaster(png,transform);png=trimmed.png;transform=trimmed.transform}
  let maskPNG:Buffer|undefined
  if(!mask&&layer.maskFile&&layer.maskLinked!==false&&!layer.maskPlacement&&(png.width!==original.width||png.height!==original.height||transform.origin[0]!==oldTransform.origin[0]||transform.origin[1]!==oldTransform.origin[1])){const maskAsset=stage.assets.get(layer.maskFile);if(!maskAsset)throw new EditorError('ASSET_NOT_FOUND','The linked mask is missing.');const carried=carryFilterMask(PNG.sync.read(maskAsset.bytes),oldTransform,{png,transform,grew:true});maskPNG=encodeRaster(carried,true)}

@@ -1,0 +1,161 @@
+{
+  "date": "2026-10-14",
+  "photoshopVersion": "27.11.0",
+  "referenceKind": "native-actionmanager",
+  "referenceRole": "calibration-not-blind",
+  "provenance": {
+    "cohortPath": "artifacts/alpha28-perspective/calibration-verified.json",
+    "cohortSHA256": "2ad641a6b5b58838a583399f65c28426394ad13b49ea4f16fbb78a7cccdb059f",
+    "candidateFreeze": {
+      "status": "CANDIDATE_MECHANISM_FROZEN_NOT_PRODUCTION",
+      "frozenAt": "2026-10-14T05:58:46.474Z",
+      "candidateFile": "scripts/lib/perspective-size-alpha28-candidate.ts",
+      "candidateSHA256": "f26949c57de80292fb6b3eaac2ab4f70ae28d31c05551c124ad2fc1e49293793",
+      "baselineFile": "artifacts/alpha28-baseline/src/shared/crop-projective.ts",
+      "baselineSHA256": "d2752eda4271ea4c63d3288462e8ea0bc495ece09ea636efeef6f93b65f1d900",
+      "mechanism": "Metric 3D nearest-camera-depth fronto-parallel resolution floor max with existing metric-area/longest-span output; no fitted coefficients",
+      "knownNativeBoundary": "All alpha26/27 cohorts already seen. Root disclosed alpha28 calibration outputs420306/420308/420304/464374 in message before this file freeze, so these are calibration and never blind holdouts. Candidate nearest-depth mechanism was proposed before that message. Calibration JSON has not yet been loaded by this agent. New independent native holdouts must be acquired after this SHA freeze.",
+      "coefficientsFitted": false,
+      "productionChanged": false
+    }
+  },
+  "limits": [
+    "All four output dimensions disclosed in root messages before this file freeze. Never label these independent blind tests.",
+    "No target dimensions or resolution supplied.",
+    "Does not load or score pixel files."
+  ],
+  "cases": [
+    {
+      "name": "perspective-auto-calibration",
+      "corners": [
+        [
+          24,
+          18
+        ],
+        [
+          482,
+          37
+        ],
+        [
+          455,
+          351
+        ],
+        [
+          39,
+          330
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 464,
+      "height": 374,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "nativeRGBA_SHA256": "992cbf54028c94accb5c27edcc3db3554b3a850ce91d1d79c81fe13ad2044cda",
+      "sourceRGBA_SHA256": "06190d5a420448467093bc20bd0794d615c0285e2e8945a85505b710501d8f17"
+    },
+    {
+      "name": "size-strong-center",
+      "corners": [
+        [
+          88,
+          34
+        ],
+        [
+          456,
+          118
+        ],
+        [
+          382,
+          347
+        ],
+        [
+          49,
+          298
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 306,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "nativeRGBA_SHA256": "cb947485daadebe0ad886fa2cf57fb2f6189127cdff350cc65d43d4c7c4fa0de",
+      "sourceRGBA_SHA256": "06190d5a420448467093bc20bd0794d615c0285e2e8945a85505b710501d8f17"
+    },
+    {
+      "name": "size-strong-upper-left",
+      "corners": [
+        [
+          68,
+          19
+        ],
+        [
+          436,
+          103
+        ],
+        [
+          362,
+          332
+        ],
+        [
+          29,
+          283
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 308,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "nativeRGBA_SHA256": "a3599bd3aeb1d213d5bd9502e3cfa4cd62a65751c2f36b7be737876537526e00",
+      "sourceRGBA_SHA256": "06190d5a420448467093bc20bd0794d615c0285e2e8945a85505b710501d8f17"
+    },
+    {
+      "name": "size-strong-lower-right",
+      "corners": [
+        [
+          103,
+          46
+        ],
+        [
+          471,
+          130
+        ],
+        [
+          397,
+          359
+        ],
+        [
+          64,
+          310
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 304,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "nativeRGBA_SHA256": "dcf4fb6c7fa827a66645bfe1f649cfa6043dc8a4e30c43a242c9cdba31c2fc3c",
+      "sourceRGBA_SHA256": "06190d5a420448467093bc20bd0794d615c0285e2e8945a85505b710501d8f17"
+    }
+  ]
+}

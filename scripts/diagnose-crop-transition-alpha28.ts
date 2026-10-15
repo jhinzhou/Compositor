@@ -1,0 +1,6 @@
+/** Frozen-kernel guard continuity probe. No production writes; RGB8 only. */
+import {cropMitchell,sampleCropBicubic} from '../src/core/crop-sampling'
+const w=32,h=16,data=new Uint8Array(w*h*4),k=(x:number)=>{x=Math.abs(x);return x<1?1.5*x*x*x-2.5*x*x+1:x<2?-.5*x*x*x+2.5*x*x-4*x+2:0}
+for(let y=0;y<h;y++)for(let x=0;x<w;x++)data.set([127+Math.round(32*Math.sin(2*Math.PI*x*.293)),127,127,x<20?255:0],(y*w+x)*4)
+function candidate(u:number){const px=u-.5,left=Math.floor(px),tx=px-left,fy=.17,top=7,r=3;let normX=0,normY=0,value=0,opaque=true;for(let x=-2;x<=3;x++)normX+=k((x-tx)/1.125)/1.125;for(let y=-2;y<=3;y++)normY+=k((y-fy)/1.125)/1.125;for(let y=-2;y<=3;y++)for(let x=-2;x<=3;x++){const sx=left+x,sy=top+y;if(data[(sy*w+sx)*4+3]!==255)opaque=false;value+=data[(sy*w+sx)*4]*k((x-tx)/1.125)*k((y-fy)/1.125)/(1.125**2*normX*normY)}const base=sampleCropBicubic(data,w,h,u,7.67,{premultiplied:false});return {u,opaque,raw:opaque?value:base[0]*255/base[3],baseline:base[0]*255/base[3]}}
+const rows=[17.48,17.49,17.49999,17.5,17.50001,17.51,17.52].map(candidate);console.log(JSON.stringify({status:'DIAGNOSTIC',rows,kernel:'Catmull-Rom widened9/8; full6x6opaque guard',oldKernel:cropMitchell(0)},null,2))

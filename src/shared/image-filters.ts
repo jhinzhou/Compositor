@@ -1,3 +1,5 @@
+import {posterizeChannel,thresholdWhite} from './tonal-discretization'
+import {assertProgressiveBlurBudget,progressiveBlurPixels,type ProgressiveBlurPlacement} from './progressive-blur'
 import {gaussianLineConvolver} from './image-filter-algorithms'
 import { z } from 'zod'
 import { LIMITS } from './limits'
@@ -14,7 +16,7 @@ const hex = z.string().regex(/^#[\da-f]{6}$/i)
 const seed = z.number().int().min(0).max(0xffffffff).default(0)
 const range = z.object({ black: number(0, 254, 0), white: number(1, 255, 255), gamma: number(.1, 9.99, 1), outputBlack: number(0, 255, 0), outputWhite: number(0, 255, 255) }).strict().refine(value => value.white > value.black, 'Input white must exceed input black.')
 const curvePoint = z.object({ x: number(0, 255, 0), y: number(0, 255, 0) }).strict()
-const curve = z.array(curvePoint).min(2).max(32).refine(points => points[0].x === 0 && points.at(-1)!.x === 255 && points.every((point, index) => !index || point.x > points[index - 1].x), 'Curve points must increase from x=0 to x=255.')
+const curve = z.array(curvePoint).min(2).max(32).refine(points => points.every((point, index) => !index || point.x > points[index - 1].x), 'Curve inputs must strictly increase within 0 to 255.')
 const identityCurve = () => [{ x: 0, y: 0 }, { x: 255, y: 255 }]
 const triplet = z.tuple([percent(), percent(), percent()]).default([0, 0, 0])
 export const HUE_RANGES = ['Master', 'Reds', 'Yellows', 'Greens', 'Cyans', 'Blues', 'Magentas'] as const
@@ -27,9 +29,12 @@ export const imageFilterSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('gradientMap'), shadows: hex.default('#000000'), highlights: hex.default('#ffffff'), reversed: z.boolean().default(false) }).strict(),
   z.object({ kind: z.literal('grain'), amount: unit(25), size: number(.5, 20, 1.5), roughness: unit(50), seed }).strict(),
   z.object({ kind: z.literal('invert') }).strict(),
+  z.object({ kind: z.literal('threshold'), level: z.number().int().min(1).max(255).default(128) }).strict(),
+  z.object({ kind: z.literal('posterize'), levels: z.number().int().min(2).max(255).default(4) }).strict(),
   z.object({ kind: z.literal('blackWhite'), weights: z.tuple([number(-200, 300, 40), number(-200, 300, 60), number(-200, 300, 40), number(-200, 300, 60), number(-200, 300, 20), number(-200, 300, 80)]).default([40, 60, 40, 60, 20, 80]), tint: z.boolean().default(false), tintHue: number(0, 360, 40), tintSaturation: unit(20) }).strict(),
   z.object({ kind: z.literal('colorBalance'), shadows: triplet, midtones: triplet, highlights: triplet, preserveLuminosity: z.boolean().default(true) }).strict(),
-  z.object({ kind: z.literal('gaussianBlur'), radius: number(.1, 250, 1) }).strict(),
+  z.object({ kind: z.literal('gaussianBlur'), radius: number(.1, 250, 5), preserveTransparency:z.boolean().default(false) }).strict(),
+  z.object({ kind:z.literal('progressiveBlur'),from:number(0,250,0),to:number(0,250,20),start:z.tuple([z.number().finite(),z.number().finite()]).optional(),end:z.tuple([z.number().finite(),z.number().finite()]).optional(),radial:z.boolean().default(false),inverted:z.boolean().default(false) }).strict(),
   z.object({ kind: z.literal('motionBlur'), distance: number(1, 2000, 10), angle: number(-90, 90, 0) }).strict(),
   z.object({ kind: z.literal('addNoise'), amount: number(.1, 400, 10), gaussian: z.boolean().default(false), monochromatic: z.boolean().default(false), seed }).strict(),
   z.object({ kind: z.literal('vignette'), amount: unit(35), color: hex.default('#000000'), midpoint: unit(50), roundness: percent(100), feather: unit(60), highlights: unit(25) }).strict(),
@@ -43,9 +48,9 @@ export const imageFilterSchema = z.discriminatedUnion('kind', [
 export type ImageFilter = z.infer<typeof imageFilterSchema>
 export type ImageFilterKind = ImageFilter['kind']
 export const FILTER_NAMES: Record<ImageFilterKind, string> = {
-  levels: 'Levels', curves: 'Curves', hsl: 'Hue/Saturation', exposure: 'Exposure', gradientMap: 'Gradient Map', grain: 'Grain', invert: 'Invert', blackWhite: 'Black & White', colorBalance: 'Color Balance', gaussianBlur: 'Gaussian Blur', motionBlur: 'Motion Blur', addNoise: 'Add Noise', vignette: 'Vignette', bloom: 'Bloom / Glow', tonalContrast: 'Tonal Contrast', lensCorrection: 'Lens Correction', dither: 'Dither', scanlines: 'Scanlines', cameraRaw: 'Camera Raw Filter'
+  levels: 'Levels', curves: 'Curves', hsl: 'Hue/Saturation', exposure: 'Exposure', gradientMap: 'Gradient Map', grain: 'Grain', invert: 'Invert', threshold: 'Threshold', posterize: 'Posterize', blackWhite: 'Black & White', colorBalance: 'Color Balance', gaussianBlur: 'Gaussian Blur', motionBlur: 'Motion Blur', progressiveBlur:'Progressive Blur', addNoise: 'Add Noise', vignette: 'Vignette', bloom: 'Bloom / Glow', tonalContrast: 'Tonal Contrast', lensCorrection: 'Lens Correction', dither: 'Dither', scanlines: 'Scanlines', cameraRaw: 'Camera Raw Filter'
 }
-export const FILTER_PARITY_LIMITATIONS = ['Desktop and MCP ASCII rendering share the IBM Plex Mono Bold glyph atlas. Native Compositor uses Menlo/system fonts, so font pixels are not guaranteed to match.', 'Gaussian and Motion use the same integrated Gaussian kernel at every workload; large passes use FFT. Core Image internals and rotated resampling remain platform-dependent, and native references cover representative sizes, not all images.', 'Camera Raw geometry interpolation, Scanlines glow resampling and Dither block downsampling have not been compared against native reference pixels.'] as const
+export const FILTER_PARITY_LIMITATIONS = ['Threshold uses native measured encoded RGB .30/.59/.11 luminance; Posterize uses equal-width channel bins with depth-specific output rounding. Native controls cover representative opaque ramps, not all precision and alpha cases. Both are limited to 8/16-bit sources; HDR is explicitly rejected.','Progressive Blur ports the native single-line/radial radius field with bounded Float32 Gaussian scale interpolation; CIMaskedVariableBlur private pixels are not verified identical. This is not Photoshop Field Blur with multiple pins.','Preserve Transparency matches the native destructive Gaussian filter. Adjustment blurPreserveTransparency is an Electron extension absent from native LayerAdjustment records; native Compositor may ignore it and render different edge colors.','Desktop and MCP ASCII rendering share the IBM Plex Mono Bold glyph atlas. Native Compositor uses Menlo/system fonts, so font pixels are not guaranteed to match.', 'Gaussian and Motion use the same integrated Gaussian kernel at every workload; large passes use FFT. Core Image internals and rotated resampling remain platform-dependent, and native references cover representative sizes, not all images.', 'Camera Raw geometry interpolation, Scanlines glow resampling and Dither block downsampling have not been compared against native reference pixels.'] as const
 export function defaultFilter(kind: ImageFilterKind): ImageFilter { return imageFilterSchema.parse({ kind }) }
 export const NATIVE_ADJUSTMENT_KINDS = { hsl: 'Hue/Saturation', levels: 'Levels', curves: 'Curves', exposure: 'Exposure', gradientMap: 'Gradient Map', grain: 'Grain', invert: 'Invert', blackWhite: 'Black & White', colorBalance: 'Color Balance', gaussianBlur: 'Gaussian Blur', motionBlur: 'Motion Blur', addNoise: 'Add Noise' } as const
 function record(value: unknown): Record<string, unknown> { return value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {} }
@@ -82,7 +87,7 @@ export function nativeAdjustmentToSpec(input: unknown): ImageFilter {
     case 'grain': return imageFilterSchema.parse({ kind, ...record(value.grainSettings) })
     case 'blackWhite': { const settings = record(value.blackWhiteSettings), defaults = [40, 60, 40, 60, 20, 80]; return imageFilterSchema.parse({ kind, weights: ['reds', 'yellows', 'greens', 'cyans', 'blues', 'magentas'].map((key, index) => settings[key] ?? defaults[index]), tint: settings.tint, tintHue: settings.tintHue, tintSaturation: settings.tintSaturation }) }
     case 'colorBalance': { const settings = record(value.colorBalanceSettings), channels = ['CyanRed', 'MagentaGreen', 'YellowBlue']; return imageFilterSchema.parse({ kind, shadows: channels.map(key => settings['shadow' + key] ?? 0), midtones: channels.map(key => settings['mid' + key] ?? 0), highlights: channels.map(key => settings['highlight' + key] ?? 0), preserveLuminosity: settings.preserveLuminosity }) }
-    case 'gaussianBlur': return imageFilterSchema.parse({ kind, radius: value.blurRadius ?? 10 })
+    case 'gaussianBlur': return imageFilterSchema.parse({ kind, radius: value.blurRadius ?? 10,preserveTransparency:value.blurPreserveTransparency??false })
     case 'motionBlur': return imageFilterSchema.parse({ kind, angle: value.motionAngle, distance: value.motionDistance })
     case 'addNoise': return imageFilterSchema.parse({ kind, amount: value.noiseAmount, gaussian: value.noiseGaussian, monochromatic: value.noiseMonochromatic, seed: value.noiseSeed })
     case 'invert': return imageFilterSchema.parse({ kind })
@@ -110,7 +115,7 @@ export function specToNativeAdjustment(input: unknown): Record<string, unknown> 
     case 'grain': base.grainSettings = { amount: spec.amount, size: spec.size, roughness: spec.roughness, seed: spec.seed }; break
     case 'blackWhite': base.blackWhiteSettings = { ...Object.fromEntries(['reds', 'yellows', 'greens', 'cyans', 'blues', 'magentas'].map((key, index) => [key, spec.weights[index]])), tint: spec.tint, tintHue: spec.tintHue, tintSaturation: spec.tintSaturation }; break
     case 'colorBalance': { const settings: Record<string, unknown> = { preserveLuminosity: spec.preserveLuminosity }, channels = ['CyanRed', 'MagentaGreen', 'YellowBlue']; for (const [prefix, values] of [['shadow', spec.shadows], ['mid', spec.midtones], ['highlight', spec.highlights]] as const) channels.forEach((key, index) => { settings[prefix + key] = values[index] }); base.colorBalanceSettings = settings; break }
-    case 'gaussianBlur': base.blurRadius = spec.radius; break
+    case 'gaussianBlur': base.blurRadius = spec.radius;base.blurPreserveTransparency=spec.preserveTransparency; break
     case 'motionBlur': Object.assign(base, { motionAngle: spec.angle, motionDistance: spec.distance }); break
     case 'addNoise': Object.assign(base, { noiseAmount: spec.amount, noiseGaussian: spec.gaussian, noiseMonochromatic: spec.monochromatic, noiseSeed: spec.seed }); break
   }
@@ -135,6 +140,9 @@ function mapColors(image: PixelImage, operation: (r: number, g: number, b: numbe
   return result
 }
 export function curveValue(points: { x: number; y: number }[], x: number): number {
+  // Horizontal input endpoints clip to their output values outside the active range.
+  if (x <= points[0].x) return points[0].y
+  if (x >= points.at(-1)!.x) return points.at(-1)!.y
   let index = 0; while (index < points.length - 2 && points[index + 1].x <= x) index++
   const deltas = points.slice(1).map((point, at) => (point.y - points[at].y) / (point.x - points[at].x))
   const slope = (at: number) => at === 0 ? deltas[0] : at === points.length - 1 ? deltas.at(-1)! : deltas[at - 1] * deltas[at] <= 0 ? 0 : 2 / (1 / deltas[at - 1] + 1 / deltas[at])
@@ -167,9 +175,17 @@ function hueSaturation(image: PixelImage, settings: Extract<ImageFilter, { kind:
       const selected = settings.hueRanges.find(range => range.range === settings.activeRange); hue = selected?.hue ?? settings.hue; saturation = clamp((selected?.saturation ?? settings.saturation) / 100); lightShift = selected?.lightness ?? settings.lightness
     } else {
       for (const range of settings.hueRanges) { let strength = weight(range.band, Math.round(hue)); if (settings.invertRange && settings.activeRange === range.range) strength = 1 - strength; shift += range.hue * strength; saturationShift += range.saturation * strength; lightShift += range.lightness * strength }
+      // PS 27.11 cube references establish RGB Lightness before Saturation.
+      // Preserve the original hue for range weighting; the RGB blend keeps hue.
+      const lightAmount = clamp(lightShift / 100, -1, 1)
+      const mixed = [r, g, b].map(value => lightAmount < 0 ? value * (1 + lightAmount) : value + (1 - value) * lightAmount)
+      ;[, saturation, light] = hsl(mixed[0], mixed[1], mixed[2])
       hue += shift; const amount = clamp(saturationShift / 100, -1, 1); saturation = amount <= 0 ? saturation * (1 + amount) : amount >= 1 ? saturation > 0 ? 1 : 0 : clamp(saturation / (1 - amount))
+      return fromHSL(hue, saturation, light)
     }
-    const amount = clamp(lightShift / 100, -1, 1); light = amount >= 0 ? light + (1 - light) * amount : light * (1 + amount)
+    // Colorize retains Compositor semantics until independently measured in PS.
+    const amount = clamp(lightShift / 100, -1, 1)
+    light = amount >= 0 ? light + (1 - light) * amount : light * (1 + amount)
     return fromHSL(hue, saturation, light)
   }
   const key=JSON.stringify(settings);let cube=hslCubes.get(key)
@@ -203,24 +219,28 @@ function erf(value: number): number {
   const sign = value < 0 ? -1 : 1, x = Math.abs(value), t = 1 / (1 + .3275911 * x)
   return sign * (1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - .284496736) * t + .254829592) * t * Math.exp(-x * x))
 }
-function gaussianBlur(image: PixelImage, sigma: number, clampEdges = false): PixelImage {
-  const radius = Math.max(1, Math.ceil(sigma * 3)), source = premultiply(image), data = new Uint8ClampedArray(source.length), temp = new Float32Array(image.width * image.height)
+export interface GaussianClampSides {left?:boolean;right?:boolean;top?:boolean;bottom?:boolean}
+export interface FilterRuntimeOptions {gaussianClampSides?:GaussianClampSides;progressivePlacement?:ProgressiveBlurPlacement}
+function gaussianBlur(image: PixelImage, sigma: number, clampEdges:boolean|GaussianClampSides = false,preserveTransparency=false): PixelImage {
+  const sides=typeof clampEdges==='boolean'?{left:clampEdges,right:clampEdges,top:clampEdges,bottom:clampEdges}:clampEdges
+  const radius = Math.max(1, Math.ceil(sigma * 3)), source = preserveTransparency?Float32Array.from(image.data,(v,i)=>i%4===3?v:v*image.data[i-i%4+3]/255):premultiply(image), data = preserveTransparency?new Float32Array(source.length):new Uint8ClampedArray(source.length), temp = new Float32Array(image.width * image.height)
   if ((Math.min(image.width, radius*2+1) + Math.min(image.height, radius*2+1)) * image.width * image.height <= 80_000_000) {
     const weights = Array.from({ length: radius * 2 + 1 }, (_, index) => { const center = index-radius; return .5 * (erf((center+.5)/(sigma*Math.SQRT2)) - erf((center-.5)/(sigma*Math.SQRT2))) }), sum = weights.reduce((a,b) => a+b, 0)
     for (let index = 0; index < weights.length; index++) weights[index] /= sum
     for (let channel = 0; channel < 4; channel++) {
-      for (let y = 0; y < image.height; y++) for (let x = 0; x < image.width; x++) { let value = 0; for (let tap = clampEdges?-radius:Math.max(-radius,-x); tap <= (clampEdges?radius:Math.min(radius,image.width-1-x)); tap++) value += source[(y * image.width + clamp(x + tap,0,image.width-1)) * 4 + channel] * weights[tap + radius]; temp[y * image.width + x] = value }
-      for (let y = 0; y < image.height; y++) for (let x = 0; x < image.width; x++) { let value = 0; for (let tap = clampEdges?-radius:Math.max(-radius,-y); tap <= (clampEdges?radius:Math.min(radius,image.height-1-y)); tap++) value += temp[(clamp(y+tap,0,image.height-1) * image.width + x)] * weights[tap + radius]; data[(y * image.width + x) * 4 + channel] = Math.round(value) }
+      for (let y = 0; y < image.height; y++) for (let x = 0; x < image.width; x++) { let value = 0; for (let tap = sides.left?-radius:Math.max(-radius,-x); tap <= (sides.right?radius:Math.min(radius,image.width-1-x)); tap++) value += source[(y * image.width + clamp(x + tap,0,image.width-1)) * 4 + channel] * weights[tap + radius]; temp[y * image.width + x] = value }
+      for (let y = 0; y < image.height; y++) for (let x = 0; x < image.width; x++) { let value = 0; for (let tap = sides.top?-radius:Math.max(-radius,-y); tap <= (sides.bottom?radius:Math.min(radius,image.height-1-y)); tap++) value += temp[(clamp(y+tap,0,image.height-1) * image.width + x)] * weights[tap + radius]; data[(y * image.width + x) * 4 + channel] = preserveTransparency?value:Math.round(value) }
     }
   } else {
-    const horizontal=gaussianLineConvolver(image.width,sigma,clampEdges),vertical=gaussianLineConvolver(image.height,sigma,clampEdges)
+    const horizontal=gaussianLineConvolver(image.width,sigma,{start:sides.left,end:sides.right}),vertical=gaussianLineConvolver(image.height,sigma,{start:sides.top,end:sides.bottom})
     for(let channel=0;channel<4;channel++) {
       const row=new Float32Array(image.width),column=new Float32Array(image.height)
       for(let y=0;y<image.height;y++){for(let x=0;x<image.width;x++)row[x]=source[(y*image.width+x)*4+channel];temp.set(horizontal(row),y*image.width)}
-      for(let x=0;x<image.width;x++){for(let y=0;y<image.height;y++)column[y]=temp[y*image.width+x];const result=vertical(column);for(let y=0;y<image.height;y++)data[(y*image.width+x)*4+channel]=Math.round(result[y])}
+      for(let x=0;x<image.width;x++){for(let y=0;y<image.height;y++)column[y]=temp[y*image.width+x];const result=vertical(column);for(let y=0;y<image.height;y++)data[(y*image.width+x)*4+channel]=preserveTransparency?result[y]:Math.round(result[y])}
     }
   }
-  return unpremultiply({ ...image, data })
+  if(preserveTransparency){const straight=new Uint8ClampedArray(data.length);for(let i=0;i<data.length;i+=4){for(let c=0;c<3;c++)straight[i+c]=image.data[i+3]&&data[i+3]?Math.round(data[i+c]*255/data[i+3]):0;straight[i+3]=image.data[i+3]}return {...image,data:straight}}
+  return unpremultiply({ ...image, data:data as Uint8ClampedArray })
 }
 function sample(data: Uint8ClampedArray, width: number, height: number, x: number, y: number, transparent = false): number[] {
   if (transparent) {
@@ -290,11 +310,11 @@ function lensCorrection(image: PixelImage, distortion: number): PixelImage {
 }
 function cameraRaw(image: PixelImage, settings: Extract<ImageFilter, { kind: 'cameraRaw' }>, preview: CameraRawPreviewOptions = {}): PixelImage {
   if (!preview.clipping && !preview.sharpenMask && !(preview.visualizePointColor! >= 0)) image = cameraGeometry(image, settings.geometry)
-  const brightness=preview.brightness??((settings.contrast||settings.highlights||settings.shadows)?cameraRawBrightness(image):undefined)
+  const brightness=preview.brightness??((settings.contrast||settings.highlights)?cameraRawBrightness(image):undefined)
   if (!preview.clipping && !preview.sharpenMask) image = cameraCalibration(image, settings.calibration)
   const foldsColor=!preview.clipping&&!preview.sharpenMask&&!(preview.visualizePointColor!>=0)&&!settings.mixer.points.length&&settings.curve.refineSaturation===0
   if (settings.whiteBalance === 'Auto') settings = { ...settings, ...cameraRawAutoBalance(image) }
-  let result = cameraRawLightColor(image,settings,preview.clipping,foldsColor,brightness)
+  let result = cameraRawLightColor(image,settings,preview.clipping,foldsColor,brightness,preview.samplingScale)
   if (preview.clipping) return result
   if (preview.sharpenMask) return cameraSharpenMask(result, settings.detail)
   if (!foldsColor&&(preview.visualizePointColor! >= 0 || JSON.stringify(settings.curve) !== JSON.stringify(cameraCurveSchema.parse({})) || JSON.stringify(settings.mixer) !== JSON.stringify(cameraMixerSchema.parse({})) || JSON.stringify(settings.grading) !== JSON.stringify(cameraGradingSchema.parse({})))) result = cameraCurveColor(result, settings.curve, settings.mixer, settings.grading, preview.visualizePointColor ?? -1)
@@ -305,15 +325,16 @@ function cameraRaw(image: PixelImage, settings: Extract<ImageFilter, { kind: 'ca
 }
 
 /** Immutable straight-RGBA pipeline. Coverage is a layer-pixel selection mask, not canvas coordinates. */
-export function applyImageFilter(image: PixelImage, input: unknown, coverage?: Uint8Array, samplingScale = 1,knownBrightness?:CameraRawBrightness): PixelImage {
+export function applyImageFilter(image: PixelImage, input: unknown, coverage?: Uint8Array, samplingScale = 1,knownBrightness?:CameraRawBrightness,runtime:FilterRuntimeOptions={}): PixelImage {
   validateImage(image); const settings = imageFilterSchema.parse(input)
   if(!Number.isFinite(samplingScale)||samplingScale<=0||samplingScale>128)throw new Error('Runtime filter sampling scale must be finite and in (0, 128].')
   // Persisted document parameters are validated before converting to viewport pixels.
   // Running the scaled values through the persistence schema would reject valid zoom/HiDPI.
   if(settings.kind==='gaussianBlur')settings.radius*=samplingScale
   if(settings.kind==='motionBlur')settings.distance*=samplingScale
+  if(settings.kind==='progressiveBlur'){settings.from*=samplingScale;settings.to*=samplingScale;if(!runtime.progressivePlacement){if(settings.start)settings.start=settings.start.map(v=>v*samplingScale) as [number,number];if(settings.end)settings.end=settings.end.map(v=>v*samplingScale) as [number,number]}}
   if (coverage && coverage.length !== image.width * image.height) throw new Error('Filter selection dimensions do not match the image.')
-  const output = settings.kind==='cameraRaw'?cameraRaw(image,settings,{brightness:knownBrightness}):run(image, settings)
+  const output = settings.kind==='cameraRaw'?cameraRaw(image,settings,{brightness:knownBrightness,samplingScale}):run(image, settings,runtime)
   if (!coverage) return output
   for (let pixel = 0; pixel < coverage.length; pixel++) {
     const at = pixel * 4, amount = coverage[pixel] / 255, oldAlpha = image.data[at + 3], newAlpha = output.data[at + 3], alpha = oldAlpha * (1 - amount) + newAlpha * amount
@@ -322,9 +343,11 @@ export function applyImageFilter(image: PixelImage, input: unknown, coverage?: U
   }
   return output
 }
-function run(image: PixelImage, settings: ImageFilter): PixelImage {
+function run(image: PixelImage, settings: ImageFilter,runtime:FilterRuntimeOptions={}): PixelImage {
   switch (settings.kind) {
     case 'invert': return mapColors(image, (r, g, b) => [1 - r, 1 - g, 1 - b])
+    case 'threshold': return mapColors(image,(r,g,b)=>{const value=thresholdWhite(Math.round(r*255),Math.round(g*255),Math.round(b*255),255,settings.level,8)?1:0;return [value,value,value]})
+    case 'posterize': return mapColors(image,(r,g,b)=>[r,g,b].map(value=>posterizeChannel(value,settings.levels,8)))
     case 'levels': {
       const level = (value: number, levelRange: z.infer<typeof range>) => (levelRange.outputBlack + clamp((value * 255 - levelRange.black) / (levelRange.white - levelRange.black)) ** (1 / levelRange.gamma) * (levelRange.outputWhite - levelRange.outputBlack)) / 255
       return mapColors(image, (r, g, b) => [r, g, b].map((value, channel) => level(level(value, settings.ranges[channel + 1]), settings.ranges[0])))
@@ -336,7 +359,8 @@ function run(image: PixelImage, settings: ImageFilter): PixelImage {
     case 'grain': return mapColors(image, (r, g, b, x, y) => { const smooth = grainField(x + .5, y + .5, settings.size, settings.seed), fine = grainField(x + .5, y + .5, Math.max(.5, settings.size * .35), mix32(settings.seed ^ 0xa511e9b3)), value = luminance(r, g, b), delta = (smooth + (fine - smooth) * settings.roughness / 100) * settings.amount / 100 * .35 * (.4 + 2.4 * value * (1 - value)); return [r + delta, g + delta, b + delta] })
     case 'blackWhite': return mapColors(image, (r, g, b) => { const max = Math.max(r, g, b), min = Math.min(r, g, b), mid = r + g + b - max - min, primary = max === r ? 0 : max === g ? 2 : 4, secondary = max === r ? g >= b ? 1 : 5 : max === g ? r >= b ? 1 : 3 : g >= r ? 3 : 5, gray = clamp(min + (mid - min) * settings.weights[secondary] / 100 + (max - mid) * settings.weights[primary] / 100); return settings.tint ? fromHSL(settings.tintHue, settings.tintSaturation / 100, gray) : [gray, gray, gray] })
     case 'colorBalance': return mapColors(image, (r, g, b) => { const before = .299 * r + .587 * g + .114 * b, color = [r, g, b].map((value, channel) => { const shadow = clamp((value - .333) / -.25 + .5) * .7, mid = clamp((value - .333) / .25 + .5) * clamp((value + .333 - 1) / -.25 + .5) * .7, high = clamp((value + .333 - 1) / .25 + .5) * .7; return clamp(value + (settings.shadows[channel] * shadow + settings.midtones[channel] * mid + settings.highlights[channel] * high) / 100) }); const after = .299 * color[0] + .587 * color[1] + .114 * color[2]; return settings.preserveLuminosity && after > .0001 ? color.map(value => value * before / after) : color })
-    case 'gaussianBlur': return gaussianBlur(image, settings.radius)
+    case 'gaussianBlur': return gaussianBlur(image,settings.radius,settings.preserveTransparency?false:runtime.gaussianClampSides??false,settings.preserveTransparency)
+    case 'progressiveBlur': {if(!settings.from&&!settings.to)return {...image,data:image.data.slice()};assertProgressiveBlurBudget(image.width,image.height,settings);const source=new Float32Array(image.data.length);for(let at=0;at<source.length;at+=4){const a=image.data[at+3]/255;for(let c=0;c<3;c++)source[at+c]=image.data[at+c]/255*a;source[at+3]=a}const result=progressiveBlurPixels(source,image.width,image.height,settings,runtime.gaussianClampSides,runtime.progressivePlacement),data=new Uint8ClampedArray(result.length);for(let at=0;at<data.length;at+=4){const a=Math.max(0,Math.min(1,result[at+3]));for(let c=0;c<3;c++)data[at+c]=a?Math.round(result[at+c]/a*255):0;data[at+3]=Math.round(a*255)}return {...image,data}}
     case 'motionBlur': return motionBlur(image, settings.distance, settings.angle)
     case 'addNoise': return mapColors(image, (r, g, b, x, y) => { const base = mix32(settings.seed ^ mix32(Math.imul(x, 0x9e3779b9) ^ mix32(Math.imul(y, 0x85ebca6b)))); return [r, g, b].map((value, channel) => { const key = settings.monochromatic ? base : (base + Math.imul(channel, 0x9e3779b9)) >>> 0, spread = settings.amount / 100 * .5, noise = settings.gaussian ? Math.sqrt(-2 * Math.log(1 - noiseUnit(key))) * Math.cos(2 * Math.PI * noiseUnit(key ^ 0x68e31da4)) * spread * 2 / 3 : (noiseUnit(key) * 2 - 1) * spread; return value + noise }) })
     case 'vignette': return vignette(image, settings)
@@ -415,11 +439,11 @@ function scanlines(image: PixelImage, settings: Extract<ImageFilter, { kind: 'sc
  return result
 }
 
-export type CameraRawPreviewOptions = { clipping?: 'shadows' | 'highlights'; sharpenMask?: boolean; visualizePointColor?: number;brightness?:CameraRawBrightness }
+export type CameraRawPreviewOptions = { clipping?: 'shadows' | 'highlights'; sharpenMask?: boolean; visualizePointColor?: number;brightness?:CameraRawBrightness;samplingScale?:number }
 /** Transient views are separate from ImageFilter: they can never be persisted or applied by accident. */
 export function applyCameraRawPreview(image: PixelImage, input: unknown, options: CameraRawPreviewOptions): PixelImage {
   validateImage(image)
-  const settings = imageFilterSchema.parse(input), view = z.object({clipping:z.enum(['shadows','highlights']).optional(),sharpenMask:z.boolean().optional(),visualizePointColor:z.number().int().min(-1).max(7).optional(),brightness:z.object({brightest:z.number().finite().min(0).max(255),luminance:z.number().finite().min(0).max(255),logBrightest:z.number().finite().min(0).max(255)}).strict().optional()}).strict().parse(options)
+  const settings = imageFilterSchema.parse(input), view = z.object({clipping:z.enum(['shadows','highlights']).optional(),sharpenMask:z.boolean().optional(),visualizePointColor:z.number().int().min(-1).max(7).optional(),brightness:z.object({brightest:z.number().finite().min(0).max(255),luminance:z.number().finite().min(0).max(255),logBrightest:z.number().finite().min(0).max(255)}).strict().optional(),samplingScale:z.number().finite().positive().max(128).optional()}).strict().parse(options)
   if(settings.kind !== 'cameraRaw') throw new Error('Camera Raw preview requires Camera Raw settings.')
   return cameraRaw(image,settings,view)
 }

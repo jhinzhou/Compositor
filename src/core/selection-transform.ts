@@ -1,3 +1,4 @@
+import {selectionFeatherHalo} from '../shared/selection-gaussian'
 import {selectionGeometryBounds} from '../shared/selection-bounds'
 import {PNG} from 'pngjs'
 import {EditorError,LIMITS,type Layer,type Transform} from '../shared/contracts'
@@ -12,7 +13,7 @@ function sample(image:PNG,x:number,y:number):number[]{const sx=x-.5,sy=y-.5,x0=M
 function budget(w:number,h:number):void{if(w<1||h<1||w>LIMITS.maxSide||h>LIMITS.maxSide||w*h>LIMITS.maxSurfacePixels)throw new EditorError('RESOURCE_LIMIT','Selection transform exceeds its source surface budget.')}
 /** Conservative document ROI; inverse selections deliberately cover the entire canvas. */
 export function selectionDocumentBounds(selection:Selection,width:number,height:number):[number,number,number,number]{
- const halo=Math.ceil(3*(selection.feather??Math.max(0,...selection.shapes.map(s=>s.feather)))+2),[left,top,w,h]=selectionGeometryBounds(selection,width,height,halo)
+ const halo=selectionFeatherHalo(selection),[left,top,w,h]=selectionGeometryBounds(selection,width,height,halo)
  return [left,top,left+w,top+h]
 }
 function sourceBounds(layer:Layer,left:number,top:number,right:number,bottom:number,width:number,height:number):[number,number,number,number]{

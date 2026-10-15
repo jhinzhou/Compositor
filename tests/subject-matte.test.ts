@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {matteBox,guidedMatteFilter,refineSubjectMatte} from '../src/shared/subject-matte'
+import {matteBox,guidedMatteFilter,colorGuidedMatteFilter,refineSubjectMatte} from '../src/shared/subject-matte'
 import {gaussianSelectionCoverage} from '../src/shared/selection-gaussian'
 import {selectionGeometryBounds} from '../src/shared/selection-bounds'
 
@@ -57,4 +57,56 @@ test('point object selection chooses one island, retains soft coverage, and leav
  assert.deepEqual([...pickSubjectComponent(mask,[5.5,.5]).coverage],[0,0,0,0,190,255,50])
  assert.deepEqual([...pickSubjectComponent(mask,[3.5,.5]).coverage],new Array(7).fill(0))
  assert.deepEqual([...pickSubjectComponent(mask,[-1,.5]).coverage],new Array(7).fill(0))
+})
+
+test('color guidance separates equal-luminance boundaries that grayscale cannot distinguish',()=>{
+ const width=25,height=3,data=new Uint8Array(width*height*4),coverage=new Uint8Array(width*height)
+ // 255 red and 76 green have the same rounded sRGB luminance. Ground truth
+ // here is an abrupt color edge, independent of either refinement algorithm.
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){const i=y*width+x;data.set(x<12?[255,0,0,255]:[0,76,0,255],i*4);coverage[i]=x<8?0:x>16?255:Math.round((x-8)/8*255)}
+ const image={width,height,data},mask={width,height,coverage},settings={quality:'advanced' as const,refineEdges:4,matteContrast:0}
+ const native=refineSubjectMatte(mask,image,{...settings,edgeMode:'native'}),color=refineSubjectMatte(mask,image,{...settings,edgeMode:'color'})
+ let nativeError=0,colorError=0
+ for(let y=0;y<height;y++)for(let x=8;x<=16;x++){const expected=x<12?0:255,i=y*width+x;nativeError+=Math.abs(native.coverage[i]-expected);colorError+=Math.abs(color.coverage[i]-expected)}
+ assert.ok(colorError<nativeError*.6,`${colorError} vs ${nativeError}`)
+ assert.ok(color.coverage[11]<60);assert.ok(color.coverage[12]>180)
+ assert.deepEqual(mask.coverage,coverage);assert.ok(color.coverage.some(value=>value>0&&value<255))
+})
+
+test('color refinement keeps certain interiors and flat images stable without inventing foreground',()=>{
+ const width=21,height=1,data=new Uint8Array(width*4);for(let i=0;i<width;i++)data.set([55,80,110,255],i*4)
+ for(const value of [0,77,255]){
+  const mask={width,height,coverage:new Uint8Array(width).fill(value)}
+  assert.deepEqual(refineSubjectMatte(mask,{width,height,data},{quality:'advanced',edgeMode:'color',refineEdges:4,matteContrast:0}).coverage,mask.coverage)
+ }
+ const levels=new Float32Array(width);levels.fill(1,17)
+ const refined=colorGuidedMatteFilter(levels,{width,height,data},2)
+ assert.equal(refined[0],0);assert.equal(refined[20],1)
+})
+
+test('large color mattes have no horizontal or vertical tile seams compared with full-frame neighborhoods',()=>{
+ const length=2050,repetitions=513,radius=4,rowMask=Float32Array.from({length},(_,x)=>.1+.8*(.5+.5*Math.sin(x/13))),rowData=new Uint8Array(length*4)
+ for(let x=0;x<length;x++)rowData.set(x%19<9?[255,0,0,255]:[0,76,0,255],x*4)
+ const reference=colorGuidedMatteFilter(rowMask,{width:length,height:1,data:rowData},radius)
+ for(const vertical of [false,true]){
+  const width=vertical?repetitions:length,height=vertical?length:repetitions,mask=new Float32Array(width*height),data=new Uint8Array(width*height*4)
+  for(let y=0;y<height;y++)for(let x=0;x<width;x++){const position=vertical?y:x,i=y*width+x;mask[i]=rowMask[position];data.set(rowData.subarray(position*4,position*4+4),i*4)}
+  const actual=colorGuidedMatteFilter(mask,{width,height,data},radius)
+  for(const crossSection of [0,256,512])for(let position=0;position<length;position++){
+   const i=vertical?position*width+crossSection:crossSection*width+position
+   assert.ok(Math.abs(actual[i]-reference[position])<2e-5,`${vertical}/${crossSection}/${position}`)
+  }
+ }
+})
+
+test('feather softens only on request, remains fractional, and never reveals fully transparent source pixels',()=>{
+ const width=11,height=1,coverage=Uint8Array.from({length:width},(_,x)=>x>=5?255:0),data=new Uint8Array(width*4).fill(255);data[3]=0;data[10*4+3]=0
+ const mask={width,height,coverage},image={width,height,data},settings={quality:'advanced' as const,refineEdges:0,matteContrast:0}
+ const hard=refineSubjectMatte(mask,image,settings),soft=refineSubjectMatte(mask,image,{...settings,feather:4})
+ assert.equal(hard.coverage[4],0);assert.equal(hard.coverage[5],255)
+ assert.ok(soft.coverage[4]>0);assert.ok(soft.coverage[5]<255);assert.equal(soft.coverage[0],0);assert.equal(soft.coverage[10],0)
+ assert.equal(mask.coverage[10],255);assert.equal(image.data[10*4+3],0)
+ assert.throws(()=>refineSubjectMatte(mask,image,{...settings,feather:21}),/ranges/)
+ assert.throws(()=>colorGuidedMatteFilter(new Float32Array(1),{width:1,height:1,data:new Uint8Array(4)},0),/radius/)
+ assert.throws(()=>refineSubjectMatte({width:0,height:0,coverage:new Uint8Array()},{width:0,height:0,data:new Uint8Array()},settings),/dimensions/)
 })

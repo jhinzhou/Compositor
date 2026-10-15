@@ -6,6 +6,7 @@ import { applyImageFilter, imageFilterSchema } from '../src/shared/image-filters
 import { cameraRawAutoBalance, cameraRawBrightness, cameraRawLightColor, cameraRawNeutralize, cameraRawTables } from '../src/shared/camera-raw-adaptive'
 import {cameraOptics,cameraScopes} from '../src/shared/camera-raw-kernels'
 import { cameraRawDetail, cameraRawEffects } from '../src/shared/camera-raw-adaptive-effects'
+import shadowsAlpha27 from '../fixtures/parity/native-735c2cc-camera-raw-shadows-alpha27.json'
 
 test('decoded measured atlas matches the complete upstream measured resource', () => {
   assert.equal(cameraRawTables().length, fixtures.tableCount * 17 ** 3 * 3)
@@ -18,8 +19,12 @@ for (const fixture of fixtures.cases) test(`upstream C Camera Raw pixels: ${fixt
   assert.equal(settings.kind, 'cameraRaw'); if (settings.kind !== 'cameraRaw') return
   const output = fixture.kind === 'pipeline' ? applyImageFilter(input,settings) : fixture.kind === 'optics' ? cameraOptics(input,settings.optics,()=>{throw new Error('Oracle optics cases must not require distortion')}) : fixture.kind === 'grade' ? cameraRawLightColor(input,settings,undefined,true) : fixture.kind === 'light' ? cameraRawLightColor(input, settings) : fixture.kind === 'effects' ? cameraRawEffects(input, settings) : cameraRawDetail(input, settings.detail)
   assert.deepEqual(applyImageFilter(input, settings).data, output.data, 'The application filter pipeline must execute the validated upstream kernels')
-  const premultiplied = 'premultipliedExpected' in fixture && fixture.premultipliedExpected
-  const errors = fixture.expected.map((value, index) => Math.abs(value - (premultiplied && index % 4 !== 3 ? Math.round(output.data[index] * output.data[index - index % 4 + 3] / 255) : output.data[index])))
+  // 735c2cc deliberately replaced the old global Shadows table. Keep the old
+  // capture immutable and use a fresh native C result for the exact same input.
+  const updated=(shadowsAlpha27.legacyCaseReplacements as Record<string,{inputSHA256:string;expected:number[];premultipliedExpected:boolean}>)[fixture.name]
+  if(updated)assert.equal(createHash('sha256').update(Uint8Array.from(fixture.input)).digest('hex'),updated.inputSHA256)
+  const premultiplied = updated?.premultipliedExpected??('premultipliedExpected' in fixture && fixture.premultipliedExpected)
+  const errors = (updated?.expected??fixture.expected).map((value, index) => Math.abs(value - (premultiplied && index % 4 !== 3 ? Math.round(output.data[index] * output.data[index - index % 4 + 3] / 255) : output.data[index])))
   assert.ok(Math.max(...errors) <= 1, `max channel error ${Math.max(...errors)} for ${fixture.name}`)
   assert.deepEqual([...input.data], fixture.input, 'filter must not mutate its source')
 })

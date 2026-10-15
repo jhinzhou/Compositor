@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "photoshopVersion": "27.11.0",
+  "capturedDate": "2026-10-14",
+  "frozenAt": "2026-10-14T08:05:54.963Z",
+  "provenance": "Root agent created an owned 240x160 test image, restored a clean duplicate for each GUI operation, selected Magic Eraser and recorded actual options and a single tool history state. Click coordinates are root-recorded GUI coordinates; history and tool descriptors are preserved below.",
+  "sources": {
+    "magic-owned": {
+      "width": 240,
+      "height": 160,
+      "rgbaSHA256": "86b58bf2274e226c07d2f36a2ea72155a9f7acc690f5fa8d8fa48346a8b0222e",
+      "rgbaZlib": "eJzt06GtVUEUheFiIAgcjuQJjsEhCDjUeQmGEnCvAiwF4LFUgKMEirgdHHrYgrXmzic+P7Oz/uM4rqPYWe6x3HGWOx6rnedZLd2nfvXbLN2nfvVbraBR/eq3VbxP/eq3WLpP/eq3WbpP/eq3WbpP/eq3WbpP/eq3WkGj+tVvq3if+tVvsXSf+tVvs3Sf+tVvs3Sf+tVvs3Sf+tVvtYJG9avfVvE+9avfYuk+9avfZuk+9avfZuk+9avfZuk+9avfagWN6le/reJ96le/xdJ96le/zdJ96le/zdJ96le/zdJ96le/1Qoa1a9+W8X71K9+i6X71K9+m6X71K9+m6X71K9+m6X71K9+qxU0ql/9tor3qV/9Fkv3qV/9Nkv3qV/9Nkv3qV/9Nkv3qV/9VitoVL/6bRXvU7/6LZbuU7/6bZbuU7/6bZbuU7/6bZbuU7/6rVbQqH712yrep371Wyzdp3712yzdp3712yzdp3712yzdp371W62gUf3qt1W8T/3qt1i6T/3qt1m6T/3qt1m6T/3qt1m6T/3qt1pBoyv3+/zTHwAAAAAAAAAAAAAAAAAAgLvw99mLer9fPlw/X72/vr/+fD29+Xp9efvt+vDux/Xw8Vf8fpCUblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/23sCAAAAAAAAAAAAAAAAAAA6HMdx7eR2u1Vb4Y3N0vti7341rF/W7lfD+mXtfjWsX9buV8P6Ze1+Naxf1u5Xw/pl7X41rF/W3/89/EG/7NqvhvW7s/S+NKxf9Kth/e4ovS8N6xf9ali/O0rvS8P6Rb8a1u+O0vvSsH7Rr4b1u6P0vjSsX/SrYf3uKL0vDesX/WpYvztK70vD+kW/GtbvjtL7Srv3G6T3hX41rF/0u2PD6X2hXw3rF/3u2HB6X+hXw/pFvzs2nN4X+tWwftHvjg2n94V+01a+U3pf6LfBqrdK7wv9tljxXul9od8mq90svS/022alu6X3hX4brXK79L7Qb6sV7pfeF/pFv+h3R+l9oV/0i353lN4X+kW/6HdH6X2hX/SLfneU3tf/9g8bGsuv",
+      "pngSHA256": "f60d297f41e35d4796a768695ddd7c4767b726b727c364d5ac72154e10ca5618",
+      "nativePath": "artifacts/photoshop-native/outputs/gui-alpha28/alpha28-gui-owned-magic-eraser-source.png"
+    }
+  },
+  "cases": [
+    {
+      "name": "magic-t32-aa1-contig1",
+      "method": "actual Photoshop GUI mouse click, not an internal editor command",
+      "sourceVariant": "magic-owned",
+      "params": {
+        "point": [
+          12,
+          14
+        ],
+        "tolerance": 32,
+        "opacity": 1,
+        "antialiased": true,
+        "contiguous": true,
+        "sampleAllLayers": false
+      },
+      "width": 240,
+      "height": 160,
+      "rgbaSHA256": "e9a762036f50740a08d8af18bfda87922b93ea6c3d335250bec9020700bd4899",
+      "rgbaZlib": "eJzt06GtlUEUhVESSoEgcDiSJ/gNDkHAoe5NMJSAexVgKQCPpQIECSVQxO3gp4dDwp79ZonlZ072d57no5Ox63E8vh7HuarjsrjjurTL5bK09P7b6Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9avfXvrVr3576Ve/+u2lX/3qt5d+9Zv09MPvX/yzEwAAAAAAAAAAAAAAAAAAyPvz5Nnyfj6/O7+/eHt+ffnxvH/1+fz0+sv57s238+79j/j9ICndpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn63dw8AAAAAAAAAAAAAAAAAAKzhOI5zJ7fbbWkNb1xZel/s3a+G9Ut3vxrWL939ali/dPerYf3S3a+G9Ut3vxrWL939ali/9O//IfxBv+zar4b1u7P0vjSsX/SrYf3uKL0vDesX/WpYvztK70vD+kW/GtbvjtL70rB+0a+G9buj9L40rF/0q2H97ii9Lw3rF/1qWL87Su9Lw/pFvxrW747S+0p76DdI7wv9ali/6HfHhtP7Qr8a1i/63bHh9L7Qr4b1i353bDi9L/SrYf2i3x0bTu8L/aY13ym9L/S7gtZbpfeFflfReK/0vtDvStpult4X+l1N093S+0K/K2q5XXpf6HdVDfdL7wv9ol/0u6P0vtAv+kW/O0rvC/2iX/S7o/S+0C/6Rb87Su/rf/sLnwk+Zw==",
+      "nativePNG_SHA256": "698e60cbaa3463bb056f7cfad313c9a8f1924ebf74d860bead7817dc451fc937",
+      "nativePNGPath": "artifacts/photoshop-native/outputs/gui-alpha28/magic-t32-aa1-contig1.png",
+      "history": "Photoshop=27.11.0\rwidth=240\rheight=160\rhistory=魔术橡皮擦\rstate=alpha28-gui-owned-magic-eraser\rstate=复制图像\rstate=名称更改\rstate=魔术橡皮擦\r",
+      "historySHA256": "2a8b9ba4e8c80a166d8c747ee61210f4cacbe188963900e3d36f8f44d929c982",
+      "toolOptions": {
+        "currentToolOptions": {
+          "className": "currentToolOptions",
+          "value": {
+            "mode": {
+              "enumType": "blendMode",
+              "value": "normal"
+            },
+            "opacity": 100,
+            "BckT": 32,
+            "BckA": true,
+            "BckS": false,
+            "contiguous": true,
+            "BckF": false,
+            "AntiAliasIterations": 1,
+            "ShrinkDelta": 0,
+            "ExpandDelta": 0
+          }
+        },
+        "tool": {
+          "enumType": "magicEraserTool",
+          "value": "targetEnum"
+        }
+      },
+      "toolOptionsSHA256": "ab3daec79342c38a3c2dc924ee932008ca25787221705a68c5a9083548c3a87e",
+      "gate": {
+        "alphaExact": true,
+        "premultipliedRGBExact": true,
+        "visibleRGBExact": true,
+        "hiddenRGBCompared": false
+      }
+    }
+  ]
+}

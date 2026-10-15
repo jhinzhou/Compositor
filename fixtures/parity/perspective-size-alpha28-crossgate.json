@@ -1,0 +1,1517 @@
+{
+  "date": "2026-10-14",
+  "referenceKind": "frozen-size-mechanism-crossgate-not-new-native",
+  "candidateFreeze": {
+    "status": "CANDIDATE_MECHANISM_FROZEN_NOT_PRODUCTION",
+    "frozenAt": "2026-10-14T05:58:46.474Z",
+    "candidateFile": "scripts/lib/perspective-size-alpha28-candidate.ts",
+    "candidateSHA256": "f26949c57de80292fb6b3eaac2ab4f70ae28d31c05551c124ad2fc1e49293793",
+    "baselineFile": "artifacts/alpha28-baseline/src/shared/crop-projective.ts",
+    "baselineSHA256": "d2752eda4271ea4c63d3288462e8ea0bc495ece09ea636efeef6f93b65f1d900",
+    "mechanism": "Metric 3D nearest-camera-depth fronto-parallel resolution floor max with existing metric-area/longest-span output; no fitted coefficients",
+    "knownNativeBoundary": "All alpha26/27 cohorts already seen. Root disclosed alpha28 calibration outputs420306/420308/420304/464374 in message before this file freeze, so these are calibration and never blind holdouts. Candidate nearest-depth mechanism was proposed before that message. Calibration JSON has not yet been loaded by this agent. New independent native holdouts must be acquired after this SHA freeze.",
+    "coefficientsFitted": false,
+    "productionChanged": false
+  },
+  "limits": [
+    "Old alpha26/27 cases and disclosed calibration are not new independent tests.",
+    "Independent six are captured after candidate freeze.",
+    "Baseline and candidate fields are recorded algorithm results, not additional native outputs."
+  ],
+  "cases": [
+    {
+      "name": "axis",
+      "corners": [
+        [
+          35,
+          25
+        ],
+        [
+          236,
+          25
+        ],
+        [
+          236,
+          159
+        ],
+        [
+          35,
+          159
+        ]
+      ],
+      "width": 201,
+      "height": 134,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 201,
+        "height": 134
+      },
+      "candidate": {
+        "width": 201,
+        "height": 134
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "affine",
+      "corners": [
+        [
+          80,
+          40
+        ],
+        [
+          410,
+          60
+        ],
+        [
+          410,
+          260
+        ],
+        [
+          80,
+          240
+        ]
+      ],
+      "width": 331,
+      "height": 200,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 331,
+        "height": 200
+      },
+      "candidate": {
+        "width": 331,
+        "height": 200
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "old-quad",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          430,
+          55
+        ],
+        [
+          400,
+          280
+        ],
+        [
+          75,
+          260
+        ]
+      ],
+      "width": 382,
+      "height": 359,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 370,
+        "height": 348
+      },
+      "candidate": {
+        "width": 373,
+        "height": 350
+      },
+      "baselineError": 23,
+      "candidateError": 18
+    },
+    {
+      "name": "strong-trapezoid",
+      "corners": [
+        [
+          90,
+          40
+        ],
+        [
+          420,
+          40
+        ],
+        [
+          340,
+          270
+        ],
+        [
+          140,
+          270
+        ]
+      ],
+      "width": 330,
+      "height": 244,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 330,
+        "height": 244
+      },
+      "candidate": {
+        "width": 330,
+        "height": 244
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "opposite-quad",
+      "corners": [
+        [
+          30,
+          70
+        ],
+        [
+          350,
+          20
+        ],
+        [
+          470,
+          250
+        ],
+        [
+          70,
+          290
+        ]
+      ],
+      "width": 539,
+      "height": 315,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 475,
+        "height": 277
+      },
+      "candidate": {
+        "width": 475,
+        "height": 277
+      },
+      "baselineError": 102,
+      "candidateError": 102
+    },
+    {
+      "name": "old-quad-translate",
+      "corners": [
+        [
+          80,
+          20
+        ],
+        [
+          450,
+          35
+        ],
+        [
+          420,
+          260
+        ],
+        [
+          95,
+          240
+        ]
+      ],
+      "width": 382,
+      "height": 364,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 370,
+        "height": 353
+      },
+      "candidate": {
+        "width": 372,
+        "height": 355
+      },
+      "baselineError": 23,
+      "candidateError": 19
+    },
+    {
+      "name": "old-quad-mirror",
+      "corners": [
+        [
+          82,
+          55
+        ],
+        [
+          452,
+          40
+        ],
+        [
+          437,
+          260
+        ],
+        [
+          112,
+          280
+        ]
+      ],
+      "width": 370,
+      "height": 227,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 370,
+        "height": 227
+      },
+      "candidate": {
+        "width": 370,
+        "height": 227
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "old-quad-half-turn",
+      "corners": [
+        [
+          112,
+          40
+        ],
+        [
+          437,
+          60
+        ],
+        [
+          452,
+          280
+        ],
+        [
+          82,
+          265
+        ]
+      ],
+      "width": 370,
+      "height": 227,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 370,
+        "height": 227
+      },
+      "candidate": {
+        "width": 370,
+        "height": 227
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "camera-valid-holdout",
+      "corners": [
+        [
+          65,
+          35
+        ],
+        [
+          440,
+          65
+        ],
+        [
+          395,
+          285
+        ],
+        [
+          80,
+          250
+        ]
+      ],
+      "width": 395,
+      "height": 396,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 376,
+        "height": 377
+      },
+      "candidate": {
+        "width": 380,
+        "height": 381
+      },
+      "baselineError": 38,
+      "candidateError": 30
+    },
+    {
+      "name": "axis",
+      "corners": [
+        [
+          35,
+          25
+        ],
+        [
+          236,
+          25
+        ],
+        [
+          236,
+          159
+        ],
+        [
+          35,
+          159
+        ]
+      ],
+      "width": 201,
+      "height": 134,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 201,
+        "height": 134
+      },
+      "candidate": {
+        "width": 201,
+        "height": 134
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "affine",
+      "corners": [
+        [
+          80,
+          40
+        ],
+        [
+          410,
+          60
+        ],
+        [
+          410,
+          260
+        ],
+        [
+          80,
+          240
+        ]
+      ],
+      "width": 331,
+      "height": 200,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 331,
+        "height": 200
+      },
+      "candidate": {
+        "width": 331,
+        "height": 200
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "old-quad",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          430,
+          55
+        ],
+        [
+          400,
+          280
+        ],
+        [
+          75,
+          260
+        ]
+      ],
+      "width": 387,
+      "height": 256,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 387,
+        "height": 256
+      },
+      "candidate": {
+        "width": 387,
+        "height": 256
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "strong-trapezoid",
+      "corners": [
+        [
+          90,
+          40
+        ],
+        [
+          420,
+          40
+        ],
+        [
+          340,
+          270
+        ],
+        [
+          140,
+          270
+        ]
+      ],
+      "width": 330,
+      "height": 244,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 330,
+        "height": 244
+      },
+      "candidate": {
+        "width": 330,
+        "height": 244
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "opposite-quad",
+      "corners": [
+        [
+          30,
+          70
+        ],
+        [
+          350,
+          20
+        ],
+        [
+          470,
+          250
+        ],
+        [
+          70,
+          290
+        ]
+      ],
+      "width": 402,
+      "height": 259,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 402,
+        "height": 259
+      },
+      "candidate": {
+        "width": 402,
+        "height": 259
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "old-quad-translate",
+      "corners": [
+        [
+          80,
+          20
+        ],
+        [
+          450,
+          35
+        ],
+        [
+          420,
+          260
+        ],
+        [
+          95,
+          240
+        ]
+      ],
+      "width": 382,
+      "height": 259,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 382,
+        "height": 259
+      },
+      "candidate": {
+        "width": 382,
+        "height": 259
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "old-quad-mirror",
+      "corners": [
+        [
+          82,
+          55
+        ],
+        [
+          452,
+          40
+        ],
+        [
+          437,
+          260
+        ],
+        [
+          112,
+          280
+        ]
+      ],
+      "width": 387,
+      "height": 256,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 387,
+        "height": 256
+      },
+      "candidate": {
+        "width": 387,
+        "height": 256
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "old-quad-half-turn",
+      "corners": [
+        [
+          112,
+          40
+        ],
+        [
+          437,
+          60
+        ],
+        [
+          452,
+          280
+        ],
+        [
+          82,
+          265
+        ]
+      ],
+      "width": 387,
+      "height": 256,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 387,
+        "height": 256
+      },
+      "candidate": {
+        "width": 387,
+        "height": 256
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "camera-valid-holdout",
+      "corners": [
+        [
+          65,
+          35
+        ],
+        [
+          440,
+          65
+        ],
+        [
+          395,
+          285
+        ],
+        [
+          80,
+          250
+        ]
+      ],
+      "width": 395,
+      "height": 264,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 398,
+        "height": 265
+      },
+      "candidate": {
+        "width": 398,
+        "height": 265
+      },
+      "baselineError": 4,
+      "candidateError": 4
+    },
+    {
+      "name": "gui-old-quad-event-exact",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          431,
+          55
+        ],
+        [
+          401,
+          281
+        ],
+        [
+          75,
+          261
+        ]
+      ],
+      "width": 387,
+      "height": 257,
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "referenceKind": "native-gui-event",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 387,
+        "height": 257
+      },
+      "candidate": {
+        "width": 387,
+        "height": 257
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "auto-gentle-left",
+      "corners": [
+        [
+          42,
+          26
+        ],
+        [
+          343,
+          38
+        ],
+        [
+          326,
+          229
+        ],
+        [
+          52,
+          222
+        ]
+      ],
+      "width": 301,
+      "height": 196,
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 301,
+        "height": 196
+      },
+      "candidate": {
+        "width": 301,
+        "height": 196
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "auto-gentle-right",
+      "corners": [
+        [
+          41,
+          38
+        ],
+        [
+          342,
+          26
+        ],
+        [
+          332,
+          222
+        ],
+        [
+          58,
+          229
+        ]
+      ],
+      "width": 301,
+      "height": 196,
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 301,
+        "height": 196
+      },
+      "candidate": {
+        "width": 301,
+        "height": 196
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "auto-strong-left",
+      "corners": [
+        [
+          66,
+          17
+        ],
+        [
+          350,
+          65
+        ],
+        [
+          300,
+          239
+        ],
+        [
+          34,
+          209
+        ]
+      ],
+      "width": 311,
+      "height": 216,
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 309,
+        "height": 215
+      },
+      "candidate": {
+        "width": 310,
+        "height": 215
+      },
+      "baselineError": 3,
+      "candidateError": 2
+    },
+    {
+      "name": "auto-strong-right",
+      "corners": [
+        [
+          34,
+          65
+        ],
+        [
+          318,
+          17
+        ],
+        [
+          350,
+          209
+        ],
+        [
+          84,
+          239
+        ]
+      ],
+      "width": 311,
+      "height": 216,
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 309,
+        "height": 215
+      },
+      "candidate": {
+        "width": 310,
+        "height": 215
+      },
+      "baselineError": 3,
+      "candidateError": 2
+    },
+    {
+      "name": "auto-gentle-translate",
+      "corners": [
+        [
+          54,
+          17
+        ],
+        [
+          355,
+          29
+        ],
+        [
+          338,
+          220
+        ],
+        [
+          64,
+          213
+        ]
+      ],
+      "width": 301,
+      "height": 196,
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 301,
+        "height": 196
+      },
+      "candidate": {
+        "width": 301,
+        "height": 196
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "auto-gentle-half-turn",
+      "corners": [
+        [
+          58,
+          27
+        ],
+        [
+          332,
+          34
+        ],
+        [
+          342,
+          230
+        ],
+        [
+          41,
+          218
+        ]
+      ],
+      "width": 301,
+      "height": 196,
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "referenceKind": "native-actionmanager",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 301,
+        "height": 196
+      },
+      "candidate": {
+        "width": 301,
+        "height": 196
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "actual-mouse-auto-292163",
+      "corners": [
+        [
+          45,
+          39
+        ],
+        [
+          337,
+          51
+        ],
+        [
+          317,
+          210
+        ],
+        [
+          55,
+          202
+        ]
+      ],
+      "width": 292,
+      "height": 163,
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "referenceKind": "native-gui-event",
+      "cohort": "SEEN_ALPHA26_ALPHA27",
+      "baseline": {
+        "width": 292,
+        "height": 163
+      },
+      "candidate": {
+        "width": 292,
+        "height": 163
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "perspective-auto-calibration",
+      "corners": [
+        [
+          24,
+          18
+        ],
+        [
+          482,
+          37
+        ],
+        [
+          455,
+          351
+        ],
+        [
+          39,
+          330
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 464,
+      "height": 374,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "nativeRGBA_SHA256": "992cbf54028c94accb5c27edcc3db3554b3a850ce91d1d79c81fe13ad2044cda",
+      "sourceRGBA_SHA256": "06190d5a420448467093bc20bd0794d615c0285e2e8945a85505b710501d8f17",
+      "cohort": "ALPHA28_DISCLOSED_CALIBRATION",
+      "baseline": {
+        "width": 458,
+        "height": 370
+      },
+      "candidate": {
+        "width": 462,
+        "height": 373
+      },
+      "baselineError": 10,
+      "candidateError": 3
+    },
+    {
+      "name": "size-strong-center",
+      "corners": [
+        [
+          88,
+          34
+        ],
+        [
+          456,
+          118
+        ],
+        [
+          382,
+          347
+        ],
+        [
+          49,
+          298
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 306,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "nativeRGBA_SHA256": "cb947485daadebe0ad886fa2cf57fb2f6189127cdff350cc65d43d4c7c4fa0de",
+      "sourceRGBA_SHA256": "06190d5a420448467093bc20bd0794d615c0285e2e8945a85505b710501d8f17",
+      "cohort": "ALPHA28_DISCLOSED_CALIBRATION",
+      "baseline": {
+        "width": 419,
+        "height": 305
+      },
+      "candidate": {
+        "width": 419,
+        "height": 305
+      },
+      "baselineError": 2,
+      "candidateError": 2
+    },
+    {
+      "name": "size-strong-upper-left",
+      "corners": [
+        [
+          68,
+          19
+        ],
+        [
+          436,
+          103
+        ],
+        [
+          362,
+          332
+        ],
+        [
+          29,
+          283
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 308,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "nativeRGBA_SHA256": "a3599bd3aeb1d213d5bd9502e3cfa4cd62a65751c2f36b7be737876537526e00",
+      "sourceRGBA_SHA256": "06190d5a420448467093bc20bd0794d615c0285e2e8945a85505b710501d8f17",
+      "cohort": "ALPHA28_DISCLOSED_CALIBRATION",
+      "baseline": {
+        "width": 418,
+        "height": 306
+      },
+      "candidate": {
+        "width": 418,
+        "height": 306
+      },
+      "baselineError": 4,
+      "candidateError": 4
+    },
+    {
+      "name": "size-strong-lower-right",
+      "corners": [
+        [
+          103,
+          46
+        ],
+        [
+          471,
+          130
+        ],
+        [
+          397,
+          359
+        ],
+        [
+          64,
+          310
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 304,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "nativeRGBA_SHA256": "dcf4fb6c7fa827a66645bfe1f649cfa6043dc8a4e30c43a242c9cdba31c2fc3c",
+      "sourceRGBA_SHA256": "06190d5a420448467093bc20bd0794d615c0285e2e8945a85505b710501d8f17",
+      "cohort": "ALPHA28_DISCLOSED_CALIBRATION",
+      "baseline": {
+        "width": 420,
+        "height": 304
+      },
+      "candidate": {
+        "width": 420,
+        "height": 304
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "independent-strong",
+      "corners": [
+        [
+          74,
+          32
+        ],
+        [
+          441,
+          103
+        ],
+        [
+          407,
+          345
+        ],
+        [
+          28,
+          276
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 391,
+      "height": 262,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "cohort": "ALPHA28_INDEPENDENT_AFTER_FREEZE",
+      "baseline": {
+        "width": 387,
+        "height": 259
+      },
+      "candidate": {
+        "width": 390,
+        "height": 261
+      },
+      "baselineError": 7,
+      "candidateError": 2
+    },
+    {
+      "name": "independent-half",
+      "corners": [
+        [
+          165,
+          112
+        ],
+        [
+          348.5,
+          147.5
+        ],
+        [
+          331.5,
+          268.5
+        ],
+        [
+          142,
+          234
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 196,
+      "height": 131,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "cohort": "ALPHA28_INDEPENDENT_AFTER_FREEZE",
+      "baseline": {
+        "width": 194,
+        "height": 129
+      },
+      "candidate": {
+        "width": 195,
+        "height": 130
+      },
+      "baselineError": 4,
+      "candidateError": 2
+    },
+    {
+      "name": "independent-larger",
+      "corners": [
+        [
+          52.16,
+          12.8
+        ],
+        [
+          463.2,
+          92.32
+        ],
+        [
+          425.12,
+          363.36
+        ],
+        [
+          0.63999999999999,
+          286.08
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 438,
+      "height": 293,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "cohort": "ALPHA28_INDEPENDENT_AFTER_FREEZE",
+      "baseline": {
+        "width": 434,
+        "height": 290
+      },
+      "candidate": {
+        "width": 437,
+        "height": 292
+      },
+      "baselineError": 7,
+      "candidateError": 2
+    },
+    {
+      "name": "independent-quarter-turn",
+      "corners": [
+        [
+          108,
+          28
+        ],
+        [
+          352,
+          74
+        ],
+        [
+          281,
+          441
+        ],
+        [
+          39,
+          407
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 512,
+      "sourceCenter": [
+        192,
+        256
+      ],
+      "width": 262,
+      "height": 391,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "cohort": "ALPHA28_INDEPENDENT_AFTER_FREEZE",
+      "baseline": {
+        "width": 259,
+        "height": 387
+      },
+      "candidate": {
+        "width": 261,
+        "height": 390
+      },
+      "baselineError": 7,
+      "candidateError": 2
+    },
+    {
+      "name": "independent-asymmetric",
+      "corners": [
+        [
+          133,
+          17
+        ],
+        [
+          448,
+          95
+        ],
+        [
+          298,
+          361
+        ],
+        [
+          56,
+          214
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 325,
+      "height": 305,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "cohort": "ALPHA28_INDEPENDENT_AFTER_FREEZE",
+      "baseline": {
+        "width": 325,
+        "height": 305
+      },
+      "candidate": {
+        "width": 325,
+        "height": 305
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    },
+    {
+      "name": "independent-one-vanishing-point",
+      "corners": [
+        [
+          75,
+          70
+        ],
+        [
+          437,
+          70
+        ],
+        [
+          390,
+          315
+        ],
+        [
+          122,
+          315
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 362,
+      "height": 249,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "cohort": "ALPHA28_INDEPENDENT_AFTER_FREEZE",
+      "baseline": {
+        "width": 362,
+        "height": 249
+      },
+      "candidate": {
+        "width": 362,
+        "height": 249
+      },
+      "baselineError": 0,
+      "candidateError": 0
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 export const activityZhCN: Record<string, string> = {
+  'Background Eraser': '背景橡皮擦', 'Magic Eraser': '魔术橡皮擦',
   'Opened document': '打开文档', 'Saved project': '保存工程',
   'Rename layer': '重命名图层', 'Show layer': '显示图层', 'Hide layer': '隐藏图层',
   'Set opacity': '设置不透明度', 'Set blend mode': '设置混合模式',

@@ -1,0 +1,707 @@
+{
+  "photoshopVersion": "27.11.0",
+  "source": {
+    "width": 512,
+    "height": 320,
+    "sha256": "14c54fba78e47130830ae720be740df5a587dbc455d86e1fa47faa0d4a3b372f"
+  },
+  "limits": "Automatic SIZE reference only. Native ActionManager and real GUI events are distinguished. PNG hashes are provenance, not pixel-equivalence tests.",
+  "cases": [
+    {
+      "name": "axis",
+      "corners": [
+        [
+          35,
+          25
+        ],
+        [
+          236,
+          25
+        ],
+        [
+          236,
+          159
+        ],
+        [
+          35,
+          159
+        ]
+      ],
+      "width": 201,
+      "height": 134,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/axis.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "080aa5b8161cf099857cc1492dc91833393c9b45b602fb00ff42ebf5fa2699b0"
+    },
+    {
+      "name": "affine",
+      "corners": [
+        [
+          80,
+          40
+        ],
+        [
+          410,
+          60
+        ],
+        [
+          410,
+          260
+        ],
+        [
+          80,
+          240
+        ]
+      ],
+      "width": 331,
+      "height": 200,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/affine.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "a1c7652421819b896369406e8a9152cc8e19e4e5e0023378a04755622e93cbbf"
+    },
+    {
+      "name": "old-quad",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          430,
+          55
+        ],
+        [
+          400,
+          280
+        ],
+        [
+          75,
+          260
+        ]
+      ],
+      "width": 382,
+      "height": 359,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/old-quad.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "75cb7ab6a4696235e676c195c4ca671b8d608b5faeda1c228a2c8b30b719361b"
+    },
+    {
+      "name": "strong-trapezoid",
+      "corners": [
+        [
+          90,
+          40
+        ],
+        [
+          420,
+          40
+        ],
+        [
+          340,
+          270
+        ],
+        [
+          140,
+          270
+        ]
+      ],
+      "width": 330,
+      "height": 244,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/strong-trapezoid.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "5b10e6ff642c55104332094afdd9d765db0307b384ac385c1d97cdd692631b91"
+    },
+    {
+      "name": "opposite-quad",
+      "corners": [
+        [
+          30,
+          70
+        ],
+        [
+          350,
+          20
+        ],
+        [
+          470,
+          250
+        ],
+        [
+          70,
+          290
+        ]
+      ],
+      "width": 539,
+      "height": 315,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/opposite-quad.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "fb91e1b6f20a828780cadcd74ab3be89a10309dfd3a06041a93eac02d622da8c"
+    },
+    {
+      "name": "old-quad-translate",
+      "corners": [
+        [
+          80,
+          20
+        ],
+        [
+          450,
+          35
+        ],
+        [
+          420,
+          260
+        ],
+        [
+          95,
+          240
+        ]
+      ],
+      "width": 382,
+      "height": 364,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/old-quad-translate.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "15be7523e4f669f3e21dcf13c10b3f784c872d0ca8fb07d7085d8df958bed728"
+    },
+    {
+      "name": "old-quad-mirror",
+      "corners": [
+        [
+          82,
+          55
+        ],
+        [
+          452,
+          40
+        ],
+        [
+          437,
+          260
+        ],
+        [
+          112,
+          280
+        ]
+      ],
+      "width": 370,
+      "height": 227,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/old-quad-mirror.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "32cb2cd3d8ee9e2dbc396fa36f3ae4a374f4a5dda13028cc6d121dc5b602a189"
+    },
+    {
+      "name": "old-quad-half-turn",
+      "corners": [
+        [
+          112,
+          40
+        ],
+        [
+          437,
+          60
+        ],
+        [
+          452,
+          280
+        ],
+        [
+          82,
+          265
+        ]
+      ],
+      "width": 370,
+      "height": 227,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/old-quad-half-turn.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "08a6b759960450030f47fca073cb9232b2ca8b645b0da3d8b4e3291ea324114d"
+    },
+    {
+      "name": "camera-valid-holdout",
+      "corners": [
+        [
+          65,
+          35
+        ],
+        [
+          440,
+          65
+        ],
+        [
+          395,
+          285
+        ],
+        [
+          80,
+          250
+        ]
+      ],
+      "width": 395,
+      "height": 396,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager/camera-valid-holdout.png",
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "sha256": "368f1f0936480c54424bcd37b8c0e40b4750ce3db53a43800da23ac03c232edf"
+    },
+    {
+      "name": "axis",
+      "corners": [
+        [
+          35,
+          25
+        ],
+        [
+          236,
+          25
+        ],
+        [
+          236,
+          159
+        ],
+        [
+          35,
+          159
+        ]
+      ],
+      "width": 201,
+      "height": 134,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/axis.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "13f78694275115317ed69630a084e5216bf9f7abe11604d1805427b65d10c090"
+    },
+    {
+      "name": "affine",
+      "corners": [
+        [
+          80,
+          40
+        ],
+        [
+          410,
+          60
+        ],
+        [
+          410,
+          260
+        ],
+        [
+          80,
+          240
+        ]
+      ],
+      "width": 331,
+      "height": 200,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/affine.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "52c327411fbadd916a1c4cbfa560c02e07d6cb8835b95c4095a681cc9e0970d5"
+    },
+    {
+      "name": "old-quad",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          430,
+          55
+        ],
+        [
+          400,
+          280
+        ],
+        [
+          75,
+          260
+        ]
+      ],
+      "width": 387,
+      "height": 256,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/old-quad.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "652fd549143bf85a281ff1b23ec2067051d82b615dab995c2ddf1d51f4a65512"
+    },
+    {
+      "name": "strong-trapezoid",
+      "corners": [
+        [
+          90,
+          40
+        ],
+        [
+          420,
+          40
+        ],
+        [
+          340,
+          270
+        ],
+        [
+          140,
+          270
+        ]
+      ],
+      "width": 330,
+      "height": 244,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/strong-trapezoid.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "0f685a3154755a6b6267fd3e400a65e6dd81fb7ecdbb9bacff7692b93aac9960"
+    },
+    {
+      "name": "opposite-quad",
+      "corners": [
+        [
+          30,
+          70
+        ],
+        [
+          350,
+          20
+        ],
+        [
+          470,
+          250
+        ],
+        [
+          70,
+          290
+        ]
+      ],
+      "width": 402,
+      "height": 259,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/opposite-quad.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "e85a8e51834c514503216f2e41ce7697195d3933a04019a550bf292f63d8f0e0"
+    },
+    {
+      "name": "old-quad-translate",
+      "corners": [
+        [
+          80,
+          20
+        ],
+        [
+          450,
+          35
+        ],
+        [
+          420,
+          260
+        ],
+        [
+          95,
+          240
+        ]
+      ],
+      "width": 382,
+      "height": 259,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/old-quad-translate.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "8cb02909f36acb15400014f9c0a45bf4d5018c3db784921704dc455f13279392"
+    },
+    {
+      "name": "old-quad-mirror",
+      "corners": [
+        [
+          82,
+          55
+        ],
+        [
+          452,
+          40
+        ],
+        [
+          437,
+          260
+        ],
+        [
+          112,
+          280
+        ]
+      ],
+      "width": 387,
+      "height": 256,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/old-quad-mirror.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "e2517ebfc99c467137574ccfabe25a10f38dc3da5fb6c26e0fa879847cb04382"
+    },
+    {
+      "name": "old-quad-half-turn",
+      "corners": [
+        [
+          112,
+          40
+        ],
+        [
+          437,
+          60
+        ],
+        [
+          452,
+          280
+        ],
+        [
+          82,
+          265
+        ]
+      ],
+      "width": 387,
+      "height": 256,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/old-quad-half-turn.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "f0f9559edf666e1f0e1e23224ad2e91d2a792f90993c8abd0ee58ba568909bcd"
+    },
+    {
+      "name": "camera-valid-holdout",
+      "corners": [
+        [
+          65,
+          35
+        ],
+        [
+          440,
+          65
+        ],
+        [
+          395,
+          285
+        ],
+        [
+          80,
+          250
+        ]
+      ],
+      "width": 395,
+      "height": 264,
+      "history": "\u900f\u89c6\u88c1\u526a",
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager",
+      "creationMode": "quadrilateral descriptor with native GUI paint center at source midpoint; no output dimensions supplied",
+      "nativePath": "/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/perspective-size-alpha26-actionmanager-centered/camera-valid-holdout.png",
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "sha256": "f465d93a276f6723414da3d414ab191dd3a3e696cd5c87c952b02e6dc1d06af0"
+    },
+    {
+      "name": "gui-old-quad-event-exact",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          431,
+          55
+        ],
+        [
+          401,
+          281
+        ],
+        [
+          75,
+          261
+        ]
+      ],
+      "width": 387,
+      "height": 257,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "geometryVerified": true,
+      "referenceKind": "native-gui-event",
+      "creationMode": "real GUI crop; event contains exact source EDGE corners; width/height omitted",
+      "eventDescriptor": {
+        "to": {
+          "className": "quadrilateral",
+          "value": {
+            "center": {
+              "className": "paint",
+              "value": {
+                "horizontal": {
+                  "unit": "pixelsUnit",
+                  "value": 256
+                },
+                "vertical": {
+                  "unit": "pixelsUnit",
+                  "value": 160
+                }
+              }
+            },
+            "quadCorner0": {
+              "className": "offset",
+              "value": {
+                "horizontal": {
+                  "unit": "pixelsUnit",
+                  "value": 60
+                },
+                "vertical": {
+                  "unit": "pixelsUnit",
+                  "value": 40
+                }
+              }
+            },
+            "quadCorner1": {
+              "className": "offset",
+              "value": {
+                "horizontal": {
+                  "unit": "pixelsUnit",
+                  "value": 431
+                },
+                "vertical": {
+                  "unit": "pixelsUnit",
+                  "value": 55
+                }
+              }
+            },
+            "quadCorner2": {
+              "className": "offset",
+              "value": {
+                "horizontal": {
+                  "unit": "pixelsUnit",
+                  "value": 401
+                },
+                "vertical": {
+                  "unit": "pixelsUnit",
+                  "value": 281
+                }
+              }
+            },
+            "quadCorner3": {
+              "className": "offset",
+              "value": {
+                "horizontal": {
+                  "unit": "pixelsUnit",
+                  "value": 75
+                },
+                "vertical": {
+                  "unit": "pixelsUnit",
+                  "value": 261
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

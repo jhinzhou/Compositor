@@ -4,7 +4,7 @@ import type { DesktopAPI, EditorState, PreviewResult, RpcResult } from '../share
 
 const api: FileDesktopAPI = {
   platform: process.platform,
-  dropFiles: files => { const paths = files.slice(0,32).map(file => webUtils.getPathForFile(file)).filter(Boolean); return ipcRenderer.invoke('editor:drop', paths) },
+  dropFiles: (files,options) => { const paths = files.slice(0,32).map(file => webUtils.getPathForFile(file)).filter(Boolean); return ipcRenderer.invoke('editor:drop', options?{paths,destination:options.destination}:paths) },
   onAction: callback => {
     const listener = (_event: Electron.IpcRendererEvent, action: string): void => callback(action)
     ipcRenderer.on('editor:action', listener)

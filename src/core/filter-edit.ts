@@ -1,5 +1,5 @@
 import { PNG } from 'pngjs'
-import { applyImageFilter, imageFilterSchema, type ImageFilter } from '../shared/image-filters'
+import { applyImageFilter, imageFilterSchema, type ImageFilter,type GaussianClampSides } from '../shared/image-filters'
 import { EditorError, type Layer } from '../shared/contracts'
 import { LIMITS } from '../shared/limits'
 import { blankPNG, documentPoint, selectionCoverage, sourcePoint } from './raster-edit'
@@ -8,7 +8,7 @@ import type {CameraRawBrightness} from '../shared/camera-raw-adaptive'
 export type FilterTransform=Layer['transform']
 export type FilterRasterResult={png:PNG;transform:FilterTransform;grew:boolean}
 /** Native FilterEdit.blurMargin / growForBlur. Values are in source-layer pixels. */
-export function filterMargin(filter:ImageFilter):number{return filter.kind==='gaussianBlur'?Math.ceil(filter.radius*3+2):filter.kind==='motionBlur'?Math.ceil(filter.distance/2+2):filter.kind==='bloom'&&filter.amount>0?Math.ceil(filter.radius*3+2):0}
+export function filterMargin(filter:ImageFilter):number{return filter.kind==='gaussianBlur'?(filter.preserveTransparency?0:Math.ceil(filter.radius*3+2)):filter.kind==='progressiveBlur'?(Math.max(filter.from,filter.to)>0?Math.ceil(Math.max(filter.from,filter.to)*3+2):0):filter.kind==='motionBlur'?Math.ceil(filter.distance/2+2):filter.kind==='bloom'&&filter.amount>0?Math.ceil(filter.radius*3+2):0}
 function checkedDimensions(width:number,height:number):void{if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width>LIMITS.maxSide||height>LIMITS.maxSide||width*height>LIMITS.maxSurfacePixels)throw new EditorError('RESOURCE_LIMIT','The expanded filter raster exceeds working-surface limits.')}
 function placedRect(transform:FilterTransform,width:number,height:number,x:number,y:number,w:number,h:number):FilterTransform{
  const size:[number,number]=[transform.size[0]*w/width,transform.size[1]*h/height],middle=documentPoint({transform} as Layer,x+w/2,y+h/2,width,height)
@@ -17,20 +17,25 @@ function placedRect(transform:FilterTransform,width:number,height:number,x:numbe
 function copyRect(source:PNG,x:number,y:number,width:number,height:number):PNG{const result=blankPNG(width,height);for(let row=0;row<height;row++)source.data.copy(result.data,row*width*4,((row+y)*source.width+x)*4,((row+y)*source.width+x+width)*4);return result}
 /** Shared by committed edits and previews: grow, filter in document-space selection,
  * then trim transparent bounds while preserving placement through rotation/flips. */
-export function filterRaster(source:PNG,placement:FilterTransform,selection:Selection|null|undefined,input:unknown,previewOptions:{knownBrightness?:CameraRawBrightness}={}):FilterRasterResult{
- const filter=imageFilterSchema.parse(input),margin=filterMargin(filter),width=source.width+margin*2,height=source.height+margin*2
+export function gaussianCanvasSides(placement:FilterTransform,width:number,height:number,canvasSize?:[number,number]):GaussianClampSides{
+ if(!canvasSize||placement.rotation!==0)return {}
+ const a=sourcePoint({transform:placement},0,0,width,height),b=sourcePoint({transform:placement},canvasSize[0],canvasSize[1],width,height)
+ return {left:Math.min(a[0],b[0])>=-.5,right:Math.max(a[0],b[0])<=width+.5,top:Math.min(a[1],b[1])>=-.5,bottom:Math.max(a[1],b[1])<=height+.5}
+}
+export function filterRaster(source:PNG,placement:FilterTransform,selection:Selection|null|undefined,input:unknown,previewOptions:{knownBrightness?:CameraRawBrightness;canvasSize?:[number,number]}={}):FilterRasterResult{
+ const filter=imageFilterSchema.parse(input),margin=filterMargin(filter),sides=(filter.kind==='gaussianBlur'&&!filter.preserveTransparency||filter.kind==='progressiveBlur')?gaussianCanvasSides(placement,source.width,source.height,previewOptions.canvasSize):{},padLeft=sides.left?0:margin,padTop=sides.top?0:margin,padRight=sides.right?0:margin,padBottom=sides.bottom?0:margin,width=source.width+padLeft+padRight,height=source.height+padTop+padBottom
  checkedDimensions(width,height)
- const transform=margin?placedRect(placement,source.width,source.height,-margin,-margin,width,height):structuredClone(placement),png=margin?blankPNG(width,height):copyRect(source,0,0,width,height)
- if(margin)for(let y=0;y<source.height;y++)source.data.copy(png.data,((y+margin)*width+margin)*4,y*source.width*4,(y+1)*source.width*4)
+ const transform=margin?placedRect(placement,source.width,source.height,-padLeft,-padTop,width,height):structuredClone(placement),png=margin?blankPNG(width,height):copyRect(source,0,0,width,height)
+ if(margin)for(let y=0;y<source.height;y++)source.data.copy(png.data,((y+padTop)*width+padLeft)*4,y*source.width*4,(y+1)*source.width*4)
  let coverage:Uint8Array|undefined
  if(selection){coverage=new Uint8Array(width*height);for(let y=0;y<height;y++)for(let x=0;x<width;x++){const point=documentPoint({transform} as Layer,x+.5,y+.5,width,height);coverage[y*width+x]=Math.round(selectionCoverage(selection,...point)*255)}}
- const result=applyImageFilter({width,height,data:new Uint8ClampedArray(png.data)},filter,coverage,1,previewOptions.knownBrightness);png.data=Buffer.from(result.data)
+ const result=applyImageFilter({width,height,data:new Uint8ClampedArray(png.data)},filter,coverage,1,previewOptions.knownBrightness,{gaussianClampSides:sides,progressivePlacement:transform});png.data=Buffer.from(result.data)
  if(!margin)return {png,transform,grew:false}
  let left=width,top=height,right=0,bottom=0
  for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(png.data[(y*width+x)*4+3]){left=Math.min(left,x);top=Math.min(top,y);right=Math.max(right,x+1);bottom=Math.max(bottom,y+1)}
  if(left>=right||top>=bottom)return {png,transform,grew:true}
  const croppedWidth=right-left,croppedHeight=bottom-top,trimmed=left||top||croppedWidth!==width||croppedHeight!==height
- return {png:trimmed?copyRect(png,left,top,croppedWidth,croppedHeight):png,transform:trimmed?placedRect(transform,width,height,left,top,croppedWidth,croppedHeight):transform,grew:croppedWidth!==source.width||croppedHeight!==source.height||left!==margin||top!==margin}
+ return {png:trimmed?copyRect(png,left,top,croppedWidth,croppedHeight):png,transform:trimmed?placedRect(transform,width,height,left,top,croppedWidth,croppedHeight):transform,grew:croppedWidth!==source.width||croppedHeight!==source.height||left!==padLeft||top!==padTop}
 }
 /** Original LayerMask.background uses the majority edge tone. Out-of-grid pixels
  * use that tone unless an edit supplies its outside fill (gradient image growth

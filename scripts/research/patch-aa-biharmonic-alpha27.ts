@@ -1,0 +1,20 @@
+/** Disclosed alpha26 only: clamped bi-Laplacian versus harmonic. No Diffusion mapping. */
+import {readFile,writeFile} from 'node:fs/promises'
+import {gunzipSync} from 'node:zlib'
+import {healMembrane} from '../../src/shared/native-membrane'
+interface Fixture {dataset:string;width:number;height:number;sourceRGBA:string;coverage:string;operation:{offset:[number,number]};cases:{diffusion:number;nativeRGBA:string}[]}
+const files=['natural-explicit','natural-heldout','synthetic-explicit','natural-third-independent','independent-irregular-aa'].map(v=>'fixtures/parity/photoshop-27.11-patch-'+v+'-alpha26.json'),reports=[]
+for(const file of files){
+ const f=JSON.parse(await readFile(file,'utf8')) as Fixture,src=Uint8Array.from(gunzipSync(Buffer.from(f.sourceRGBA,'base64'))),mask=Uint8Array.from(gunzipSync(Buffer.from(f.coverage,'base64'))),native=gunzipSync(Buffer.from(f.cases.find(v=>v.diffusion===5)!.nativeRGBA,'base64')),W=f.width,H=f.height,[dx,dy]=f.operation.offset
+ let left=W,top=H,right=0,bottom=0;for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(mask[y*W+x]){left=Math.min(left,x);top=Math.min(top,y);right=Math.max(right,x+1);bottom=Math.max(bottom,y+1)}left-=2;top-=2;right+=2;bottom+=2;const w=right-left,h=bottom-top,value=new Float32Array(w*h*4),role=new Uint8Array(w*h),raw=new Float64Array(w*h*3),holes:number[]=[],lookup=new Int32Array(w*h).fill(-1),mean=[0,0,0];let ring=0
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=(y+top)*W+x+left,q=y*w+x,donor=((y+top+dy)*W+x+left+dx)*4;for(let c=0;c<3;c++)raw[q*3+c]=src[p*4+c]-src[donor+c];if(mask[p]>=128){lookup[q]=holes.length;holes.push(q);role[q]=2;continue}let near=false;for(let j=-2;j<=2&&!near;j++)for(let i=-2;i<=2;i++){const xx=x+i,yy=y+j;if(xx>=0&&yy>=0&&xx<w&&yy<h&&mask[(yy+top)*W+xx+left]>=128)near=true}if(near){role[q]=1;ring++;for(let c=0;c<3;c++)mean[c]+=value[q*4+c]=raw[q*3+c]}}
+ for(const q of holes)for(let c=0;c<3;c++)value[q*4+c]=mean[c]/ring;healMembrane(value,role,w,h)
+ const bi=Float64Array.from(raw),stencil:[number,number][]=[[0,20],[-1,-8],[1,-8],[-w,-8],[w,-8],[-w-1,2],[-w+1,2],[w-1,2],[w+1,2],[-2,1],[2,1],[-2*w,1],[2*w,1]],N=holes.length,channels=[]
+ const multiply=(v:Float64Array,out:Float64Array)=>{for(let i=0;i<N;i++){let sum=0;for(const [offset,weight] of stencil){const j=lookup[holes[i]+offset];if(j>=0)sum+=weight*v[j]}out[i]=sum}}
+ for(let c=0;c<3;c++){const x=Float64Array.from(holes,q=>value[q*4+c]),b=new Float64Array(N),r=new Float64Array(N),p=new Float64Array(N),ap=new Float64Array(N);for(let i=0;i<N;i++)for(const [offset,weight] of stencil)if(lookup[holes[i]+offset]<0)b[i]-=weight*raw[(holes[i]+offset)*3+c];multiply(x,ap);for(let i=0;i<N;i++)p[i]=r[i]=b[i]-ap[i];let rr=r.reduce((s,v)=>s+v*v,0),iteration=0
+  for(;iteration<2048&&rr>1e-8;iteration++){multiply(p,ap);const pAp=p.reduce((s,v,i)=>s+v*ap[i],0);if(pAp<=0)throw Error('Biharmonic matrix must be positive');const step=rr/pAp;for(let i=0;i<N;i++){x[i]+=step*p[i];r[i]-=step*ap[i]}const next=r.reduce((s,v)=>s+v*v,0),beta=next/rr;for(let i=0;i<N;i++)p[i]=r[i]+beta*p[i];rr=next}channels.push({c,iteration,residual:rr});for(let i=0;i<N;i++)bi[holes[i]*3+c]=x[i]
+ }
+ const models=[];for(const amount of [0,.5,1]){const product=Uint8Array.from(src);for(const q of holes){const x=q%w+left,y=Math.floor(q/w)+top,p=y*W+x,donor=((y+dy)*W+x+dx)*4;for(let c=0;c<3;c++){const correction=value[q*4+c]*(1-amount)+bi[q*3+c]*amount,color=Math.max(0,Math.min(255,src[donor+c]+correction));product[p*4+c]=Math.round(src[p*4+c]*(1-mask[p]/255)+color*mask[p]/255)}}let error=0,max=0,n=0;for(let p=0;p<mask.length;p++)if(mask[p])for(let c=0;c<3;c++){const d=Math.abs(product[p*4+c]-native[p*4+c]);error+=d;max=Math.max(max,d);n++}models.push({biharmonicAmount:amount,mae:error/n,max})}
+ reports.push({dataset:f.dataset,classification:'Disclosed alpha26 only; clamped boundary hypothesis, not heldout or Photoshop parameter formula',channels,models})
+}
+await writeFile('artifacts/alpha27/patch-aa-biharmonic-diagnostic.json',JSON.stringify(reports,null,2)+'\n');console.log(JSON.stringify(reports,null,2))

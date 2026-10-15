@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises'
 import {PNG} from 'pngjs'
 import {Editor} from '../src/core/editor'
 import {actionSchema,EditorError,type EditAction,type Layer} from '../src/shared/contracts'
-import {healPremultiplied} from '../src/shared/native-heal'
+import {healPremultipliedLegacy1_4_8} from '../src/shared/native-heal'
 import {warpPremultiplied} from '../src/shared/native-warp'
 import {prepareRetouch,type RetouchAction} from '../src/core/retouch-edit'
 import {blankPNG,encodeRaster,documentPoint,sourcePoint} from '../src/core/raster-edit'
@@ -14,7 +14,7 @@ function setup(){const editor=new Editor(),png=blankPNG(24,16);for(let y=0;y<16;
 function apply(editor:Editor,action:EditAction){return editor.apply({...editor.identity(),action})}
 test('Spot Healing matches nine independently compiled native C references, including three modes, opacity/alpha and multiscale solve',async()=>{
  const fixtures=JSON.parse(await readFile('fixtures/parity/native-1.4.8-healing.json','utf8'));assert.equal(fixtures.rows.length,9)
- for(const row of fixtures.rows){const input=Uint8Array.from(row.rgba),before=new Uint8Array(input),result=healPremultiplied(input,Uint8Array.from(row.coverage),row.width,row.height,row.opacity,row.mode,row.seed);assert.deepEqual(result,Uint8Array.from(row.expected),`${row.mode}/${row.width}/${row.opacity}`);assert.deepEqual(input,before)}
+ for(const row of fixtures.rows){const input=Uint8Array.from(row.rgba),before=new Uint8Array(input),result=healPremultipliedLegacy1_4_8(input,Uint8Array.from(row.coverage),row.width,row.height,row.opacity,row.mode,row.seed);assert.deepEqual(result,Uint8Array.from(row.expected),`${row.mode}/${row.width}/${row.opacity}`);assert.deepEqual(input,before)}
 })
 test('Smudge carried brush and Liquify inverse field match independently executed native CPU WarpStroke references',async()=>{
  const fixture=JSON.parse(await readFile('fixtures/parity/native-1.4.8-warp.json','utf8'));assert.equal(fixture.rows.length,16)

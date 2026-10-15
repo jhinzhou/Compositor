@@ -1,0 +1,54 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import {mkdtemp,rm} from 'node:fs/promises'
+import {tmpdir} from 'node:os'
+import {join} from 'node:path'
+import {PNG} from 'pngjs'
+import {Editor} from '../src/core/editor'
+import {actionSchema} from '../src/shared/contracts'
+import {blendSampledHealing,sampledHealingHalo} from '../src/shared/sampled-healing'
+import {preparePatch,type PatchAction} from '../src/core/patch-edit'
+import {blankPNG,encodeRaster} from '../src/core/raster-edit'
+import type {Selection} from '../src/shared/pixel-contracts'
+const rect=(x:number,y:number,w:number,h:number):Selection=>({inverted:false,antialiased:false,shapes:[{kind:'rectangle',bounds:[x,y,w,h],feather:0,operation:'replace'}]})
+function field(){const w=64,h=48,destination=new Uint8Array(w*h*4),donor=new Float32Array(w*h*4),coverage=new Uint8Array(w*h);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x;destination.set([145,145,145,255],p*4);const selected=x>=24&&x<40&&y>=16&&y<32,detail=selected?(x+y)%2?12:-12:0;donor.set([60+detail,60+detail,60+detail,255],p*4);if(selected)coverage[p]=255}return {w,h,destination,donor,coverage}}
+function editorFixture(){const png=blankPNG(80,56);for(let y=0;y<56;y++)for(let x=0;x<80;x++)png.data.set([80+x,100+y,130+(x+y)%9,255],(y*80+x)*4);for(let y=20;y<30;y++)for(let x=45;x<55;x++)png.data.set([220,30,20,255],(y*80+x)*4);const editor=new Editor();editor.importPNG(encodeRaster(png),'Diffusion fixture');editor.apply({...editor.identity(),action:{type:'selection.set',selection:rect(45,20,10,10)}});const snapshot=editor.snapshot(),stage={...snapshot,selection:editor.state().selection??null},id=snapshot.manifest.layers[0].id;return {editor,stage,id,png}}
+const patch=(id:string,extra:Partial<PatchAction>={}):PatchAction=>({type:'layer.patch',layerId:id,mode:'source',offset:[-30,0],adaptation:1,...extra})
+
+test('Patch Diffusion is an optional independent integer parameter; old contracts retain their exact fields',()=>{
+ const old=actionSchema.parse(patch('00000000-0000-0000-0000-000000000000'));assert.equal('diffusion' in old,false);for(const diffusion of [1,2,3,4,5,6,7])assert.equal((actionSchema.parse(patch('00000000-0000-0000-0000-000000000000',{diffusion})) as PatchAction).diffusion,diffusion);for(const diffusion of [0,8,1.5,NaN,Infinity])assert.equal(actionSchema.safeParse(patch('00000000-0000-0000-0000-000000000000',{diffusion})).success,false)
+ assert.equal(sampledHealingHalo(),2);assert.equal(sampledHealingHalo(1),2);assert.ok(sampledHealingHalo(7)>sampledHealingHalo(5))
+})
+test('Explicit Diffusion 1 retains byte-identical legacy Source and Destination preparation',()=>{
+ const {stage,id}=editorFixture();for(const mode of ['source','destination'] as const)for(const adaptation of [0,.5,1]){const old=preparePatch(stage,patch(id,{mode,adaptation})),current=preparePatch(stage,patch(id,{mode,adaptation,diffusion:1}));assert.deepEqual(current,old)}
+})
+test('All Diffusion settings transfer constant exterior tone without blurring frozen donor checker texture',()=>{
+ const {w,h,destination,donor,coverage}=field(),before=destination.slice();for(const diffusion of [1,2,5,7]){const result=blendSampledHealing(destination,donor,coverage,w,h,{diffusion});assert.equal(result[(23*w+31)*4],133);assert.equal(result[(23*w+32)*4],157);for(let p=0;p<coverage.length;p++)if(!coverage[p])assert.deepEqual(result.subarray(p*4,p*4+4),destination.subarray(p*4,p*4+4))}assert.deepEqual(destination,before)
+})
+test('Spatial Diffusion changes nonuniform exterior tone independently of adaptation strength',()=>{
+ const {w,h,destination,donor,coverage}=field();for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x;if(!coverage[p])destination.set([Math.abs(x-32)<10?80:190,Math.abs(y-24)<10?90:180,130,255],p*4)}
+ const one=blendSampledHealing(destination,donor,coverage,w,h,{diffusion:1}),five=blendSampledHealing(destination,donor,coverage,w,h,{diffusion:5}),seven=blendSampledHealing(destination,donor,coverage,w,h,{diffusion:7});assert.notDeepEqual(five,one);assert.notDeepEqual(seven,five)
+ const raw=blendSampledHealing(destination,donor,coverage,w,h,{adaptation:0,diffusion:5});for(let p=0;p<coverage.length;p++)if(coverage[p])for(let c=0;c<3;c++)assert.equal(raw[p*4+c],donor[p*4+c])
+})
+test('Selected target colors never enter the exterior tone field and cannot contaminate a full-strength repair',()=>{
+ const {w,h,destination,donor,coverage}=field(),other=destination.slice();for(let p=0;p<coverage.length;p++)if(coverage[p]){destination.set([230,20,10,255],p*4);other.set([20,240,230,255],p*4)}for(const diffusion of [1,5,7])assert.deepEqual(blendSampledHealing(destination,donor,coverage,w,h,{diffusion}),blendSampledHealing(other,donor,coverage,w,h,{diffusion}))
+})
+test('Diffusion preserves alpha-locked hidden RGB, low-alpha exterior confidence and single opacity application',()=>{
+ const {w,h,destination,donor,coverage}=field(),p=23*w+31;destination.set([17,39,61,0],p*4);for(let i=0;i<coverage.length;i++)if(!coverage[i]&&i%5===0)destination[i*4+3]=1
+ const before=destination.slice(),full=blendSampledHealing(destination,donor,coverage,w,h,{diffusion:5}),half=blendSampledHealing(destination,donor,coverage,w,h,{diffusion:5,opacity:.5});assert.deepEqual(full.subarray(p*4,p*4+4),before.subarray(p*4,p*4+4));for(let i=0;i<coverage.length;i++){assert.equal(half[i*4+3],before[i*4+3]);for(let c=0;c<3;c++)assert.ok(Math.abs(half[i*4+c]-(before[i*4+c]+full[i*4+c])/2)<=1)}assert.deepEqual(destination,before)
+})
+test('Near-transparent exterior RGB has proportionate tone confidence and cannot poison the repair field',()=>{
+ const {w,h,destination,donor,coverage}=field(),baseline=blendSampledHealing(destination,donor,coverage,w,h,{diffusion:5}),weak=destination.slice(),opaque=destination.slice()
+ for(let y=12;y<16;y++)for(let x=24;x<40;x++){weak.set([250,0,200,1],(y*w+x)*4);opaque.set([250,0,200,255],(y*w+x)*4)}
+ const low=blendSampledHealing(weak,donor,coverage,w,h,{diffusion:5}),strong=blendSampledHealing(opaque,donor,coverage,w,h,{diffusion:5});let weakMaximum=0,strongMaximum=0
+ for(let p=0;p<coverage.length;p++)if(coverage[p])for(let c=0;c<3;c++){weakMaximum=Math.max(weakMaximum,Math.abs(low[p*4+c]-baseline[p*4+c]));strongMaximum=Math.max(strongMaximum,Math.abs(strong[p*4+c]-baseline[p*4+c]))}
+ assert.ok(weakMaximum<=1);assert.ok(strongMaximum>5)
+})
+test('Diffusion validation, work budget and cancellation reject without mutating source arrays or stage assets',()=>{
+ const {w,h,destination,donor,coverage}=field(),before=destination.slice();for(const diffusion of [0,8,1.5])assert.throws(()=>blendSampledHealing(destination,donor,coverage,w,h,{diffusion}),/diffusion/);assert.throws(()=>blendSampledHealing(destination,donor,coverage,w,h,{diffusion:7,maximumWork:5000}),/budget/);const controller=new AbortController();controller.abort();assert.throws(()=>blendSampledHealing(destination,donor,coverage,w,h,{diffusion:5,signal:controller.signal}),/canceled/);assert.deepEqual(destination,before)
+ const {stage,id}=editorFixture(),asset=stage.assets.get(stage.manifest.layers[0].imageFile!)!;assert.throws(()=>preparePatch(stage,patch(id,{diffusion:8})),/diffusion/);assert.strictEqual(stage.assets.get(asset.file),asset)
+})
+test('Diffusion 5 preview matches one atomic Editor commit, idempotent retry, Undo/Redo and saved PNG bytes',async()=>{
+ const {editor,stage,id}=editorFixture(),before=editor.snapshot(),action=actionSchema.parse(patch(id,{diffusion:5})),prepared=preparePatch(stage,action as PatchAction),request={...editor.identity(),action},applied=editor.apply(request),after=editor.snapshot();assert.equal(applied.status,'applied');assert.deepEqual(after.assets.get(after.manifest.layers[0].imageFile!)!.bytes,prepared.png);assert.deepEqual(editor.apply(request),applied);editor.history({...editor.identity(),direction:'undo'});assert.deepEqual(editor.snapshot(),before);editor.history({...editor.identity(),direction:'redo'});assert.deepEqual(editor.snapshot(),after)
+ const dir=await mkdtemp(join(tmpdir(),'patch-diffusion-alpha26-'));try{await editor.saveAs(join(dir,'result.comp'));const reopened=new Editor();await reopened.open(join(dir,'result.comp'));assert.deepEqual(reopened.snapshot().assets,editor.snapshot().assets);assert.deepEqual(reopened.snapshot().manifest,editor.snapshot().manifest)}finally{await rm(dir,{recursive:true,force:true})}
+})

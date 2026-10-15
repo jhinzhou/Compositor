@@ -1,0 +1,1279 @@
+{
+  "provenance": {
+    "application": "Adobe Photoshop 27.11.0",
+    "method": "Root edited actual native Properties UI; capture reads userMaskDensity/userMaskFeather descriptor and saves independent PSD/PNG. Same disposable self-authored 256x192 white input, center80x80mask at[88,56]. Independent fractional radii0/.1/.2/.3/.4/.5/.6/.7/.8/.9/1/1.2/1.5/2/3.",
+    "nativeRoot": "artifacts/photoshop-native/outputs/mask-feather-ui-study-alpha21",
+    "prepareSHA256": "f2ad825258e55c836f91823f02371d085735b1d4ad8f64e265ecfb1c4c999e62",
+    "captureSHA256": "fbb5a1b93c9ffd524965a9d23b3e02b67e8cac059fa372020d981feac4ce47bb",
+    "logSHA256": "1e87bbb70d21b3fb8c98152435051c8b36c7170d05f743a8df3e7a4b2592c202",
+    "archiveSHA256": "35bd1ca7b93c255712e3310262ece0add1f108754b03116fd2669aae7cd47331",
+    "alpha20KernelSHA256": "962d77a1c74ee8d7eb5c844900203bf9053076740fdc4b93490e22847e35e0fd"
+  },
+  "rows": [
+    {
+      "name": "center-densityByte255-feather0.2",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "4F9F9126-BD11-485B-AD5C-65DF57B19A56",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "4F9F9126-BD11-485B-AD5C-65DF57B19A56.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "4F9F9126-BD11-485B-AD5C-65DF57B19A56.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.2,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.2
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.2,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3LEJADEMBEHH6r9Lx4r/azAWGKGZDvYKuLUAAAAAAAAAAAAAAAAAYI4o9rrnUOwstZsNEPmVSv2t6NevX79+/fr169evX79+/fr169evX79+/fr169evX79+/fr169evX79+/fr1639ddEa/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr19/8/7h/3fT/w8BAAAAAAAAAAAAAAAA4MoPT9foaQ==",
+      "alphaSHA256": "0a8593a9f1ebc01c8f640abcea51e22e6cc592c253c5cae30e5ff0b566edb820",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "3c6470d64d18d5583ef30294efaf009110d273c50b0153fc074b0440f53bbc2a",
+      "pngSHA256": "e45744f2a89597d3ba69b5a2ec32c806ce530202e130363fc1667af6924d0dbb",
+      "alpha20Baseline": {
+        "max": 7,
+        "absoluteL1": 2556,
+        "unionMAE": 0.38035714285714284
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "60211460-4D01-4E7B-92B6-5CCAA6579AEF",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "60211460-4D01-4E7B-92B6-5CCAA6579AEF.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "60211460-4D01-4E7B-92B6-5CCAA6579AEF.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac"
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJztzwEJADAIADD7l9YMiiDnW4NFAAAAAAAAAAAAAAAAAAC/yGXXny5/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f3//60+Xv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+//5t/AAAAAAAAAAAAAAAAAGCuAE/X6Gk=",
+      "alphaSHA256": "ee023f24f3f4a1d262d9284e5a3fa7355b7540e19151873f846048c67fda0402",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "b7336f99642462ded000afb8ab6c6be3dfd1f24d154bd6ab0ec52d29b9cac355",
+      "pngSHA256": "266ac64d84f23d3672a67bb067f94f0f594b2c86381de569b16304dbd54b3af2",
+      "alpha20Baseline": {
+        "max": 0,
+        "absoluteL1": 0,
+        "unionMAE": 0
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0.1",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "F6B76A7D-A390-44A4-8DB0-CA3F5AF28304",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "F6B76A7D-A390-44A4-8DB0-CA3F5AF28304.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "F6B76A7D-A390-44A4-8DB0-CA3F5AF28304.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.1,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.1
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.1,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJztzwEJADAIADD7l9YMiiDnW4NFAAAAAAAAAAAAAAAAAAC/yGXXny5/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f3//60+Xv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+//5t/AAAAAAAAAAAAAAAAAGCuAE/X6Gk=",
+      "alphaSHA256": "ee023f24f3f4a1d262d9284e5a3fa7355b7540e19151873f846048c67fda0402",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "36d6c3e3c3429a5e9da643ef2b7c54a5d3400f768bfb4c6f09e1873bf983c06a",
+      "pngSHA256": "1e2bd955ead8d4fc21f3273ff168d451521c16b362ad153d519f70ee95fae6b3",
+      "alpha20Baseline": {
+        "max": 0,
+        "absoluteL1": 0,
+        "unionMAE": 0
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0.3",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "7C0220CC-B940-40D8-BB65-FBDFC10B2837",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "7C0220CC-B940-40D8-BB65-FBDFC10B2837.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "7C0220CC-B940-40D8-BB65-FBDFC10B2837.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.3,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.3
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.3,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3DENwDAMAMEs4eHF/PdACZkWg9VIVpU7Bk/gxwAAAAAAAAAAAAAAAACAa8zIo2J2F9XE2ket6C6qyf0ctbO7qEa/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr19/d1GNfv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv1/7r/9f3f7/xAAAAAAAAAAAAAAAAAAPnkBT9foaQ==",
+      "alphaSHA256": "f2689d4dfb39406492aaa2d16da0d689c68642aea204900a251a4735fb623cd3",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "175a53280e0e30d64d085e25362ffacbd9b5f6581a6a71376515a7619551ec43",
+      "pngSHA256": "a10bf5b931a8c81d9b28016d426d65c5ed9ab0284a118f2e74958b978e0aec10",
+      "alpha20Baseline": {
+        "max": 19,
+        "absoluteL1": 7020,
+        "unionMAE": 1.0440214158239143
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0.4",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "9505431F-54FE-4E24-8709-08F2884062DD",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "9505431F-54FE-4E24-8709-08F2884062DD.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "9505431F-54FE-4E24-8709-08F2884062DD.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.4,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.4
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.4,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3EENwCAQAEG+KIHvqcYNlloNl5JcGmYcrIFtDQAAAAAAAAAAAAAAAACu0UccNXp1Uc5c+6g1q4tyYj9H7aguytGvX79+/fr169evX79+/fr169evX79+/fr169evX79+/fr169evX79+/fr169dfXZSjX79+/fr169evX79+/fr169evX79+/fr169evX79+/fr169evX/+f+2//393+PwQAAAAAAAAAAAAAAACAT15P1+hp",
+      "alphaSHA256": "e720195968a0f10c358d6071424e416bd39483933758ffdb04446d61ddaa904f",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "4724550b86c12d30ca87f54d008db8adf6a4dae3dc9eecfeab2d02e580e9a32b",
+      "pngSHA256": "6a88b5f05c2d5f5529ab7ce832c24691995b537608d0af388bf54d40c5cb1dd2",
+      "alpha20Baseline": {
+        "max": 7,
+        "absoluteL1": 3172,
+        "unionMAE": 0.47174301011302794
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0.5",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "70715037-20A4-4EFB-AEE0-4ED1D46EE794",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "70715037-20A4-4EFB-AEE0-4ED1D46EE794.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "70715037-20A4-4EFB-AEE0-4ED1D46EE794.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.5,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.5
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.5,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3MENxCAQBEHzdygEQK7OB6Iy5xiQV0K+rcqgpXnPcQAAAAAAAAAAAAAAAACQSQm2u2fRWVuoeu4uWlLq1UegftVPLaC0fs9Ad28f6x/zF2gO/bubVujXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXv7tphX79+vXr169fv379+vXr169fv379+vXr169fv379+vXr1/8f/cn/z5L/32X/P0z/fwkAAAAAAAAAAAAAAADASw9P1+hp",
+      "alphaSHA256": "fe3c6797060281288fada224931128f2d3d8c09d5a55a5c23ec729b6c1b273b7",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "4b525057e62f42877c9974a0c130202ba103d49e9f01253dcb77ea8fcca6ac67",
+      "pngSHA256": "55c40db053dd10c54ffa66110191b44777875aac177f09d61903f1abb008c2f4",
+      "alpha20Baseline": {
+        "max": 3,
+        "absoluteL1": 1896,
+        "unionMAE": 0.26916524701873934
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0.6",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "86C6BE24-7EE1-4D3F-ABAC-9DBFBFF738C9",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "86C6BE24-7EE1-4D3F-ABAC-9DBFBFF738C9.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "86C6BE24-7EE1-4D3F-ABAC-9DBFBFF738C9.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.6,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.6
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.6,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3AENwyAARNECAuoEBeCyggiumjTZNJCRkI73HPwTcMcBAAAAAAAAAAAAAAAAwEZCTFPFsLpoSDhzqROVfL5qgJiv1idqV46rm0ak0u5noruVtLppRKr9+Uz09Kr/RfTr169fv379+vXr169fv379+vXr169fv379+vXr169fv379+vXr169fv379+vXrX900Qr9+/fr169evX79+/fr169evX79+/fr169evX79+/fr16/+L/s3/z3b/v9v9/3D3/0sAAAAAAAAAAAAAAAAAfvUFT9foaQ==",
+      "alphaSHA256": "65c8c10ffa8bc141099c95b8deafe64aab3af5abc98baf20369a766a6d9e64cd",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "1bb3696e57dfaac4ae30908fda6b105712487dc1d2740e837733dbf10fd483e0",
+      "pngSHA256": "05c54d2f87eb2e1e3c66731d8847597cfd55ea6c1eb10d1d42b4338ea74b361b",
+      "alpha20Baseline": {
+        "max": 6,
+        "absoluteL1": 2568,
+        "unionMAE": 0.3641520136131594
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0.7",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "EE7B4AF6-EBB6-4E80-BE57-50DC2AF0BA61",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "EE7B4AF6-EBB6-4E80-BE57-50DC2AF0BA61.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "EE7B4AF6-EBB6-4E80-BE57-50DC2AF0BA61.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.7,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.7
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.7,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3MEJxCAARNEgiPd0YglieSnIi03llttuDbKCZH2vgz8FzHEAAAAAAAAAAAAAAAAAsJEQ01QxrC4aEs5c6kQln68aIOar9YnalePqphGptPuZ6G4lrW4akWp/PhM9vep/Ef369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv36VzeN0K9fv379+vXr169fv379+vXr169fv379+vXr169fv379+v+if/P/s93/73b/P9z9/xIAAAAAAAAAAAAAAACAX30BT9foaQ==",
+      "alphaSHA256": "c37b1c1ae497b9886ac80f45453a38df24749736f9c712d5f78cee14222715c7",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "b2b3b598d0a68737648d3493437a6b650e5df081d6589802aeee34c488c5938f",
+      "pngSHA256": "4c1edb4d29e0c1913016c45c6e19737efbc9ed6a03fc6742f8a565f98c2a1240",
+      "alpha20Baseline": {
+        "max": 5,
+        "absoluteL1": 2552,
+        "unionMAE": 0.3618831537152581
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0.8",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "B065D777-B634-4ECF-848A-23BCDD9B4F6F",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "B065D777-B634-4ECF-848A-23BCDD9B4F6F.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "B065D777-B634-4ECF-848A-23BCDD9B4F6F.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.8,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.8
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.8,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3MENhCAARFETL0SudqItkFiY/XCkJ8/cd2sgS0Jc3uvgTwGzLAAAAAAAAAAAAAAAAABMZA1b7GgL6+iiJut+pKujdOyvGiCcdy4d5fsMo5taxJSf2tGTUxzd1CJepX46quXS/yL69evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369Y9uaqFfv379+vXr169fv379+vXr169fv379+vXr169fv379+vX/Rf/k/2ez/9/N/n84+/8lAAAAAAAAAAAAAAAAAL/6Ak/X6Gk=",
+      "alphaSHA256": "18ced29d64d73505bd495957e097e724d56a0f9393c4f27d566752c498d4923c",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "15fdeedab8fd118dbdaa158082a44296855568c830cc3f393129778f1d6058e3",
+      "pngSHA256": "d4a273504c56857e0511e9abad8fb322371f1dcea4a77459ee0bbe7fcbc20c9e",
+      "alpha20Baseline": {
+        "max": 5,
+        "absoluteL1": 2584,
+        "unionMAE": 0.36621315192743764
+      }
+    },
+    {
+      "name": "center-densityByte255-feather0.9",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "67C35C2B-819D-48B6-880D-967B03634BA7",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "67C35C2B-819D-48B6-880D-967B03634BA7.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "67C35C2B-819D-48B6-880D-967B03634BA7.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 0.9,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 0.9
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 0.9,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3LENgzAURVFcUFGYLpswAwVsxD7UMBETwASQrBAUS8jxORvcr1+/qgIAAAAAAAAAAAAAAAAoS0js6Z57Qt3ENqHY1FldoH51/TAmM/Tdq3666YbQdNO8JjRPXZPRA4TYz9t+JLNvcx9z6m/HZT+vZM59Gdu8+tfjeidzHat+/dnQr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1//01Xf069fv379+vXr169fv379+vXr169fv379+vXr16//z/rL3r8qff+s8P270vcPi9+/LH3/FAAAAAAAAAAAAAAAAOB3H0/X6Gk=",
+      "alphaSHA256": "f9b581b0c312cdb80b5ae73fdf3f8614061a1e0212e9b98d2fc85ee281ed3254",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "3f0994113ccf9241a711d43b01b3bc9a5bf3744441452f81aa7d4f8085d58bbc",
+      "pngSHA256": "21e1638bcb10e7b4aee585ac506f30aeb1ec631ce4f88e64706b305d3fa19fd9",
+      "alpha20Baseline": {
+        "max": 4,
+        "absoluteL1": 2520,
+        "unionMAE": 0.34164859002169196
+      }
+    },
+    {
+      "name": "center-densityByte255-feather1",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "94D852A8-DB2D-4FC3-84C6-C0898F59E698",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "94D852A8-DB2D-4FC3-84C6-C0898F59E698.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "94D852A8-DB2D-4FC3-84C6-C0898F59E698.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 1,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 1
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 1,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3MENgkAURVFnFixZEDZWQg26gXJoBwoY6rEEQgmGaAsaJyE453Rwk/+373IBAAAAAAAAAAAAAAAAKEoIMasQji76Sqzqps2oqat4dNMXQnXtbv2QTX/rrtWJLiDU3TinJZs0j119ov7Y3KfHumWzPqZ7c6IHiG2f1ueezXNNfXuq/mHZ9lc2+7YM+o+u+px+/fr169evX79+/fr169evX79+/fr169evX79+/fr169evX79+/fr169evX79+/fqPrvqcfv369evXr1+/fv369evXr1+/fv369evXr1+/fv36/6m/8P2rwvfPSt+/K33/sPT9y+L3TwEAAAAAAAAAAAAAAAB+9wZP1+hp",
+      "alphaSHA256": "b8b30842824b10ac65780e71b609799fc5cec5b7655748a7868c989312915eae",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "ebb3fe0f94d193070291347d9ce3ddcf51d581e7a3e83715b7839e3ff9d693bb",
+      "pngSHA256": "a99f439a837a205fac785e52bcead2eca5de376f213662497bb609619a3b3ac3",
+      "alpha20Baseline": {
+        "max": 5,
+        "absoluteL1": 3788,
+        "unionMAE": 0.5130010834236186
+      }
+    },
+    {
+      "name": "center-densityByte255-feather1.2",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "EAD9E7DE-CEFA-42FA-9E08-D647EEDA2644",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "EAD9E7DE-CEFA-42FA-9E08-D647EEDA2644.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "EAD9E7DE-CEFA-42FA-9E08-D647EEDA2644.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 1.2,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 1.2
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 1.2,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3MGNglAUhlEh4II1KxLoQ3vQJVqFzWgHJFKKTbDAGtzgQmdaYJKXEOad08F3c9f/ZgMAAAAAAAAAAAAAAADEJgls6Z6/SdIs3waUZ+maLpBkRVnVTTB1VRbZig6QFs3u0J7OgZzaw64p0qWrZkuycn+5dX0w3e2yL9fzAEleHa+PYXwGMg6P67HK19O/rdtueE3vQKbX0LX1dkX9zfk+Tp9vIJ9pvJ+bdfX3z/f3J5Dv+9nr179011z69evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXr1+/fv369evXv3TXXPr169evX79+/fr169evX79+/fr169evX7/+/9kf9/5R5PtXse+fRb5/F/v+YfT7l7Hvn0a/fwsAAAAAAAAAAAAAAACE8AtP1+hp",
+      "alphaSHA256": "667b258c00060f31ef4603190a2b5b94eab82b7da5e907f427f4e41beb9e6a90",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "8307feaf197c5eaf4b4475f0310ad2b42426100a9789334e614a20a7b77dc241",
+      "pngSHA256": "0ba9d3764fa088bcaa8a23568bd612c88413bc4d250396cb20d31bf9a0e05707",
+      "alpha20Baseline": {
+        "max": 3,
+        "absoluteL1": 3120,
+        "unionMAE": 0.4045643153526971
+      }
+    },
+    {
+      "name": "center-densityByte255-feather1.5",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "11FAE67E-6A80-4404-A3B4-5ED37165B134",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "11FAE67E-6A80-4404-A3B4-5ED37165B134.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "11FAE67E-6A80-4404-A3B4-5ED37165B134.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 1.5,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 1.5
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 1.5,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3L2JAlEAhVHnDSLCKJMbauBPCdrDxBpoZCnWoJFYgmVoKpZgLBgKwm4LLjwYZt85HXy3gNtqAQAAAAAAAAAAAAAAAGnJshDyiELIsrqb/iAL7W7R60fTK7rt0JwBstApB6PxdBbJdDwalJ3mDJC1y+G8Wq43kayX1XxYthvTH7qDxXZ3OJ4iOR5228WgG+ru+lYoRtXufL3dI7ldz7tqVDSmP+9NVvvL4/mK5Pm47FeTXl5317fy/nR9vD3fn0jez9txPe03qH+2Od1fn59IPq/7aTPTX3fXt/Tr169fv379+vXr169fv379+vXr169fv379+vXr169fv379+vXr169fv379+vXr16+/7q5v6devX79+/fr169evX79+/fr169evX79+/fr1/7/+xP+PEv+/Sv3/LPX/u9T/D1P/v0z9/zT5/1sAAAAAAAAAAAAAAAAgil9P1+hp",
+      "alphaSHA256": "105481b2544230f10314ba4cdab44ff1738bdae99af2fa2785d01c5895c8a461",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "68e65a6c9ea72cb1e7d174962021a908dfd37546118a25bfb99e32e551ce42da",
+      "pngSHA256": "a6b43036fcc0711b716602be9b3f6d3231aff78270348ee40e48a7f268534a2b",
+      "alpha20Baseline": {
+        "max": 2,
+        "absoluteL1": 1368,
+        "unionMAE": 0.17692705638903258
+      }
+    },
+    {
+      "name": "center-densityByte255-feather2",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "92B2DFF0-5FB8-4C45-8E7F-D020650BC1E5",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "92B2DFF0-5FB8-4C45-8E7F-D020650BC1E5.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "92B2DFF0-5FB8-4C45-8E7F-D020650BC1E5.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 2,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 2
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 2,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3DFOKkEAx2F3V7IhbExoCCFYaWVBR0FQr6D1Cx0JegDOQE2DnoILUBFsvAGdBis7EixMMPreFXzJJGQz33eD32Rmyv/REQAAAAAAAAAAAAAAADFKAjt0z/9J0jQ7DihL0xKdQJJklbxaqxWB1GrVvJKV5w4kWV7UG612+zSIdrvVqBd5Vpb+JMtPmmedbq9/GUS/1+2cNU9KcwBppWheXN0MhqO7+wDuRsPBzdVFs6ikhy77lSTN6+fXf8aT6ewxiNl0Mv5zfV7Py/EHJlm10bkdz+aL5eopgNVyMZ+NbzuNajkeQHJca3UHk/nz+nXzFsDmdf08nwy6rdpxWfrbveF0sX7f7j4C2G3f14vpsNcuTX9x2h/Nli/bz/1XAPvP7ctyNuqfFuXpv7x/WG12+++fAL73u83q4f6yXP2PT28fXz9/A/j5+nh7etSvX/+h235Dv379+vXr169fv379+vXr169fv379+vXr169fv379+vXr169fv379+vXr169fv379+vXrP3Tbb+jXr1+/fv369evXr1+/fv369cfRH/f+Sdz7N7HvH0W+fxX7/lnk+3ex7x9Gv38Z+/5p9Pu3se8fH0W/fw0AAAAAAAAAAAAAAEAo/wBP1+hp",
+      "alphaSHA256": "fe3999ea58946ac3d1042e9e3445486ccdaadb9ec21ad824a1031eacf02b74b3",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "be4e43c7bb299d293d9f9b095883dddda7cee53f4bac7ce464ab559d28d619f5",
+      "pngSHA256": "e07e6e57107275bff0f42103c4bdae8b1ff92697294e98922b374a2bd94a2f19",
+      "alpha20Baseline": {
+        "max": 2,
+        "absoluteL1": 2496,
+        "unionMAE": 0.29714285714285715
+      }
+    },
+    {
+      "name": "center-densityByte255-feather3",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "F3DA82C7-2A1D-494B-85C6-510FC1281103",
+        "name": "alpha21-mask-reference",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "F3DA82C7-2A1D-494B-85C6-510FC1281103.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "F3DA82C7-2A1D-494B-85C6-510FC1281103.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskFeather": 3,
+        "maskFeatherModel": "photoshop",
+        "maskFeatherEdgeMode": "default",
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskFeather": 3
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "feather": 3,
+            "featherModel": "photoshop",
+            "featherEdgeMode": "default"
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJzt3K9rOnEcx/Hd6XmoeP4IiiDnQJOgDEWMmiyKbs0qFoM4MC0ZLQe6ahvYBB3+ATaD2IwGsRpEWBDHcD/+hH3hhH2Pz/PxHzzfvPPr5gYAAAAAAAAAAAAAAAAAAAAAAEBEkiTJVyVJ0l83/TtJkm12xeFQr8ThUOw22TIXkGSbojrdHs3r8/lN8/m8msftVBWbbI0DSLJddWmBYDiiR6O3pkWjeiQcDGgu1W6NA0g21e0P6fFEKp3JXkEmnUrE9ZDfrdqs0C/JissfjiVzhWKpUr03rVopFQu5ZCzsdylWeADJpmqh2F2+XKs3W+1H09qtZr1Wzt/FQpolHkCyOwN6Mv/Q6HR7Rn/wbNKgb/S6ncZDPqkHnHYL9MuKOxjPlRtPxnA0nkxfTZpOxqOh8dQo5+JBtyL/dd3vZIcnnCjUOsbLbL5YrkxbLuazF6NTKyTCHocl+rVIqljvDmeL9Wa7M227WS9mw269mIpoluhXvXq61OyN5uvd/nA07bDfreejXrOU1r2qJfp90UylZYwXm/3b6fxu0vn0tt8sxkarkon6rNKfrbb7k+X2cPq4fJp0+TgdtstJv13NWqXff5u9fxxMV7vj+fL1bdLX5XzcraaDx/vsrd9C/c+vq93x/dNs/vf35/txt3p9pp9++un/79FPP/30008//fTTTz/99NNPP/30008//fTTTz/99NNPP/30008//fTTTz/99NNPP/30008//fTTTz/9f133O/rpp59++umnn3766RewX+D9A9H3L0TfPxF8/0b0/SPR968E3z8Tff9O+P1DwfcvRd8/FX7/VvT9Y+H3r4XfPwcAAAAAAAAAAAAAAAAAAAAAALimH02L6Ak=",
+      "alphaSHA256": "5bd828d84c5a7946217b6b6a7b7ac1a4db42a4ce9735a7d48e31642be3b607ae",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "388bd88f1875b3023d674ed2a294f208ccb9f45c16ded30a1af31b10115becce",
+      "pngSHA256": "8b6883ecfce3f138c7f5ee76f3a7b39e06d1ae0ea6b49e42a0be60c496bcb98f",
+      "alpha20Baseline": {
+        "max": 3,
+        "absoluteL1": 5548,
+        "unionMAE": 0.6080666374397194
+      }
+    }
+  ]
+}

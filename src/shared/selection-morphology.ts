@@ -39,5 +39,5 @@ export function morphDocumentSelection(selection:Selection,width:number,height:n
  for(let y=0;y<h;y++)for(let x=0;x<w;x++)coverage[y*w+x]=selectionGeometryCoverage(selection,left+x+.5,top+y+.5)>=.5?255:0
  const output=roundedMorphCoverage(coverage,w,h,operation,amount,selection.antialiased!==false),runs:[number,number,number,number][]=[]
  for(let y=0;y<h;y++)for(let x=0;x<w;){const start=x,value=output[y*w+x];while(x<w&&output[y*w+x]===value)x++;if(value)runs.push([y,start,x-start,value]);if(runs.length>100_000)throw new EditorError('RESOURCE_LIMIT','Modified selection exceeds the coverage run budget.')}
- return {inverted:false,antialiased:selection.antialiased,feather:selection.feather??Math.max(0,...selection.shapes.map(s=>s.feather)),canvasSize:[width,height],shapes:[{kind:'raster',operation:'replace',feather:0,bounds:[left,top,w,h],raster:{width:w,height:h,transform:{origin:[left,top],size:[w,h],rotation:0,flipX:false,flipY:false},runs}}]}
+ return {inverted:false,antialiased:selection.antialiased,featherModel:selection.featherModel,feather:selection.feather??Math.max(0,...selection.shapes.map(s=>s.feather)),canvasSize:[width,height],shapes:[{kind:'raster',operation:'replace',feather:0,bounds:[left,top,w,h],raster:{width:w,height:h,transform:{origin:[left,top],size:[w,h],rotation:0,flipX:false,flipY:false},runs}}]}
 }

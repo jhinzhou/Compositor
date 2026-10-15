@@ -9,6 +9,7 @@ export type CropRect=Rect
 export type CropHandle='nw'|'n'|'ne'|'e'|'se'|'s'|'sw'|'w'
 export type CropDragMode='create'|'move'|CropHandle
 export const CROP_HANDLES:CropHandle[]=['nw','n','ne','e','se','s','sw','w']
+export function sameCropRect(a:CropRect,b:CropRect):boolean{return a.x===b.x&&a.y===b.y&&a.width===b.width&&a.height===b.height}
 
 export function pixelCropRect(rect:CropRect):CropRect {
   const x=Math.round(Math.min(rect.x,rect.x+rect.width)),y=Math.round(Math.min(rect.y,rect.y+rect.height))

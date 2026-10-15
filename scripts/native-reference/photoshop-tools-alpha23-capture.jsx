@@ -1,0 +1,11 @@
+#target photoshop
+(function(){
+ var previousDialogs=app.displayDialogs;app.displayDialogs=DialogModes.NO;var d=app.activeDocument;if(d.activeLayer.name!=='alpha23-tools-owned')throw Error('Only owned alpha23 reference document may be captured');
+ var root='/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/outputs/tools-alpha23',folder=new Folder(root);if(!folder.exists)folder.create();
+ var name='capture-'+new Date().getTime();d.saveAs(new File(root+'/'+name+'.png'),new PNGSaveOptions(),true,Extension.LOWERCASE);
+ var f=new File(root+'/'+name+'.txt');f.encoding='UTF-8';f.open('w');f.writeln('Photoshop='+app.version+' width='+d.width.as('px')+' height='+d.height.as('px'));try{f.writeln('selection='+d.selection.bounds)}catch(e){f.writeln('selection=none')}
+ f.writeln('samples='+d.colorSamplers.length);for(var i=0;i<d.colorSamplers.length;i++){var s=d.colorSamplers[i];f.writeln('sample='+s.position+' RGB='+s.color.rgb.red+','+s.color.rgb.green+','+s.color.rgb.blue)}
+ var r=new ActionReference();r.putEnumerated(stringIDToTypeID('document'),stringIDToTypeID('ordinal'),stringIDToTypeID('targetEnum'));f.writeln(executeActionGet(r).toStream());f.close();
+ var temp,historyBefore=d.activeHistoryState;try{var selectionBounds=d.selection.bounds;var stored=d.channels.add();d.selection.store(stored);temp=d.duplicate('alpha23-selection-owned-copy',false);var channel=temp.channels[temp.channels.length-1];temp.activeChannels=temp.componentChannels;temp.selection.selectAll();var black=new SolidColor();black.rgb.red=0;black.rgb.green=0;black.rgb.blue=0;temp.activeLayer=temp.artLayers.add();temp.selection.fill(black,ColorBlendMode.NORMAL,100,false);temp.selection.load(channel,SelectionType.REPLACE);var white=new SolidColor();white.rgb.red=255;white.rgb.green=255;white.rgb.blue=255;temp.selection.fill(white,ColorBlendMode.NORMAL,100,false);temp.selection.deselect();temp.flatten();temp.saveAs(new File(root+'/'+name+'-selection.png'),new PNGSaveOptions(),true,Extension.LOWERCASE);}catch(e){var ef=new File(root+'/'+name+'-selection-error.txt');ef.open('w');ef.writeln(e.toString());ef.close();}finally{if(temp)temp.close(SaveOptions.DONOTSAVECHANGES);app.activeDocument=d;d.activeHistoryState=historyBefore;}
+ app.displayDialogs=previousDialogs;
+})();

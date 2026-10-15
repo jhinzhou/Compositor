@@ -74,7 +74,7 @@ test('provided composite pixels and document DPI are encoded for external viewer
 test('invalid, CMYK, high-depth and excessive image headers fail before allocation', () => {
   assert.throws(() => decodePhotoshop(Buffer.from('not photoshop')), /valid PSD/)
   const cmyk = handcraftedPSD(); cmyk.writeUInt16BE(4, 24); assert.throws(() => decodePhotoshop(cmyk), /8-bit RGB/)
-  const high = handcraftedPSD(); high.writeUInt16BE(16, 22); assert.throws(() => decodePhotoshop(high), /8-bit RGB/)
+  const high = handcraftedPSD(); high.writeUInt16BE(32, 22); assert.throws(() => decodePhotoshop(high), /8-bit RGB/)
   const large = handcraftedPSD(); large.writeUInt32BE(30001, 18); assert.throws(() => decodePhotoshop(large), /resource limits/)
   const corrupt = handcraftedPSD().subarray(0, 45); assert.throws(() => decodePhotoshop(corrupt), /decode/)
 })

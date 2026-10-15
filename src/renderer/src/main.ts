@@ -11,6 +11,9 @@ if (new URLSearchParams(location.search).has('render')) {
   const canvas = document.createElement('canvas')
   document.body.append(canvas)
   const engine = new CanvasEngine()
+  // Saved thumbnails, MCP captures and adjustment previews have a deterministic
+  // image boundary. Display-only dithering belongs to the visible editor.
+  engine.setScreenQuantization(false)
   window.compositor.onRender(async ({ id, state, maxDimension, fullSize,content }) => {
     try {
       if(content){await fonts;const raster=content.type==='layer.text'?await renderTextPNG(content.style):await renderShapePNG(content.style,content.size);window.compositor.renderComplete(id,{ok:true,value:{data:toBase64(raster.bytes),mimeType:'image/png',revision:state.revision,previewId:crypto.randomUUID(),width:raster.width,height:raster.height,canvasSize:[raster.width,raster.height],scale:1}});return}

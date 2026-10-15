@@ -1,0 +1,16 @@
+/** Geometry-only native GUI fixture. Never decodes image pixels. */
+import {readFileSync,writeFileSync,existsSync} from 'node:fs'
+import {createHash} from 'node:crypto'
+import assert from 'node:assert/strict'
+import {photoshopPerspectiveCropSize,type CropCorners} from '../src/shared/crop-projective'
+// Native research rerun needs its archived baseline; clean checkout typechecking does not.
+const archivedBaselinePath='../'+['artifacts','alpha28-baseline','src','shared/crop-projective'].join('/')
+const {photoshopPerspectiveCropSize:originalSize}=await import(archivedBaselinePath).catch(()=>{throw new Error('Native research rerun requires artifacts/alpha28-baseline; product/tests do not use this archive.')}) as typeof import('../src/shared/crop-projective')
+const eventPath='artifacts/photoshop-native/outputs/crop-events-alpha28/crop-event-1791957901905.json',imagePath='artifacts/photoshop-native/outputs/gui-alpha28/alpha28-gui-owned-crop.png',eventBytes=readFileSync(eventPath),event=JSON.parse(eventBytes.toString('utf8')),imageBytes=readFileSync(imagePath),quad=event.descriptor.to.value,sha=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex')
+assert.equal(event.event,'perspectiveCrop');assert.equal(event.descriptor.to.className,'quadrilateral');assert.equal(quad.center.className,'paint');assert.equal(quad.width,undefined);assert.equal(quad.height,undefined);assert.equal(event.descriptor.width,undefined);assert.equal(event.descriptor.height,undefined)
+const corners=[0,1,2,3].map(i=>{const p=quad[`quadCorner${i}`].value;assert.equal(p.horizontal.unit,'pixelsUnit');assert.equal(p.vertical.unit,'pixelsUnit');return [p.horizontal.value,p.vertical.value]}) as CropCorners,sourceCenter:[number,number]=[quad.center.value.horizontal.value,quad.center.value.vertical.value]
+assert.deepEqual(corners,[[88,33],[457,117],[383,347],[49,298]]);assert.deepEqual(sourceCenter,[256,192]);assert.equal(imageBytes.toString('ascii',12,16),'IHDR')
+const width=imageBytes.readUInt32BE(16),height=imageBytes.readUInt32BE(20);assert.deepEqual([width,height],[421,306]);const baseline=originalSize(corners,512,384),production=photoshopPerspectiveCropSize(corners,512,384)
+const fixture={date:'2026-10-14',photoshopVersion:event.photoshopVersion,referenceKind:'native-gui-event',referenceRole:'independent-after-candidate-freeze',source:{width:512,height:384},limits:['Actual Photoshop C-tool mouse handles and Return; geometry comes from captured ActionDescriptor, not manually estimated screenshot coordinates.','Size-only fixture; native PNG is inspected for IHDR dimensions and hash, never pixel decoded.','Output is verified after the original nearest-depth candidate freeze; it does not tune a pixel correction.'],provenance:{eventPath,eventSHA256:sha(eventBytes),nativeImagePath:imagePath,nativeImageSHA256:sha(imageBytes)},case:{name:'actual-gui-strong-alpha28',corners,sourceCenter,width,height,baseline,productionAtFreeze:production}}
+const path='fixtures/parity/photoshop-27.11-perspective-size-gui-alpha28.json',text=JSON.stringify(fixture,null,2)+'\n';if(existsSync(path)){if(readFileSync(path,'utf8')!==text)throw Error('Immutable GUI fixture changed')}else writeFileSync(path,text,{flag:'wx'})
+console.log(JSON.stringify({native:[width,height],baseline,production,corners,eventSHA256:fixture.provenance.eventSHA256},null,2))

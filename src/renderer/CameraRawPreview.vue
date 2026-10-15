@@ -4,7 +4,7 @@ const { t, tm } = useI18n()
 import { onBeforeUnmount, ref, watch } from 'vue'
 import { applyCameraRawPreview, type ImageFilter, type PixelImage } from '../shared/image-filters'
 import { cameraClipOverlay, cameraScopes, cameraSamplePoint, type CameraGeometry, type CameraMixer } from '../shared/camera-raw-kernels'
-const props=defineProps<{url?:string;originalURL?:string;spec:Extract<ImageFilter,{kind:'cameraRaw'}>}>()
+const props=defineProps<{url?:string;originalURL?:string;spec:Extract<ImageFilter,{kind:'cameraRaw'}>;resetSignals?:{mixer:number;geometry:number}}> ()
 const emit=defineEmits<{geometry:[value:CameraGeometry];mixer:[value:CameraMixer]}>()
 const canvas=ref<HTMLCanvasElement>(),scope=ref<HTMLCanvasElement>(),view=ref('normal'),scopeMode=ref('histogram'),action=ref<'none'|'point'|'guide'>('none'),error=ref(''),point=ref(0)
 let source:PixelImage|undefined,graded:PixelImage|undefined,loadID=0,drag:{x:number;y:number}|undefined,timer:ReturnType<typeof setTimeout>|undefined
@@ -31,6 +31,8 @@ function up(event:PointerEvent):void{if(!drag)return;const p=position(event),fro
 watch(()=>[props.url,props.originalURL],refresh,{immediate:true,flush:'post'})
 watch(view,()=>{action.value='none'})
 watch([view,scopeMode,action,point],()=>{try{paint()}catch(cause){error.value=cause instanceof Error?cause.message:String(cause)}},{flush:'post'})
+watch(()=>props.resetSignals, (next,previous)=>{if(next?.mixer!==previous?.mixer){point.value=0;if(view.value==='range')view.value='normal';if(action.value==='point')action.value='none'}if(next?.geometry!==previous?.geometry){drag=undefined;if(action.value==='guide')action.value='none'}},{deep:true})
+watch(()=>props.spec.mixer.points.length,length=>{if(!length&&view.value==='range')view.value='normal';point.value=Math.max(0,Math.min(point.value,length-1))})
 watch(()=>props.spec,()=>{clearTimeout(timer);timer=setTimeout(()=>paint(),150)},{deep:true})
 onBeforeUnmount(()=>{loadID++;clearTimeout(timer);decodedImages.clear();source=undefined;graded=undefined})
 </script>

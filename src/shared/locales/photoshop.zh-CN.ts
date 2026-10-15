@@ -1,0 +1,21 @@
+export const photoshopZhCN:Record<string,string>={
+ 'Interaction profile':'操作习惯',
+ 'The profile changes default shortcuts and mask selection behavior. Custom shortcuts are kept.':'操作习惯决定默认快捷键和蒙版载入方式，自定义快捷键会保留。',
+ 'Photoshop':'Photoshop','Compositor':'Compositor',
+ 'Merge Layers':'合并图层','Merge Visible':'合并可见图层','Stamp Visible':'盖印可见图层','Stamp Selected':'盖印选中图层',
+ 'Show / Hide Panels':'显示 / 隐藏面板','Show / Hide Side Panels':'显示 / 隐藏侧边面板',
+ 'Fill with Foreground':'以前景色填充','Fill with Background':'以背景色填充',
+ 'Fill with Foreground (Delete)':'以前景色填充（Delete）','Fill with Background (Delete)':'以背景色填充（Delete）',
+ 'Fill':'填充','Contents':'内容','Fill contents':'填充内容','Fill color':'填充颜色','White':'白色','Black':'黑色',
+ 'Rotate View':'旋转视图','Reset View Rotation':'重置视图旋转','View angle':'视图角度',
+ 'Drag to rotate the view · Shift snaps to 15°':'拖动旋转视图 · Shift 按 15° 吸附',
+ 'Flow digit {digit}':'流量数字 {digit}','Cycle {key} tool group':'切换 {key} 工具组',
+ 'Load mask selection':'从蒙版载入选区',
+ 'Ctrl/Cmd-click loads visible mask coverage. Shift adds, Alt subtracts, and Shift+Alt intersects.':'Ctrl/Cmd 点击载入蒙版显露区域，保留软边；Shift 加选，Alt 减选，Shift+Alt 相交。',
+ 'Canvas':'画布','Rotate View (R)':'旋转视图（R）','Lock all':'锁定全部','Lock position':'锁定位置','Align to':'对齐到','Selected layers':'选中图层',
+ 'Distribute horizontally':'水平分布中心','Distribute vertically':'垂直分布中心',
+ 'Set layer lock':'设置图层锁定','Align layers':'对齐图层','Distribute layers':'分布图层','Stamp layers':'盖印图层',
+ 'The layer is locked. Unlock it before editing.':'图层已锁定，请先解锁再编辑。',
+ 'Select at least three layers to distribute.':'请至少选择三个图层进行分布。',
+ 'There are no visible layers to merge.':'没有可合并的可见图层。'
+}

@@ -105,6 +105,8 @@ function cancelSettings(): void { if(settingsBusy.value)return;apiKey.value = ''
 .model-numbers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .model-settings p{font-size:11px;line-height:1.5;color:#999;margin:0;overflow-wrap:anywhere}
 .settings-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:10px}
+.settings-actions button[type=submit]{background:#087ff5;border-color:#087ff5;color:#fff}
+.settings-actions button[type=submit]:hover:not(:disabled){background:#2190ff}
 .agent-comparison{display:flex;gap:8px}
 .agent-comparison figure{margin:0;flex:1;min-width:0}
 .agent-comparison img{width:100%;max-height:200px;object-fit:contain}

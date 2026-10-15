@@ -16,5 +16,41 @@ function start(event:PointerEvent){dragging=event.currentTarget as HTMLElement;d
 function move(event:PointerEvent){if(dragging)point(event)}
 function end(event:PointerEvent){if(dragging?.hasPointerCapture(event.pointerId))dragging.releasePointerCapture(event.pointerId);dragging=undefined}
 </script>
-<template><section class="color-picker-panel" role="dialog" :aria-label="t('Color Picker')"><strong>{{ t('Color Picker') }}</strong><div class="color-picker-body"><div class="sv" :aria-label="t('Saturation and brightness')" :style="{background:`linear-gradient(to top,black,transparent),linear-gradient(to right,white,hsl(${hue},100%,50%))`}" @pointerdown="start" @pointermove="move" @pointerup="end" @pointercancel="end"><span :style="{left:`${saturation*100}%`,top:`${(1-brightness)*100}%`}"/></div><label>{{ t('Hue') }}<input v-model.number="hue" type="range" min="0" max="360" :aria-label="t('Color hue')" @input="fromHSV"/></label><div class="color-picker-fields"><div class="previews"><span :style="{background:draft}" :title="t('New')"/><span :style="{background:value}" :title="t('Current')"/></div><label v-for="(channel,i) in ['R','G','B']">{{channel}}<input :value="rgb[i]" type="number" min="0" max="255" :aria-label="t('Color {channel}', {channel:t(channel)})" @change="setRGB(i,($event.target as HTMLInputElement).value)"/></label><label>{{ t('Hex') }}<input :value="draft" :aria-label="t('Color hex')" @change="setHex(($event.target as HTMLInputElement).value)"/></label><button @click="emit('apply',draft)">{{ t('OK') }}</button><button @click="emit('close')">{{ t('Cancel') }}</button></div></div><small>{{ t('Click the canvas to sample a color.') }}</small></section></template>
-<style scoped>.color-picker-panel{position:absolute;z-index:30;right:355px;top:145px;background:#292929;border:1px solid #484848;border-radius:8px;padding:18px;box-shadow:0 8px 30px #0008;color:#ddd}.color-picker-body{display:flex;gap:12px;margin:14px 0}.sv{position:relative;width:220px;height:220px;touch-action:none;cursor:crosshair}.sv span{position:absolute;width:10px;height:10px;border:1px solid white;box-shadow:0 0 0 1px black;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}.color-picker-fields{display:flex;flex-direction:column;gap:8px;width:130px}.color-picker-fields label{display:flex;gap:8px;align-items:center}.color-picker-fields input{min-width:0;width:90px;color:#ddd;background:#191919;border:1px solid #555;border-radius:4px;padding:3px}.previews{display:flex;height:28px}.previews span{flex:1;border:1px solid #555}small{color:#aaa}</style>
+<template>
+ <section class="color-picker-panel" role="dialog" :aria-label="t('Color Picker')">
+  <header><strong>{{ t('Color Picker') }}</strong></header>
+  <div class="color-picker-body">
+   <div class="sv" :aria-label="t('Saturation and brightness')" :style="{background:`linear-gradient(to top,black,transparent),linear-gradient(to right,white,hsl(${hue},100%,50%))`}" @pointerdown="start" @pointermove="move" @pointerup="end" @pointercancel="end"><span :style="{left:`${saturation*100}%`,top:`${(1-brightness)*100}%`}"/></div>
+   <label class="hue-control"><span>{{ t('Hue') }}</span><input v-model.number="hue" type="range" min="0" max="360" :aria-label="t('Color hue')" @input="fromHSV"/></label>
+   <div class="color-picker-fields">
+    <div class="previews"><span :style="{background:draft}" :title="t('New')"/><span :style="{background:value}" :title="t('Current')"/></div>
+    <label v-for="(channel,i) in ['R','G','B']" :key="channel"><span>{{channel}}</span><input :value="rgb[i]" type="number" min="0" max="255" :aria-label="t('Color {channel}', {channel:t(channel)})" @change="setRGB(i,($event.target as HTMLInputElement).value)"/></label>
+    <label><span>{{ t('Hex') }}</span><input :value="draft" :aria-label="t('Color hex')" @change="setHex(($event.target as HTMLInputElement).value)"/></label>
+   </div>
+  </div>
+  <small>{{ t('Click the canvas to sample a color.') }}</small>
+  <footer class="color-picker-actions"><button type="button" @click="emit('close')">{{ t('Cancel') }}</button><button type="button" class="primary" @click="emit('apply',draft)">{{ t('OK') }}</button></footer>
+ </section>
+</template>
+<style scoped>
+.color-picker-panel{position:absolute;z-index:30;right:min(355px,calc(100vw - 470px));top:145px;width:450px;max-width:calc(100vw - 32px);max-height:calc(100vh - 165px);overflow:auto;background:#292929;border:1px solid #484848;border-radius:10px;padding:18px;box-shadow:0 8px 30px #0008;color:#ddd}
+.color-picker-panel header{font-size:15px;line-height:1.4}
+.color-picker-body{display:grid;grid-template-columns:220px minmax(0,1fr);gap:12px 14px;margin:16px 0}
+.sv{position:relative;width:220px;height:220px;touch-action:none;cursor:crosshair;overflow:hidden}
+.sv span{position:absolute;width:10px;height:10px;border:1px solid white;box-shadow:0 0 0 1px black;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+.hue-control{grid-column:1;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.hue-control input{flex:1;min-width:0;width:0;padding:0}
+.color-picker-fields{grid-column:2;grid-row:1/span 2;display:flex;flex-direction:column;gap:10px;min-width:0}
+.color-picker-fields label{display:flex;gap:8px;align-items:center;min-width:0}
+.color-picker-fields label>span{flex:0 0 4.25em;white-space:nowrap}
+.color-picker-fields input{flex:1;min-width:0;width:0;height:30px;color:#ddd;background:#191919;border:1px solid #555;border-radius:5px;padding:0 7px}
+.previews{display:flex;height:36px;flex-shrink:0;border-radius:5px;overflow:hidden}
+.previews span{flex:1;border:1px solid #555}
+.color-picker-panel small{display:block;color:#aaa;line-height:1.5}
+.color-picker-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid #3d3d3d}
+.color-picker-actions button{min-width:80px;min-height:32px;padding:6px 14px;background:#353535;border:1px solid #555;border-radius:6px;white-space:nowrap}
+.color-picker-actions button:hover{background:#424242}
+.color-picker-actions button.primary{background:#087ff5;border-color:#087ff5;color:#fff}
+.color-picker-actions button.primary:hover{background:#2190ff}
+@media(max-width:500px){.color-picker-panel{right:16px;top:80px;max-height:calc(100vh - 96px)}.color-picker-body{grid-template-columns:minmax(0,1fr);justify-items:stretch}.sv{width:100%;height:220px}.color-picker-fields{grid-column:1;grid-row:auto}.hue-control{grid-row:2}}
+</style>

@@ -1,0 +1,162 @@
+{
+  "provenance": {
+    "application": "Adobe Photoshop 27.11.0",
+    "method": "File > Scripts > Browse; self-authored opaque white image; actual raster mask density/feather property readback; independent PSD and merged PNG exports. Only verified density at feather0 is measured here. Nonzero-feather captures v1-v5 failed their property readback and are explicitly excluded; no feather kernel equality is claimed.",
+    "scriptSHA256": "ca4ea77ab61493c95b2b8567095d380abe4aa70b312f0355116811bd96270a93",
+    "logSHA256": "ad1d00a6fda4310f8c768633b4e5e684d1a9c69403b534a3f377b17d726bf8de"
+  },
+  "rows": [
+    {
+      "name": "center-d100-f0",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "39B2CC9A-AED4-4206-B190-7637FCAA59BA",
+        "name": "图层 1",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "39B2CC9A-AED4-4206-B190-7637FCAA59BA.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "39B2CC9A-AED4-4206-B190-7637FCAA59BA.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac"
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJztzwEJADAIADD7l9YMiiDnW4NFAAAAAAAAAAAAAAAAAAC/yGXXny5/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f3//60+Xv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+//5t/AAAAAAAAAAAAAAAAAGCuAE/X6Gk=",
+      "alphaSHA256": "ee023f24f3f4a1d262d9284e5a3fa7355b7540e19151873f846048c67fda0402",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "c435c31f7c0abaab87fd7972ddc52b7fa83b18d4202c93a76de3384cc7b077b9",
+      "pngSHA256": "9c37b7f845c6d4e6ea682a346c23e109d5fee7b090ab86d9c10db59b2fffc68b",
+      "measured": {
+        "max": 0,
+        "unionMAE": 0
+      }
+    },
+    {
+      "name": "center-d50-f0",
+      "width": 256,
+      "height": 192,
+      "layer": {
+        "id": "809360D6-F7DA-43A8-9E05-22EEF2E6A230",
+        "name": "图层 1",
+        "isVisible": true,
+        "transform": {
+          "origin": [
+            0,
+            0
+          ],
+          "size": [
+            256,
+            192
+          ],
+          "rotation": 0,
+          "flipX": false,
+          "flipY": false,
+          "sampling": "High quality"
+        },
+        "imageFile": "809360D6-F7DA-43A8-9E05-22EEF2E6A230.png",
+        "isGroup": false,
+        "opacity": 1,
+        "blendMode": "Normal",
+        "locked": false,
+        "positionLocked": false,
+        "maskFile": "809360D6-F7DA-43A8-9E05-22EEF2E6A230.mask.png",
+        "maskEnabled": true,
+        "maskLinked": true,
+        "maskDensity": 0.5019607843137255,
+        "photoshop": {
+          "protected": {
+            "transparency": false,
+            "composite": false,
+            "position": false
+          },
+          "nativeLockSnapshot": {
+            "locked": false,
+            "positionLocked": false
+          },
+          "nativeTransformSnapshot": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              256,
+              192
+            ],
+            "rotation": 0,
+            "flipX": false,
+            "flipY": false,
+            "sampling": "High quality"
+          },
+          "nativeRasterHash": "78b6fcef91e5b6406e05b18241e24b7c4d5e7e598437bc27866c7347c6cca8ac",
+          "maskParameters": {
+            "userMaskDensity": 0.5019607843137255
+          },
+          "nativeMaskHash": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+          "nativeMaskPropertiesSnapshot": {
+            "density": 0.5019607843137255
+          }
+        },
+        "photoshopMaskDefault": 0
+      },
+      "maskWidth": 256,
+      "maskHeight": 192,
+      "maskRGBAZlib": "eJzt0TENwAAQxLDnT7qF0CHDdXAkI8jdPQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Jpa639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+B4Va639QqLX+BwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8ewHVgQSX",
+      "alphaZlib": "eJztzwEJADAIALDoRtcMiiDnW4NFAAAAAAAAAAAAAAAAAAC/yGXXny5/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f3//60+Xv7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+/v7+//5t/AAAAAAAAAAAAAAAAAGCuAN6sxkY=",
+      "alphaSHA256": "3fb9713a806e70197d9a36b949bfe89a8f51f42c13202c1b90244e17c3bc9a56",
+      "maskSHA256": "7a2998642ccc14d6447fbb4c99d25bbe8ac1014dd7200172f90de2b057b82df0",
+      "psdSHA256": "6e472b36348a53b685ba9106ec759e4b31ca6015b68f907ed02809d5f49a7424",
+      "pngSHA256": "616d38a4aee3b74af5a0b61989535a79ecbfbb00d4afee1c405792d6fd7b0285",
+      "measured": {
+        "max": 0,
+        "unionMAE": 0
+      }
+    }
+  ]
+}

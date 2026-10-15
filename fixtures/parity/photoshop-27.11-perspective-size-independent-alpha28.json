@@ -1,0 +1,215 @@
+{
+  "date": "2026-10-14",
+  "photoshopVersion": "27.11.0",
+  "referenceKind": "native-actionmanager",
+  "referenceRole": "independent-after-candidate-freeze",
+  "provenance": {
+    "cohortPath": "artifacts/alpha28-perspective/size-independent-verified.json",
+    "cohortSHA256": "0185c926cf24e9b033b1346f6cbff9f4bd4643013df6e12b89c3af04fff52073",
+    "candidateFreeze": {
+      "status": "CANDIDATE_MECHANISM_FROZEN_NOT_PRODUCTION",
+      "frozenAt": "2026-10-14T05:58:46.474Z",
+      "candidateFile": "scripts/lib/perspective-size-alpha28-candidate.ts",
+      "candidateSHA256": "f26949c57de80292fb6b3eaac2ab4f70ae28d31c05551c124ad2fc1e49293793",
+      "baselineFile": "artifacts/alpha28-baseline/src/shared/crop-projective.ts",
+      "baselineSHA256": "d2752eda4271ea4c63d3288462e8ea0bc495ece09ea636efeef6f93b65f1d900",
+      "mechanism": "Metric 3D nearest-camera-depth fronto-parallel resolution floor max with existing metric-area/longest-span output; no fitted coefficients",
+      "knownNativeBoundary": "All alpha26/27 cohorts already seen. Root disclosed alpha28 calibration outputs420306/420308/420304/464374 in message before this file freeze, so these are calibration and never blind holdouts. Candidate nearest-depth mechanism was proposed before that message. Calibration JSON has not yet been loaded by this agent. New independent native holdouts must be acquired after this SHA freeze.",
+      "coefficientsFitted": false,
+      "productionChanged": false
+    }
+  },
+  "limits": [
+    "Collected by root after candidate SHA freeze; dimensions not used to select or tune mechanism.",
+    "No target dimensions, pixel reads or coefficient fitting.",
+    "A regression requires rejection, not an exception or tolerance."
+  ],
+  "cases": [
+    {
+      "name": "independent-strong",
+      "corners": [
+        [
+          74,
+          32
+        ],
+        [
+          441,
+          103
+        ],
+        [
+          407,
+          345
+        ],
+        [
+          28,
+          276
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 391,
+      "height": 262,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager"
+    },
+    {
+      "name": "independent-half",
+      "corners": [
+        [
+          165,
+          112
+        ],
+        [
+          348.5,
+          147.5
+        ],
+        [
+          331.5,
+          268.5
+        ],
+        [
+          142,
+          234
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 196,
+      "height": 131,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager"
+    },
+    {
+      "name": "independent-larger",
+      "corners": [
+        [
+          52.16,
+          12.8
+        ],
+        [
+          463.2,
+          92.32
+        ],
+        [
+          425.12,
+          363.36
+        ],
+        [
+          0.63999999999999,
+          286.08
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 438,
+      "height": 293,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager"
+    },
+    {
+      "name": "independent-quarter-turn",
+      "corners": [
+        [
+          108,
+          28
+        ],
+        [
+          352,
+          74
+        ],
+        [
+          281,
+          441
+        ],
+        [
+          39,
+          407
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 512,
+      "sourceCenter": [
+        192,
+        256
+      ],
+      "width": 262,
+      "height": 391,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager"
+    },
+    {
+      "name": "independent-asymmetric",
+      "corners": [
+        [
+          133,
+          17
+        ],
+        [
+          448,
+          95
+        ],
+        [
+          298,
+          361
+        ],
+        [
+          56,
+          214
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 325,
+      "height": 305,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager"
+    },
+    {
+      "name": "independent-one-vanishing-point",
+      "corners": [
+        [
+          75,
+          70
+        ],
+        [
+          437,
+          70
+        ],
+        [
+          390,
+          315
+        ],
+        [
+          122,
+          315
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 362,
+      "height": 249,
+      "geometryVerified": true,
+      "referenceKind": "native-actionmanager"
+    }
+  ]
+}

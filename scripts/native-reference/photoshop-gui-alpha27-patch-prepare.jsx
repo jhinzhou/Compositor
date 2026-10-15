@@ -1,0 +1,2 @@
+#target photoshop
+(function(){var opened=app.open(new File('/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/inputs/alpha27-probe-owned-slanted-feather2.png'));var d=opened.duplicate('alpha27-gui-owned-patch-feather2',false);opened.close(SaveOptions.DONOTSAVECHANGES);app.activeDocument=d;d.activeLayer.name='alpha27-tools-owned';d.selection.select([[155,48],[193,66],[198,94],[163,106],[143,78]],SelectionType.REPLACE,2,true);})();

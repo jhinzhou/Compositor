@@ -1,0 +1,10 @@
+import {readFileSync} from 'node:fs'
+import {inflateSync} from 'node:zlib'
+import {selectionCoverage} from '../../src/shared/selection-coverage'
+import type {Selection} from '../../src/shared/pixel-contracts'
+export interface FeatherReference{name:string;radius:number;bounds:[number,number,number,number];width:number;height:number;pngSHA256:string;alphaSHA256:string;alphaZlib:string;measuredLegacy:{max:number;MAE:number;coverageSHA256:string};measuredPhotoshop:{max:number;MAE:number;coverageSHA256:string}}
+export const featherFixture=JSON.parse(readFileSync(new URL('../../fixtures/parity/photoshop-27.11-feather.json',import.meta.url),'utf8')) as {provenance:{application:string;nativeLog:string;nativeLogSHA256:string;scriptPath:string;scriptSHA256:string;source:{width:number;height:number;rgbaZlib:string;rgbaSHA256:string}};rows:FeatherReference[]}
+export function referenceSelection(row:FeatherReference,model?:Selection['featherModel']):Selection{return {inverted:row.name.startsWith('inverse-'),antialiased:false,feather:row.radius*(row.name.startsWith('repeat-')?Math.SQRT2:1),...(model?{featherModel:model}:{}),canvasSize:[row.width,row.height],shapes:[{kind:'rectangle',bounds:row.bounds,operation:'replace',feather:0},...(row.name.startsWith('hole-')?[{kind:'rectangle' as const,bounds:[112,80,32,32] as [number,number,number,number],operation:'subtract' as const,feather:0}]:[])]}}
+export function coverageBytes(selection:Selection|null|undefined,width:number,height:number):Uint8Array{return Uint8Array.from({length:width*height},(_,at)=>Math.round(selectionCoverage(selection,at%width+.5,Math.floor(at/width)+.5)*255))}
+export function referenceAlpha(row:FeatherReference):Uint8Array{return inflateSync(Buffer.from(row.alphaZlib,'base64'))}
+export function coverageError(actual:Uint8Array,expected:Uint8Array):{max:number;mae:number}{let sum=0,max=0;for(let at=0;at<expected.length;at++){const difference=Math.abs(actual[at]-expected[at]);sum+=difference;max=Math.max(max,difference)}return {max,mae:sum/expected.length}}

@@ -1,0 +1,33 @@
+import {spawn} from 'node:child_process'
+import {mkdir,readdir,readFile,writeFile} from 'node:fs/promises'
+import {join} from 'node:path'
+import {createHash} from 'node:crypto'
+import assert from 'node:assert/strict'
+const output=process.argv[2]??'artifacts/alpha25-runtime',version=JSON.parse(await readFile('package.json','utf8')).version,mode=process.env.COMPOSITOR_EXECUTABLE?'packaged':'development'
+assert.equal(version,'0.3.0-alpha.25','Build the alpha.25 runtime before acceptance')
+const fixture='fixtures/photoshop-corpus/photoshop-27.11.0-rgb16/'
+const jobs:[string,string,string,string[]?][]=[
+ ['camera-raw-alpha25','smoke-camera-raw-sections-alpha25.ts','acceptance.json'],
+ ['toolbar-alpha25','smoke-alpha25-toolbar.ts','acceptance.json'],['retouch-alpha24','smoke-retouch-alpha24.ts','report.json'],
+ ['image-selection','smoke-image-selection-alpha23.ts','report.json'],['info-tools','smoke-info-tools-alpha23.ts','acceptance.json'],['retouch-crop','smoke-retouch-crop-alpha23.ts','report.json'],
+ ['menus-tools','smoke-photoshop-alpha22.ts','checks.json'],['deep-screen','smoke-deep-screen-alpha22.ts','acceptance.json'],
+ ['brush-alpha21','smoke-photoshop-brush-alpha21.ts','checks.json'],['mask-feather-alpha21','smoke-mask-feather-alpha21.ts','checks.json'],['crop-alpha21','smoke-crop-alpha21.ts','report.json'],['brush-alpha20','smoke-photoshop-brush-alpha20.ts','checks.json'],['brush','smoke-photoshop-brush.ts','checks.json'],['selection-ux','smoke-photoshop-selection-ux.ts','report.json'],
+ ['synthetic-rle16','smoke-photoshop-channel-import.ts','checks.json'],['native-psd16','smoke-photoshop-channel-import.ts','checks.json',[fixture+'rgb16-layered.psd']],['native-psb16','smoke-photoshop-channel-import.ts','checks.json',[fixture+'precision-rgb16-native.psb']],
+ ['mask-feather-ui','smoke-mask-feather-ui.ts','checks.json'],['crop-lifecycle','smoke-crop-lifecycle.ts','report.json'],['mask-boundaries','smoke-mask-boundaries.ts','checks.json'],['common','smoke-photoshop-common.ts','checks.json'],['workflow','smoke-photoshop-workflow.ts','checks.json'],['interaction','smoke-interaction.ts','checks.json'],
+ ['hdr-upstream','smoke-hdr-upstream.ts','acceptance.json'],['upstream-ui','smoke-upstream-ui.ts','report.json'],['deep-composite','smoke-deep-composite.ts','acceptance.json'],['deep-tools','smoke-deep-tools.ts','acceptance.json'],['layout-panels','smoke-layout-panels.ts','report.json']]
+async function digestTree(dir:string):Promise<string>{const entries=await readdir(dir,{withFileTypes:true}),values:string[]=[];for(const e of entries.sort((a,b)=>a.name.localeCompare(b.name))){const path=join(dir,e.name);values.push(path+':'+(e.isDirectory()?await digestTree(path):createHash('sha256').update(await readFile(path)).digest('hex')))}return createHash('sha256').update(values.join('\n')).digest('hex')}
+const runtimeSHA256=await digestTree('out'),reports:any[]=[];await mkdir(output,{recursive:true})
+const save=(status:string)=>writeFile(join(output,'acceptance.json'),JSON.stringify({status,version,mode,runtimeSHA256,executable:process.env.COMPOSITOR_EXECUTABLE,updatedAt:new Date().toISOString(),suites:reports.length,checks:reports.reduce((n,r)=>n+r.checks,0),scope:'Serial real isolated Electron inputs; no concurrent Photoshop automation. Source, native reference and platform gates remain separate.',reports},null,2))
+if(process.argv.includes('--resume-passed')){const prior=JSON.parse(await readFile(join(output,'acceptance.json'),'utf8'));assert.equal(prior.version,version);assert.equal(prior.mode,mode);assert.equal(prior.runtimeSHA256,runtimeSHA256);assert.equal(prior.executable,process.env.COMPOSITOR_EXECUTABLE);for(const row of prior.reports){if(row.status!=='PASS')break;const job=jobs[reports.length];assert.equal(row.name,job[0]);const r=JSON.parse(await readFile(row.report,'utf8'));assert.ok(['PASS','passed'].includes(r.status));assert.deepEqual(r.errors??[],[]);reports.push({...row,reusedPassedReport:true})}}
+await save('RUNNING')
+for(const [name,script,file,args=[]] of jobs.slice(reports.length)){
+ assert.equal(await digestTree('out'),runtimeSHA256,'Runtime changed before acceptance suite')
+ const started=Date.now(),directory=join(output,name),chunks:Buffer[]=[];console.log(`Starting ${mode} ${name}`)
+ const child=spawn(process.execPath,['node_modules/tsx/dist/cli.mjs',join('scripts',script),...args],{env:{...process.env,COMPOSITOR_SMOKE_OUTPUT:directory},stdio:['ignore','pipe','pipe']});child.stdout.on('data',b=>chunks.push(b));child.stderr.on('data',b=>chunks.push(b))
+ const code=await new Promise<number|null>((resolve,reject)=>{child.on('error',reject);child.on('close',resolve)});await writeFile(join(output,name+'.log'),Buffer.concat(chunks))
+ let report:any;try{report=JSON.parse(await readFile(join(directory,file),'utf8'))}catch{}
+ const pass=code===0&&['PASS','passed'].includes(report?.status)&&(report.errors??[]).length===0&&(report.screenshotFallbacks??[]).length===0
+ reports.push({name,script,args,report:join(directory,file),checks:report?.checks?.length??0,status:pass?'PASS':'FAIL',exitCode:code,durationMs:Date.now()-started,errors:report?.errors??[],screenshotFallbacks:report?.screenshotFallbacks??[]});await save(pass?'RUNNING':'FAIL');console.log(`${pass?'PASS':'FAIL'} ${name}`)
+ assert.equal(await digestTree('out'),runtimeSHA256,'Runtime changed during acceptance; rebuild and rerun required');if(!pass)throw Error(`Inspect ${join(output,name+'.log')}`)
+}
+await save('PASS');console.log(`PASS ${jobs.length} ${mode} suites`)

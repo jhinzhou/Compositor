@@ -1,0 +1,2000 @@
+{
+  "photoshopVersion": "27.11.0",
+  "researchDate": "2026-10-14",
+  "role": "recorded-native-size-regression-not-a-new-product-holdout",
+  "limits": "Geometry and canvas dimensions only; no pixel-equivalence or GUI/package acceptance. Only the final 9 cases followed the REA v2 freeze.",
+  "candidateSHA256": "9c4643671ea24c9c29c7b7df3b3dd18aa7cebffb93505f0bbd88ead17c0f0aba",
+  "evidenceIDs": [
+    "ev_9b782e07baa573a43ed31571e662b742c15f1882e68fbd2dc833ff9e925e7be2",
+    "ev_7b74aa2eae7bb3606a24431161d830f37c2909426b5b63fdcc7c90314cd688c6"
+  ],
+  "sourceArtifactsSHA256": {
+    "baseline/perspective-size-37.json": "14aea7fb74b282738bb741b8b4d88d062bc2ad1d9555b4166709b219aee1f494",
+    "native-holdout/cases.json": "d6eb7f6043913723abcb4dc073464269393faaee5d9a344ef16086b4c3fc22e6",
+    "native-holdout/outputs/cohort.json": "1259ad1d02f8c17864186c4729e0d2613aa1e745f54c1884448a9fa3117fd2cc",
+    "native-holdout/comparison.json": "31e66c8f62c994e48414930dceed244e60111d6a65820b828db4c3ba597771d1",
+    "native-phase-holdout/cases.json": "ee228408885f26bda8fae89465b47ced797590de8f1e608b8c9f7b88d6e83a39",
+    "native-phase-holdout/outputs/cohort.json": "fafc24893085b628551ae38154a49e0ecd402243565de5a5b4a6136eaa4d405d",
+    "native-phase-holdout/comparison.json": "45986b53e3d3966183c58ccfce9b1797afc5fa47545d72455008d054556bdf39"
+  },
+  "cases": [
+    {
+      "name": "axis",
+      "corners": [
+        [
+          35,
+          25
+        ],
+        [
+          236,
+          25
+        ],
+        [
+          236,
+          159
+        ],
+        [
+          35,
+          159
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 201,
+      "height": 134,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 201,
+        "height": 134
+      }
+    },
+    {
+      "name": "affine",
+      "corners": [
+        [
+          80,
+          40
+        ],
+        [
+          410,
+          60
+        ],
+        [
+          410,
+          260
+        ],
+        [
+          80,
+          240
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 331,
+      "height": 200,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 331,
+        "height": 200
+      }
+    },
+    {
+      "name": "old-quad",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          430,
+          55
+        ],
+        [
+          400,
+          280
+        ],
+        [
+          75,
+          260
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 382,
+      "height": 359,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 373,
+        "height": 350
+      }
+    },
+    {
+      "name": "strong-trapezoid",
+      "corners": [
+        [
+          90,
+          40
+        ],
+        [
+          420,
+          40
+        ],
+        [
+          340,
+          270
+        ],
+        [
+          140,
+          270
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 330,
+      "height": 244,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 330,
+        "height": 244
+      }
+    },
+    {
+      "name": "opposite-quad",
+      "corners": [
+        [
+          30,
+          70
+        ],
+        [
+          350,
+          20
+        ],
+        [
+          470,
+          250
+        ],
+        [
+          70,
+          290
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 539,
+      "height": 315,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 475,
+        "height": 277
+      }
+    },
+    {
+      "name": "old-quad-translate",
+      "corners": [
+        [
+          80,
+          20
+        ],
+        [
+          450,
+          35
+        ],
+        [
+          420,
+          260
+        ],
+        [
+          95,
+          240
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 382,
+      "height": 364,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 372,
+        "height": 355
+      }
+    },
+    {
+      "name": "old-quad-mirror",
+      "corners": [
+        [
+          82,
+          55
+        ],
+        [
+          452,
+          40
+        ],
+        [
+          437,
+          260
+        ],
+        [
+          112,
+          280
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 370,
+      "height": 227,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 370,
+        "height": 227
+      }
+    },
+    {
+      "name": "old-quad-half-turn",
+      "corners": [
+        [
+          112,
+          40
+        ],
+        [
+          437,
+          60
+        ],
+        [
+          452,
+          280
+        ],
+        [
+          82,
+          265
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 370,
+      "height": 227,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 370,
+        "height": 227
+      }
+    },
+    {
+      "name": "camera-valid-holdout",
+      "corners": [
+        [
+          65,
+          35
+        ],
+        [
+          440,
+          65
+        ],
+        [
+          395,
+          285
+        ],
+        [
+          80,
+          250
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        0,
+        0
+      ],
+      "width": 395,
+      "height": 396,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 380,
+        "height": 381
+      }
+    },
+    {
+      "name": "axis",
+      "corners": [
+        [
+          35,
+          25
+        ],
+        [
+          236,
+          25
+        ],
+        [
+          236,
+          159
+        ],
+        [
+          35,
+          159
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 201,
+      "height": 134,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 201,
+        "height": 134
+      }
+    },
+    {
+      "name": "affine",
+      "corners": [
+        [
+          80,
+          40
+        ],
+        [
+          410,
+          60
+        ],
+        [
+          410,
+          260
+        ],
+        [
+          80,
+          240
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 331,
+      "height": 200,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 331,
+        "height": 200
+      }
+    },
+    {
+      "name": "old-quad",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          430,
+          55
+        ],
+        [
+          400,
+          280
+        ],
+        [
+          75,
+          260
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 387,
+      "height": 256,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 387,
+        "height": 256
+      }
+    },
+    {
+      "name": "strong-trapezoid",
+      "corners": [
+        [
+          90,
+          40
+        ],
+        [
+          420,
+          40
+        ],
+        [
+          340,
+          270
+        ],
+        [
+          140,
+          270
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 330,
+      "height": 244,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 330,
+        "height": 244
+      }
+    },
+    {
+      "name": "opposite-quad",
+      "corners": [
+        [
+          30,
+          70
+        ],
+        [
+          350,
+          20
+        ],
+        [
+          470,
+          250
+        ],
+        [
+          70,
+          290
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 402,
+      "height": 259,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 402,
+        "height": 259
+      }
+    },
+    {
+      "name": "old-quad-translate",
+      "corners": [
+        [
+          80,
+          20
+        ],
+        [
+          450,
+          35
+        ],
+        [
+          420,
+          260
+        ],
+        [
+          95,
+          240
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 382,
+      "height": 259,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 382,
+        "height": 259
+      }
+    },
+    {
+      "name": "old-quad-mirror",
+      "corners": [
+        [
+          82,
+          55
+        ],
+        [
+          452,
+          40
+        ],
+        [
+          437,
+          260
+        ],
+        [
+          112,
+          280
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 387,
+      "height": 256,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 387,
+        "height": 256
+      }
+    },
+    {
+      "name": "old-quad-half-turn",
+      "corners": [
+        [
+          112,
+          40
+        ],
+        [
+          437,
+          60
+        ],
+        [
+          452,
+          280
+        ],
+        [
+          82,
+          265
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 387,
+      "height": 256,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 387,
+        "height": 256
+      }
+    },
+    {
+      "name": "camera-valid-holdout",
+      "corners": [
+        [
+          65,
+          35
+        ],
+        [
+          440,
+          65
+        ],
+        [
+          395,
+          285
+        ],
+        [
+          80,
+          250
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 395,
+      "height": 264,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 398,
+        "height": 265
+      }
+    },
+    {
+      "name": "gui-old-quad-event-exact",
+      "corners": [
+        [
+          60,
+          40
+        ],
+        [
+          431,
+          55
+        ],
+        [
+          401,
+          281
+        ],
+        [
+          75,
+          261
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 320,
+      "sourceCenter": [
+        256,
+        160
+      ],
+      "width": 387,
+      "height": 257,
+      "referenceKind": "native-gui-event",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 387,
+        "height": 257
+      }
+    },
+    {
+      "name": "auto-gentle-left",
+      "corners": [
+        [
+          42,
+          26
+        ],
+        [
+          343,
+          38
+        ],
+        [
+          326,
+          229
+        ],
+        [
+          52,
+          222
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 301,
+      "height": 196,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 301,
+        "height": 196
+      }
+    },
+    {
+      "name": "auto-gentle-right",
+      "corners": [
+        [
+          41,
+          38
+        ],
+        [
+          342,
+          26
+        ],
+        [
+          332,
+          222
+        ],
+        [
+          58,
+          229
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 301,
+      "height": 196,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 301,
+        "height": 196
+      }
+    },
+    {
+      "name": "auto-strong-left",
+      "corners": [
+        [
+          66,
+          17
+        ],
+        [
+          350,
+          65
+        ],
+        [
+          300,
+          239
+        ],
+        [
+          34,
+          209
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 311,
+      "height": 216,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 310,
+        "height": 215
+      }
+    },
+    {
+      "name": "auto-strong-right",
+      "corners": [
+        [
+          34,
+          65
+        ],
+        [
+          318,
+          17
+        ],
+        [
+          350,
+          209
+        ],
+        [
+          84,
+          239
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 311,
+      "height": 216,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 310,
+        "height": 215
+      }
+    },
+    {
+      "name": "auto-gentle-translate",
+      "corners": [
+        [
+          54,
+          17
+        ],
+        [
+          355,
+          29
+        ],
+        [
+          338,
+          220
+        ],
+        [
+          64,
+          213
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 301,
+      "height": 196,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 301,
+        "height": 196
+      }
+    },
+    {
+      "name": "auto-gentle-half-turn",
+      "corners": [
+        [
+          58,
+          27
+        ],
+        [
+          332,
+          34
+        ],
+        [
+          342,
+          230
+        ],
+        [
+          41,
+          218
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 301,
+      "height": 196,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 301,
+        "height": 196
+      }
+    },
+    {
+      "name": "actual-mouse-auto-292163",
+      "corners": [
+        [
+          45,
+          39
+        ],
+        [
+          337,
+          51
+        ],
+        [
+          317,
+          210
+        ],
+        [
+          55,
+          202
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 256,
+      "sourceCenter": [
+        192,
+        128
+      ],
+      "width": 292,
+      "height": 163,
+      "referenceKind": "native-gui-event",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 292,
+        "height": 163
+      }
+    },
+    {
+      "name": "perspective-auto-calibration",
+      "corners": [
+        [
+          24,
+          18
+        ],
+        [
+          482,
+          37
+        ],
+        [
+          455,
+          351
+        ],
+        [
+          39,
+          330
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 464,
+      "height": 374,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 462,
+        "height": 373
+      }
+    },
+    {
+      "name": "size-strong-center",
+      "corners": [
+        [
+          88,
+          34
+        ],
+        [
+          456,
+          118
+        ],
+        [
+          382,
+          347
+        ],
+        [
+          49,
+          298
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 306,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 419,
+        "height": 305
+      }
+    },
+    {
+      "name": "size-strong-upper-left",
+      "corners": [
+        [
+          68,
+          19
+        ],
+        [
+          436,
+          103
+        ],
+        [
+          362,
+          332
+        ],
+        [
+          29,
+          283
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 308,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 418,
+        "height": 306
+      }
+    },
+    {
+      "name": "size-strong-lower-right",
+      "corners": [
+        [
+          103,
+          46
+        ],
+        [
+          471,
+          130
+        ],
+        [
+          397,
+          359
+        ],
+        [
+          64,
+          310
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 420,
+      "height": 304,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 420,
+        "height": 304
+      }
+    },
+    {
+      "name": "independent-strong",
+      "corners": [
+        [
+          74,
+          32
+        ],
+        [
+          441,
+          103
+        ],
+        [
+          407,
+          345
+        ],
+        [
+          28,
+          276
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 391,
+      "height": 262,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 390,
+        "height": 261
+      }
+    },
+    {
+      "name": "independent-half",
+      "corners": [
+        [
+          165,
+          112
+        ],
+        [
+          348.5,
+          147.5
+        ],
+        [
+          331.5,
+          268.5
+        ],
+        [
+          142,
+          234
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 196,
+      "height": 131,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 195,
+        "height": 130
+      }
+    },
+    {
+      "name": "independent-larger",
+      "corners": [
+        [
+          52.16,
+          12.8
+        ],
+        [
+          463.2,
+          92.32
+        ],
+        [
+          425.12,
+          363.36
+        ],
+        [
+          0.63999999999999,
+          286.08
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 438,
+      "height": 293,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 437,
+        "height": 292
+      }
+    },
+    {
+      "name": "independent-quarter-turn",
+      "corners": [
+        [
+          108,
+          28
+        ],
+        [
+          352,
+          74
+        ],
+        [
+          281,
+          441
+        ],
+        [
+          39,
+          407
+        ]
+      ],
+      "sourceWidth": 384,
+      "sourceHeight": 512,
+      "sourceCenter": [
+        192,
+        256
+      ],
+      "width": 262,
+      "height": 391,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 261,
+        "height": 390
+      }
+    },
+    {
+      "name": "independent-asymmetric",
+      "corners": [
+        [
+          133,
+          17
+        ],
+        [
+          448,
+          95
+        ],
+        [
+          298,
+          361
+        ],
+        [
+          56,
+          214
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 325,
+      "height": 305,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 325,
+        "height": 305
+      }
+    },
+    {
+      "name": "independent-one-vanishing-point",
+      "corners": [
+        [
+          75,
+          70
+        ],
+        [
+          437,
+          70
+        ],
+        [
+          390,
+          315
+        ],
+        [
+          122,
+          315
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 362,
+      "height": 249,
+      "referenceKind": "native-actionmanager",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 362,
+        "height": 249
+      }
+    },
+    {
+      "name": "actual-gui-strong-alpha28",
+      "corners": [
+        [
+          88,
+          33
+        ],
+        [
+          457,
+          117
+        ],
+        [
+          383,
+          347
+        ],
+        [
+          49,
+          298
+        ]
+      ],
+      "sourceWidth": 512,
+      "sourceHeight": 384,
+      "sourceCenter": [
+        256,
+        192
+      ],
+      "width": 421,
+      "height": 306,
+      "referenceKind": "native-gui-event",
+      "cohort": "disclosed-37",
+      "freshAfterV2Freeze": false,
+      "previous": {
+        "width": 420,
+        "height": 306
+      }
+    },
+    {
+      "name": "fresh-odd-strong",
+      "corners": [
+        [
+          68.25,
+          47.5
+        ],
+        [
+          562.75,
+          102.25
+        ],
+        [
+          591.5,
+          407.75
+        ],
+        [
+          41,
+          431.25
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 691,
+      "height": 443,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        239.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "1ba2dceb95a20a0fc4b07bf77a2e8dd3febaf501a1eec346b12d5a6a639f2545",
+      "outputSHA256": "866e390b3fe53f403b25df44b41e32397a7e51a74dee925b2dea8b4214bdab75"
+    },
+    {
+      "name": "fresh-asymmetric",
+      "corners": [
+        [
+          118.1,
+          12.4
+        ],
+        [
+          611.8,
+          163.6
+        ],
+        [
+          449.3,
+          451.7
+        ],
+        [
+          18.6,
+          286.2
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 517,
+      "height": 332,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        239.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "50e130266d14a16a2ede4108f72a017b4c06bffad09a5603d7ab9c4b6e38e3cf",
+      "outputSHA256": "e1c842226d076af686bc5d58960daf31b18e6f7be11100f5508e533eb36a4cd5"
+    },
+    {
+      "name": "fresh-large-strong",
+      "corners": [
+        [
+          106,
+          25
+        ],
+        [
+          701,
+          173
+        ],
+        [
+          758,
+          583
+        ],
+        [
+          38,
+          451
+        ]
+      ],
+      "sourceWidth": 824,
+      "sourceHeight": 612,
+      "width": 810,
+      "height": 626,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        412.0,
+        306.0
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "12be0360950dd00f649514471bb571bc47f4f33bc193262e437fc73bc67ed293",
+      "outputSHA256": "d9dc9ee8b13c34c2fa88e6acf395467798724ce7fe547ca5a14a807823f9e35a"
+    },
+    {
+      "name": "fresh-quarter-turn",
+      "corners": [
+        [
+          47.75,
+          41
+        ],
+        [
+          431.5,
+          68.25
+        ],
+        [
+          376.75,
+          562.75
+        ],
+        [
+          71.25,
+          591.5
+        ]
+      ],
+      "sourceWidth": 479,
+      "sourceHeight": 641,
+      "width": 443,
+      "height": 691,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        239.5,
+        320.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "809dd325950c2eca832eaceddb6f6d8e86aca5e95dc86ae6ccb1599b7a6011b3",
+      "outputSHA256": "0596647b1bf5cbbdc56907c17755e52837ddb619d0ed0685ab45e84ec6f5d060"
+    },
+    {
+      "name": "fresh-single-vanishing",
+      "corners": [
+        [
+          61,
+          54
+        ],
+        [
+          580,
+          54
+        ],
+        [
+          476,
+          422
+        ],
+        [
+          165,
+          422
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 520,
+      "height": 383,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        239.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "e2d66f899c0c364b5d20bd69cb5ff56ffafab640f66e43d2d2c1ef2191ace342",
+      "outputSHA256": "0648244b14f095f555c0f35a943843d9315050c2b6e10a936e623eace568bf0a"
+    },
+    {
+      "name": "fresh-affine",
+      "corners": [
+        [
+          96,
+          50
+        ],
+        [
+          550,
+          82
+        ],
+        [
+          520,
+          407
+        ],
+        [
+          66,
+          375
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 456,
+      "height": 327,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        239.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "af5ab96a8a9a2d18a1d719044373f33a96f4c854f9b1bcadcde16e286c87d771",
+      "outputSHA256": "1c71eb72d0d3b4320822bb01a78ec34bdde07c68d5b82baba538ec86ff880eff"
+    },
+    {
+      "name": "fresh-half-tie",
+      "corners": [
+        [
+          21.25,
+          28.75
+        ],
+        [
+          511.75,
+          28.75
+        ],
+        [
+          511.75,
+          361.25
+        ],
+        [
+          21.25,
+          361.25
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 492,
+      "height": 334,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        239.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "1557a76b370ed194bcc982fc093dce4752a2439a5e8d6a7a27e19669c76773a1",
+      "outputSHA256": "d5cdaddcf8b34c306c2a1584d4ce5e94bb19bfccfc74f01ae824f415f67771ba"
+    },
+    {
+      "name": "fresh-strong-half",
+      "corners": [
+        [
+          176.7175,
+          130.06
+        ],
+        [
+          458.5825,
+          161.2675
+        ],
+        [
+          474.97,
+          335.4025
+        ],
+        [
+          161.185,
+          348.7975
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 394,
+      "height": 253,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        239.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "18c8e8ccaf129325996b763355a28e4f1872e180de90a76f76e8b4eaf2035e68",
+      "outputSHA256": "63651d060a9c99f2c5415be6e2176eb8e4d133135016bc411c9fad705b50cfd5"
+    },
+    {
+      "name": "fresh-off-center",
+      "corners": [
+        [
+          48.25,
+          25.5
+        ],
+        [
+          542.75,
+          80.25
+        ],
+        [
+          571.5,
+          385.75
+        ],
+        [
+          21,
+          409.25
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 691,
+      "height": 451,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        239.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "623dd95a84136033472dda3ecda99a29c55cf35399b75f5214cc47b36005ea7d",
+      "outputSHA256": "249a99eba69dc65947280c5c11f716ed0d2c4d6c5f6fd01f294cb881bd2a0023"
+    },
+    {
+      "name": "fresh-tall-projective",
+      "corners": [
+        [
+          58,
+          36
+        ],
+        [
+          451,
+          109
+        ],
+        [
+          416,
+          673
+        ],
+        [
+          21,
+          589
+        ]
+      ],
+      "sourceWidth": 509,
+      "sourceHeight": 733,
+      "width": 405,
+      "height": 566,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        254.5,
+        366.5
+      ],
+      "cohort": "native-holdout",
+      "freshAfterV2Freeze": false,
+      "inputSHA256": "1e03bc148ef23350b7f2b9b4eef7d6859851be58bd2aefefd9e3222184fd2c5e",
+      "outputSHA256": "c0ca228c2dddf2871f588de79f9a80b3b4bd61e5b42134e7e722eaa88dfcbea9"
+    },
+    {
+      "name": "mixed-width-odd",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 480,
+      "width": 528,
+      "height": 304,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        240.0
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "50d4b78c01c5efe1de3887fe05119e0e4e723dfb1cdc991d041257982c04b840",
+      "outputSHA256": "38d5d3591394ba6d225cf4b5cb490e5aecf073d9dd223bf82154a3c5bb6ada9c"
+    },
+    {
+      "name": "mixed-height-odd",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 640,
+      "sourceHeight": 479,
+      "width": 527,
+      "height": 305,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.0,
+        239.5
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "afa583ef0f3f4f959b4ab0b24429a56b810e408307993ff0651e48019864e9ec",
+      "outputSHA256": "e35d35016de897794c27c3ee9002f20452eddc02d15fd938af821776cca9a03f"
+    },
+    {
+      "name": "even-center-integer",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 640,
+      "sourceHeight": 480,
+      "width": 527,
+      "height": 304,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320,
+        240
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "1a38ee989095c31e57ab98d1e538bb11bb06355b3c4b8790efe2e08e2c04c0fd",
+      "outputSHA256": "f534ed10be3ee8dcae5ecf7962d4ad589245afcb5b4c6d069ddea79960a24b23"
+    },
+    {
+      "name": "even-center-quarter",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 640,
+      "sourceHeight": 480,
+      "width": 528,
+      "height": 305,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.25,
+        240.75
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "98b68a2a6db8a5f4918fe8339f302f22b5f273b4b740c2f7ef9820a03eec9aa4",
+      "outputSHA256": "4c36d7b8f0e8da6a630b7ee120c0dd7267cd2f0fd57433738e755624049942f2"
+    },
+    {
+      "name": "even-center-half-x",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 640,
+      "sourceHeight": 480,
+      "width": 528,
+      "height": 304,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.5,
+        240
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "f314ed5f190b2e4b65876948ae26457cbaff65d4ae22a1f6a932698b5dea6565",
+      "outputSHA256": "2a2876e1328eb98b78a77d795d38084efae910c88c43fcd35bfec4bf8080e268"
+    },
+    {
+      "name": "even-center-half-y",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 640,
+      "sourceHeight": 480,
+      "width": 527,
+      "height": 305,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320,
+        240.5
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "ac604d797b37a0b922f982913696502e0f076bdb3f57ce17ede3255a8dac9fd1",
+      "outputSHA256": "4b5c7808f571c96094161edaa264a18d63c95b1d6afb8eb2282ee8d51bbd196d"
+    },
+    {
+      "name": "even-center-three-quarter",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 640,
+      "sourceHeight": 480,
+      "width": 528,
+      "height": 305,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.75,
+        240.25
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "5079a4e71501b0fe8c94f4581d5eac389ee365710a1791da63ae5e6259721526",
+      "outputSHA256": "8d3cc787e1f13cc19346ba0297d18e23b25dd922f767c7b8f4be26c8d5403de4"
+    },
+    {
+      "name": "odd-source-integer-center",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 527,
+      "height": 304,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320,
+        239
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "72306271bcb1a57925710727e47c2b72e4940654aea2426edfd5d92d4102b4b1",
+      "outputSHA256": "a741d6e147f4eeb97b8a6412c0ca50ef33b5065435ab1bb5817bde83b4ed706e"
+    },
+    {
+      "name": "odd-source-quarter-center",
+      "corners": [
+        [
+          81.7,
+          51.3
+        ],
+        [
+          582.4,
+          124.6
+        ],
+        [
+          552.8,
+          427.2
+        ],
+        [
+          31.9,
+          349.4
+        ]
+      ],
+      "sourceWidth": 641,
+      "sourceHeight": 479,
+      "width": 528,
+      "height": 305,
+      "referenceKind": "native-actionmanager",
+      "sourceCenter": [
+        320.25,
+        239.75
+      ],
+      "cohort": "native-phase-holdout",
+      "freshAfterV2Freeze": true,
+      "inputSHA256": "46d1b0c5b5f684d78c00e320deb9a4fed10e5acb183abdc729c88981b7e614aa",
+      "outputSHA256": "fbe127f62357f1254e379b72e11cd0c111e9618f89e1de71ae10a6ecaa2bbc95"
+    }
+  ]
+}

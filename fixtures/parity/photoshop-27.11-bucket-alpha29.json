@@ -1,0 +1,39 @@
+{
+  "provenance": {
+    "application": "Adobe Photoshop 27.11 macOS arm64",
+    "capture": "Real native GUI Paint Bucket click; root sampled 2026-10-14",
+    "sourcePath": "artifacts/photoshop-native/outputs/gui-alpha28/alpha28-gui-owned-magic-eraser-source.png",
+    "nativePath": "/Users/zhoujin/Documents/REA/artifacts/toolbar-native/bucket-hard-native.png",
+    "historyPath": "/Users/zhoujin/Documents/REA/artifacts/toolbar-native/bucket-native-history.txt",
+    "nativeOptionsPath": "/Users/zhoujin/Documents/REA/artifacts/toolbar-native/tool-options.json",
+    "sourcePNGHash": "f60d297f41e35d4796a768695ddd7c4767b726b727c364d5ac72154e10ca5618",
+    "nativePNGHash": "36e3e59627f5c9896758df003d5099fbb76d32591ee98d7dd8da47f4bf25789c",
+    "sourceRGBAHash": "86b58bf2274e226c07d2f36a2ea72155a9f7acc690f5fa8d8fa48346a8b0222e",
+    "nativeRGBAHash": "043bb7c9176782bf5594247b67db6b19c0252a9d4de6aa84702917c6166cc501",
+    "limitations": [
+      "One hard opaque GUI reference, AA=false; not all bucket settings or textures",
+      "Pencil geometry and Bucket AA have not been independently measured"
+    ]
+  },
+  "width": 240,
+  "height": 160,
+  "action": {
+    "point": [
+      12,
+      14
+    ],
+    "color": [
+      0.8549019607843137,
+      0.17254901960784313,
+      0.27058823529411763,
+      1
+    ],
+    "tolerance": 32,
+    "antialiased": false,
+    "contiguous": true,
+    "opacity": 1,
+    "sampleAllLayers": false
+  },
+  "sourceRGBAZlib": "eJzt06GtVUEUheFiIAgcjuQJjsEhCDjUeQmGEnCvAiwF4LFUgKMEirgdHHrYgrXmzic+P7Oz/uM4rqPYWe6x3HGWOx6rnedZLd2nfvXbLN2nfvVbraBR/eq3VbxP/eq3WLpP/eq3WbpP/eq3WbpP/eq3WbpP/eq3WkGj+tVvq3if+tVvsXSf+tVvs3Sf+tVvs3Sf+tVvs3Sf+tVvtYJG9avfVvE+9avfYuk+9avfZuk+9avfZuk+9avfZuk+9avfagWN6le/reJ96le/xdJ96le/zdJ96le/zdJ96le/zdJ96le/1Qoa1a9+W8X71K9+i6X71K9+m6X71K9+m6X71K9+m6X71K9+qxU0ql/9tor3qV/9Fkv3qV/9Nkv3qV/9Nkv3qV/9Nkv3qV/9VitoVL/6bRXvU7/6LZbuU7/6bZbuU7/6bZbuU7/6bZbuU7/6rVbQqH712yrep371Wyzdp3712yzdp3712yzdp3712yzdp371W62gUf3qt1W8T/3qt1i6T/3qt1m6T/3qt1m6T/3qt1m6T/3qt1pBoyv3+/zTHwAAAAAAAAAAAAAAAAAAgLvw99mLer9fPlw/X72/vr/+fD29+Xp9efvt+vDux/Xw8Vf8fpCUblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/23sCAAAAAAAAAAAAAAAAAAA6HMdx7eR2u1Vb4Y3N0vti7341rF/W7lfD+mXtfjWsX9buV8P6Ze1+Naxf1u5Xw/pl7X41rF/W3/89/EG/7NqvhvW7s/S+NKxf9Kth/e4ovS8N6xf9ali/O0rvS8P6Rb8a1u+O0vvSsH7Rr4b1u6P0vjSsX/SrYf3uKL0vDesX/WpYvztK70vD+kW/GtbvjtL7Srv3G6T3hX41rF/0u2PD6X2hXw3rF/3u2HB6X+hXw/pFvzs2nN4X+tWwftHvjg2n94V+01a+U3pf6LfBqrdK7wv9tljxXul9od8mq90svS/022alu6X3hX4brXK79L7Qb6sV7pfeF/pFv+h3R+l9oV/0i353lN4X+kW/6HdH6X2hX/SLfneU3tf/9g8bGsuv",
+  "nativeRGBAZlib": "eJzt06GNlVEUhdFiIAiCwZGM4DfjEAQc6k2CoQTcVIClADyWCnBUMKGI18FPD0ew7317ieXvPdnf06v784mxh+NY2nFZ3PGwtMvlsrT0/neX7lO/+kW/+tVvo3Sf+tUv+tWvfhul+9SvftGvfvXbKN2nfvWLfvWr30bpPvWrX/SrX/02SvepX/2iX/3qt1G6T/3qF/3qV7+N0n3qV7/oV7/6bZTuU7/6Rb/61W+jdJ/61S/61a9+G6X71K9+0a9+9dso3ad+9Yt+9avfRuk+9atf9Ktf/TZK96lf/aJf/eq3UbpP/eoX/epXv43SfepXv+hXv/ptlO5Tv/pFv/rVb6N0n/rVL/rVr34bpfvUr37Rr3712yjdp371i371q99G6T71q1/0q1/9Nkr3qV/9ol/96rdRuk/96hf96le/jdJ96re73+ef/gAAAAAAAAAAAAAAAAAAANyEv89eLO/3y7vz5+v35/c3n8/Ht1/PL/ffzg/vfpx3H3/F7wdJ6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1C3PpNvULc+k29Qtz6Tb1W+8RAAAAAAAAAAAAAAAAAABYw3EcZ5Pr9bq0Hd64svS+6O5Xw/pl7341rF/27lfD+mXvfjWsX/buV8P6Ze9+Naxf9u5Xw/pl//3fwh/0S2u/GtZvs/S+NKxf9Kth/TZK70vD+kW/GtZvo/S+NKxf9Kth/TZK70vD+kW/GtZvo/S+NKxf9Kth/TZK70vD+kW/GtZvo/S+NKxf9Kth/TZK7yvt1m+Q3hf61bB+0W9jw+l9oV8N6xf9Njac3hf61bB+0W9jw+l9oV8N6xf9Njac3hf6Tdv5Tul9od8V7Hqr9L7Q7yp2vFd6X+h3JbvdLL0v9Luane6W3hf6XdEut0vvC/2uaof7pfeFftEv+m2U3hf6Rb/ot1F6X+gX/aLfRul9oV/0i34bpff1v/0DUfABJw=="
+}

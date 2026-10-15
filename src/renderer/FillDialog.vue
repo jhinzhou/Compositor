@@ -1,0 +1,11 @@
+<script setup lang="ts">
+import {ref} from 'vue'
+import {useI18n} from './i18n'
+const {t}=useI18n()
+const props=defineProps<{foreground:string;background:string;disabled?:boolean}>()
+const emit=defineEmits<{apply:[color:string];cancel:[]}>()
+const contents=ref('foreground'),custom=ref(props.foreground)
+function apply(){emit('apply',contents.value==='foreground'?props.foreground:contents.value==='background'?props.background:contents.value==='white'?'#ffffff':contents.value==='black'?'#000000':custom.value)}
+</script>
+<template><div class="fill-backdrop" @pointerdown.self="emit('cancel')" @keydown.esc.stop="emit('cancel')"><form class="fill-dialog" role="dialog" aria-modal="true" :aria-label="t('Fill')" @submit.prevent="apply"><h2>{{t('Fill')}}</h2><label>{{t('Contents')}}<select v-model="contents" autofocus :aria-label="t('Fill contents')"><option value="foreground">{{t('Foreground')}}</option><option value="background">{{t('Background')}}</option><option value="white">{{t('White')}}</option><option value="black">{{t('Black')}}</option><option value="color">{{t('Color')}}</option></select></label><label v-if="contents==='color'">{{t('Color')}}<input v-model="custom" type="color" :aria-label="t('Fill color')" /></label><footer><button type="button" @click="emit('cancel')">{{t('Cancel')}}</button><button type="submit" :disabled="disabled">{{t('Apply')}}</button></footer></form></div></template>
+<style scoped>.fill-backdrop{position:fixed;inset:0;background:#0006;display:grid;place-items:center;z-index:70}.fill-dialog{width:320px;max-width:90vw;padding:22px;background:#292929;border:1px solid #555;border-radius:10px;box-shadow:0 12px 35px #0008}.fill-dialog h2{margin:0 0 20px;font-size:18px}.fill-dialog label{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:12px 0;font-size:13px}.fill-dialog select{max-width:210px;height:34px;min-height:34px;line-height:18px;padding:7px}.fill-dialog button[type=submit]{background:#087ff5;border-color:#087ff5;color:#fff}.fill-dialog footer{display:flex;justify-content:flex-end;gap:12px;margin-top:22px}.fill-dialog button{padding:7px 15px;background:#333;border:1px solid #555;border-radius:5px;color:inherit;cursor:pointer}</style>

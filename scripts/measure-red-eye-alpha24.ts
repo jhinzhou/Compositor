@@ -1,0 +1,16 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises'
+import {createHash} from 'node:crypto'
+import {deflateSync,inflateSync} from 'node:zlib'
+import {PNG} from 'pngjs'
+import {Editor} from '../src/core/editor'
+import {actionSchema} from '../src/shared/contracts'
+import {prepareRetouchTool,type RetouchToolAction} from '../src/core/retouch-tools'
+const path='fixtures/parity/photoshop-27.11-red-eye-alpha24.json',sha=(b:Uint8Array)=>createHash('sha256').update(b).digest('hex')
+let fixture:any
+try{fixture=JSON.parse(await readFile(path,'utf8'))}catch{const source=PNG.sync.read(await readFile('artifacts/photoshop-native/inputs/alpha24-retouch-source.png')),native=PNG.sync.read(await readFile('artifacts/photoshop-native/outputs/tools-alpha24/capture-1791880124463.png'));fixture={version:'Photoshop 27.11.0',width:512,height:320,sourceSha:sha(source.data),nativeSha:sha(native.data),sourceRGBA:deflateSync(source.data).toString('base64'),nativeRGBA:deflateSync(native.data).toString('base64'),operation:{tool:'Red Eye',pupilSize:50,darkenAmount:50,actions:[{kind:'drag',bounds:[335,135,50,50]},{kind:'click',point:[360,160]}]},limitation:'One synthetic pupil, two native operations (box then click). Not an independent set of natural portraits; automatic click detection and soft halo differ.'};await writeFile(path,JSON.stringify(fixture,null,2))}
+const source=inflateSync(Buffer.from(fixture.sourceRGBA,'base64')),native=inflateSync(Buffer.from(fixture.nativeRGBA,'base64'));if(sha(source)!==fixture.sourceSha||sha(native)!==fixture.nativeSha)throw Error('Reference hash mismatch')
+const png=new PNG({width:512,height:320});png.data=source;const editor=new Editor();editor.importPNG(PNG.sync.write(png),'Native Red Eye');const stage={...editor.snapshot(),selection:null},id=stage.manifest.layers[0].id,action=actionSchema.parse({type:'layer.red_eye',layerId:id,bounds:[335,135,50,50],pupilSize:.5,darkenAmount:.5}) as RetouchToolAction,result=PNG.sync.read(prepareRetouchTool(stage,action).png)
+let absolute=0,max=0,nativeChanged=0,productChanged=0,pupilAbsolute=0,pupilChannels=0
+for(let y=130;y<190;y++)for(let x=330;x<390;x++){const at=(y*512+x)*4;nativeChanged+=[0,1,2,3].some(c=>native[at+c]!==source[at+c])?1:0;productChanged+=[0,1,2,3].some(c=>result.data[at+c]!==source[at+c])?1:0;for(let c=0;c<3;c++){const d=Math.abs(result.data[at+c]-native[at+c]);absolute+=d;max=Math.max(max,d);if(source[at]>1.5*Math.max(source[at+1],source[at+2])&&source[at]-Math.max(source[at+1],source[at+2])>25){pupilAbsolute+=d;pupilChannels++}}}
+const report={sourceSha:fixture.sourceSha,nativeSha:fixture.nativeSha,roi:[330,130,60,60],mae:absolute/(60*60*3),pupilMAE:pupilAbsolute/pupilChannels,max,nativeChanged,productChanged,centerOriginal:[...source.subarray((160*512+360)*4,(160*512+360)*4+4)],centerNative:[...native.subarray((160*512+360)*4,(160*512+360)*4+4)],centerProduct:[...result.data.subarray((160*512+360)*4,(160*512+360)*4+4)],limitation:fixture.limitation}
+await mkdir('artifacts/photoshop-native/measurements/red-eye-alpha24',{recursive:true});await writeFile('artifacts/photoshop-native/measurements/red-eye-alpha24/comparison.json',JSON.stringify(report,null,2));await writeFile('artifacts/photoshop-native/measurements/red-eye-alpha24/product.png',PNG.sync.write(result));console.log(JSON.stringify(report,null,2))

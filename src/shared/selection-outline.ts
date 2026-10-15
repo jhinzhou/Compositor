@@ -1,5 +1,6 @@
+import {selectionFeatherHalo} from './selection-gaussian'
 import {selectionGeometryBounds} from './selection-bounds'
-import {selectionGeometryCoverage,sourcePoint} from './selection-coverage'
+import {selectionCoverage,selectionGeometryCoverage,sourcePoint} from './selection-coverage'
 import type {Selection} from './pixel-contracts'
 import {LIMITS} from './limits'
 
@@ -7,6 +8,8 @@ type Raster = NonNullable<Selection['shapes'][number]['raster']>
 type Interval = [number, number]
 type Edge = {x:number;y:number;endX:number;endY:number;direction:number;used?:boolean}
 const cached = new WeakMap<object,string>()
+const finalRasterRows=new WeakMap<Raster,Map<number,Interval[]>>()
+const MAX_OUTLINE_WORK=80_000_000,MAX_OUTLINE_SAMPLES=8_000_000
 
 function merge(intervals:Interval[]):Interval[] {
   intervals.sort((a,b)=>a[0]-b[0]||a[1]-b[1])
@@ -26,22 +29,42 @@ function exposed(row:Interval[],neighbours:Interval[]):Interval[] {
   return result
 }
 
+/** RLE is an ordered coverage field: a later weak/zero run can overwrite a
+ * strong run. Most rows have disjoint runs and take only one sorting pass. */
+function rasterRows(raster:Raster):Map<number,Interval[]> {
+  const cached=finalRasterRows.get(raster);if(cached)return cached
+  if(raster.width>LIMITS.maxSide||raster.height>LIMITS.maxSide||raster.runs.length>100_000)throw new Error('Selection outline exceeds the resource budget.')
+  const raw=new Map<number,{start:number;end:number;value:number;order:number}[]>()
+  for(let order=0;order<raster.runs.length;order++){
+    const [y,x,length,value]=raster.runs[order],start=Math.max(0,x),end=Math.min(raster.width,x+length)
+    if(y<0||y>=raster.height||end<=start)continue
+    const row=raw.get(y)??[];row.push({start,end,value,order});raw.set(y,row)
+  }
+  const rows=new Map<number,Interval[]>();let work=0
+  for(const [y,runs] of raw){
+    runs.sort((a,b)=>a.start-b.start);let end=-Infinity,overlap=false
+    for(const run of runs){if(run.start<end)overlap=true;end=Math.max(end,run.end)}
+    let intervals:Interval[]=[]
+    if(!overlap)intervals=merge(runs.filter(run=>run.value>=128).map(run=>[run.start,run.end]))
+    else for(const run of runs.sort((a,b)=>a.order-b.order)){
+      work+=intervals.length+1;if(work>MAX_OUTLINE_WORK)throw new Error('Selection outline exceeds the coverage work budget.')
+      intervals=exposed(intervals,[[run.start,run.end]])
+      if(run.value>=128)intervals=merge([...intervals,[run.start,run.end]])
+    }
+    if(intervals.length)rows.set(y,intervals)
+  }
+  finalRasterRows.set(raster,rows);return rows
+}
+
 /**
- * Exact pixel-edge contours of nonzero RLE coverage, in the raster's local grid.
+ * Exact pixel-edge contours of at least 50% RLE coverage, in the local grid.
  * Shared scanline edges are removed; holes retain the opposite winding. No
  * width × height bitmap is allocated, and no first-N-run visual truncation is used.
  * Apply rasterSelectionMatrix separately to display a transformed selection.
  */
 export function rasterSelectionOutline(raster:Raster):string {
   const previous=cached.get(raster);if(previous!==undefined)return previous
-  if(raster.width>LIMITS.maxSide||raster.height>LIMITS.maxSide||raster.runs.length>100_000)throw new Error('Selection outline exceeds the resource budget.')
-  const rows=new Map<number,Interval[]>()
-  for(const [y,x,length,value] of raster.runs){
-    if(value<=0||y<0||y>=raster.height)continue
-    const start=Math.max(0,x),end=Math.min(raster.width,x+length);if(end<=start)continue
-    const row=rows.get(y)??[];row.push([start,end]);rows.set(y,row)
-  }
-  for(const [y,row] of rows)rows.set(y,merge(row))
+  const rows=rasterRows(raster)
   const edges:Edge[]=[],outgoing=new Map<string,number[]>()
   function edge(x:number,y:number,endX:number,endY:number,direction:number):void {
     const key=`${x},${y}`,indices=outgoing.get(key)??[];indices.push(edges.length);outgoing.set(key,indices);edges.push({x,y,endX,endY,direction})
@@ -70,7 +93,6 @@ export function rasterSelectionOutline(raster:Raster):string {
   const path=paths.join('');cached.set(raster,path);return path
 }
 
-const outlineRasterRows=new WeakMap<Raster,Map<number,Raster['runs']>>()
 const compositeCached=new WeakMap<Selection,{width:number;height:number;path:string}>()
 function intersectIntervals(a:Interval[],b:Interval[]):Interval[]{const out:Interval[]=[];let i=0,j=0;while(i<a.length&&j<b.length){const left=Math.max(a[i][0],b[j][0]),right=Math.min(a[i][1],b[j][1]);if(left<right)out.push([left,right]);if(a[i][1]<b[j][1])i++;else j++}return out}
 function rowIntervals(shape:Selection['shapes'][number],y:number,width:number):Interval[] {
@@ -81,8 +103,7 @@ function rowIntervals(shape:Selection['shapes'][number],y:number,width:number):I
  if(shape.kind==='polygon'){if(cy<top||cy>=top+h)return [];const xs:number[]=[],points=shape.points!;for(let i=0,j=points.length-1;i<points.length;j=i++){const a=points[i],b=points[j];if((a[1]>cy)!==(b[1]>cy))xs.push(a[0]+(b[0]-a[0])*(cy-a[1])/(b[1]-a[1]))}xs.sort((a,b)=>a-b);const out:Interval[]=[];for(let i=0;i+1<xs.length;i+=2)out.push(...interval(xs[i],xs[i+1]));return merge(out)}
  const raster=shape.raster!,t=raster.transform
  if(t.rotation===0){const sy=Math.floor(sourcePoint({transform:{...t,sampling:'Nearest'}},0,cy,raster.width,raster.height)[1]);if(sy<0||sy>=raster.height)return []
-  let rows=outlineRasterRows.get(raster);if(!rows){rows=new Map();for(const run of raster.runs){const entries=rows.get(run[0])??[];entries.push(run);rows.set(run[0],entries)}outlineRasterRows.set(raster,rows)}
-  const out:Interval[]=[];for(const [,x,n,value] of rows.get(sy)??[])if(value>=128){const a=t.origin[0]+t.size[0]*(t.flipX?1-x/raster.width:x/raster.width),b=t.origin[0]+t.size[0]*(t.flipX?1-(x+n)/raster.width:(x+n)/raster.width);out.push(...interval(Math.min(a,b),Math.max(a,b)))}return merge(out)
+  const out:Interval[]=[];for(const [x,end] of rasterRows(raster).get(sy)??[]){const a=t.origin[0]+t.size[0]*(t.flipX?1-x/raster.width:x/raster.width),b=t.origin[0]+t.size[0]*(t.flipX?1-end/raster.width:end/raster.width);out.push(...interval(Math.min(a,b),Math.max(a,b)))}return merge(out)
  }
  // Rotated rasters use bounded document-space samples for this row only. They
  // never force scanning transparent full-width rows merely because of inverse.
@@ -90,18 +111,37 @@ function rowIntervals(shape:Selection['shapes'][number],y:number,width:number):I
  if(y<bounds[1]||y>=bounds[1]+bounds[3])return []
  let start=-1;for(let x=bounds[0];x<=bounds[0]+bounds[2];x++){const inside=x<bounds[0]+bounds[2]&&selectionGeometryCoverage(single,x+.5,cy)>=.5;if(inside&&start<0)start=x;else if(!inside&&start>=0){out.push([start,x]);start=-1}}return out
 }
-/** Final boolean geometry scanlines: wide empty canvas costs no per-pixel work.
- * Feather stays excluded because marching ants trace the outline before blur. */
+/** Only binary pixel-aligned geometry may combine thresholded scanlines. Weak
+ * masks, antialiased curves and feather combine first, then threshold coverage. */
+function alignedGeometry(selection:Selection):boolean {
+ return selection.shapes.every(shape=>shape.kind==='rectangle'&&shape.bounds.every(Number.isInteger)||shape.kind==='raster'&&shape.raster!.transform.rotation===0&&shape.raster!.transform.origin.every(Number.isInteger)&&shape.raster!.transform.size[0]===shape.raster!.width&&shape.raster!.transform.size[1]===shape.raster!.height)
+}
+function scanlineGeometry(selection:Selection):boolean {
+ const feather=selection.feather??Math.max(0,...selection.shapes.map(shape=>shape.feather))
+ if(feather)return false
+ return alignedGeometry(selection)&&(selection.shapes.every(shape=>shape.operation==='replace'||shape.operation==='add')||selection.shapes.every(shape=>!shape.raster||shape.raster.runs.every(run=>run[3]===0||run[3]===255)))
+}
+/** Final coverage contours. Hard sparse geometry retains its scanline fast path;
+ * soft selections are sampled only inside conservative bounds with a work gate. */
 export function selectionOutline(selection:Selection|null|undefined,width:number,height:number):string {
  if(!selection)return ''
  const previous=compositeCached.get(selection);if(previous?.width===width&&previous.height===height)return previous.path
  if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width>LIMITS.maxSide||height>LIMITS.maxSide)throw new Error('Selection outline exceeds the document coverage budget.')
- const [,top,,h]=selectionGeometryBounds(selection,width,height),runs:[number,number,number,number][]=[]
- if(selection.shapes.reduce((work,shape)=>work+(shape.kind==='polygon'?shape.points!.length*Math.min(h,Math.ceil(shape.bounds[3])+1):0),0)>80_000_000)throw new Error('Selection polygon outline exceeds the scanline work budget.')
+ const feather=selection.feather??Math.max(0,...selection.shapes.map(shape=>shape.feather)),[left,top,w,h]=selectionGeometryBounds(selection,width,height,selectionFeatherHalo(selection)),runs:[number,number,number,number][]=[]
+ const only=selection.shapes.length===1?selection.shapes[0]:undefined
+ const fullCanvas=selection.canvasSize&&only?.kind==='rectangle'&&only.operation==='replace'&&only.bounds[0]<=0&&only.bounds[1]<=0&&only.bounds[0]+only.bounds[2]>=Math.max(width,selection.canvasSize[0])&&only.bounds[1]+only.bounds[3]>=Math.max(height,selection.canvasSize[1])
+ const rowsOnly=!selection.shapes.length||scanlineGeometry(selection)||!!fullCanvas
+ const sampleFactor=alignedGeometry(selection)||selection.antialiased===false&&!feather?1:16
+ if(rowsOnly?h*Math.max(1,selection.shapes.length)>MAX_OUTLINE_WORK:w*h>MAX_OUTLINE_SAMPLES||w*h*Math.max(1,selection.shapes.reduce((work,shape)=>work+(shape.kind==='polygon'?shape.points!.length:1),0))*sampleFactor>MAX_OUTLINE_WORK)throw new Error('Selection outline exceeds the coverage work budget.')
  for(let y=top;y<top+h;y++){
   let row:Interval[]=[]
-  for(const shape of selection.shapes){const next=rowIntervals(shape,y,width);row=shape.operation==='replace'?next:shape.operation==='add'?merge([...row,...next]):shape.operation==='subtract'?exposed(row,next):intersectIntervals(row,next)}
-  if(selection.inverted)row=exposed([[0,width]],row)
+  if(rowsOnly){
+   for(const shape of selection.shapes){const next=rowIntervals(shape,y,width);row=shape.operation==='replace'?next:shape.operation==='add'?merge([...row,...next]):shape.operation==='subtract'?exposed(row,next):intersectIntervals(row,next)}
+   if(selection.inverted)row=exposed([[0,width]],row)
+  }else{
+   let start=-1
+   for(let x=left;x<=left+w;x++){const inside=x<left+w&&selectionCoverage(selection,x+.5,y+.5)>=.5;if(inside&&start<0)start=x;else if(!inside&&start>=0){row.push([start,x]);start=-1}}
+  }
   for(const [start,end] of row){runs.push([y,start,end-start,255]);if(runs.length>100_000)throw new Error('Selection outline exceeds the run budget.')}
  }
  const path=rasterSelectionOutline({width,height,runs,transform:{origin:[0,0],size:[width,height],rotation:0,flipX:false,flipY:false}})

@@ -1,0 +1,326 @@
+{
+  "date": "2026-10-12",
+  "producer": "Adobe Photoshop27.11.0",
+  "platform": "macOS",
+  "license": "Original synthetic images created for this project; no user or third-party photo.",
+  "execution": "Parent agent operated the installed Photoshop; v3 log records successful native operations. This subagent copied unchanged output files and inspected actual channel headers.",
+  "source": {
+    "file": "analysis-grid.png",
+    "sha256": "88fee62adb55cb448f0052b82abb289a975eab88d574c419c81d01ecf52f47e7"
+  },
+  "log": {
+    "file": "native-results.tsv",
+    "sha256": "eec3f8210a6adf9047e642658007f123f4b38b8230ed51a52fd0ffb40c4bd668"
+  },
+  "profile": "The JSX log falls back to untagged when colorProfileName is unavailable. Binary PSD ICC1039 records below are authoritative; PSD16 import independently verifies sRGB-equivalent matrix/TRC before accepting unchanged sample numbers. No color conversion reference asserted.",
+  "scope": "Plain RGB8/16 pixel layers. Not a complex smart-object/text/effects compatibility corpus. The filename layered-rle does not establish compression; channel codes below are authoritative.",
+  "records": [
+    {
+      "file": "rgb16-layered.psd",
+      "source": "artifacts/photoshop-native/outputs/v3/rgb16-layered.psd",
+      "bytes": 1405852,
+      "sha256": "07331865d3ded497e964177e7567149c53fa004da6ffefa3863b5d444caf0ddd",
+      "channels": [
+        {
+          "name": "图层 1",
+          "depth": 16,
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 3
+            },
+            {
+              "id": 0,
+              "compression": 3
+            },
+            {
+              "id": 1,
+              "compression": 3
+            },
+            {
+              "id": 2,
+              "compression": 3
+            }
+          ]
+        },
+        {
+          "name": "Top half opacity",
+          "depth": 16,
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 3
+            },
+            {
+              "id": 0,
+              "compression": 3
+            },
+            {
+              "id": 1,
+              "compression": 3
+            },
+            {
+              "id": 2,
+              "compression": 3
+            }
+          ]
+        }
+      ],
+      "origin": "actual-Adobe-Photoshop-author-output",
+      "icc": [
+        {
+          "resourceID": 1039,
+          "bytes": 3144,
+          "sha256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e"
+        }
+      ]
+    },
+    {
+      "file": "rgb16-layered-rle.psd",
+      "source": "artifacts/photoshop-native/outputs/v3/rgb16-layered-rle.psd",
+      "bytes": 1405936,
+      "sha256": "b23af4001704aa9dd065bbfafe3b2c884a65dba09d7afecc96de4c516a0ebee3",
+      "channels": [
+        {
+          "name": "图层 1",
+          "depth": 16,
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 3
+            },
+            {
+              "id": 0,
+              "compression": 3
+            },
+            {
+              "id": 1,
+              "compression": 3
+            },
+            {
+              "id": 2,
+              "compression": 3
+            }
+          ]
+        },
+        {
+          "name": "图层 1 拷贝",
+          "depth": 16,
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 3
+            },
+            {
+              "id": 0,
+              "compression": 3
+            },
+            {
+              "id": 1,
+              "compression": 3
+            },
+            {
+              "id": 2,
+              "compression": 3
+            }
+          ]
+        }
+      ],
+      "origin": "actual-Adobe-Photoshop-author-output",
+      "icc": [
+        {
+          "resourceID": 1039,
+          "bytes": 3144,
+          "sha256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e"
+        }
+      ]
+    },
+    {
+      "file": "rgb16-identity.png",
+      "source": "artifacts/photoshop-native/outputs/v3/rgb16-identity.png",
+      "bytes": 1312844,
+      "sha256": "b67b76cd6d67ac21342ae8b7b5bcef73676f91cc6bcac8ba160590c4b84ff428",
+      "origin": "actual-Adobe-Photoshop-author-output"
+    },
+    {
+      "file": "rgb8-layered.psd",
+      "source": "artifacts/photoshop-native/outputs/v3/rgb8-layered.psd",
+      "bytes": 517626,
+      "sha256": "807be69fcecf51dcb6fe0adcef25569f4e5d1d0d9aa6b875e06c942a66267d88",
+      "channels": [
+        {
+          "name": "图层 1",
+          "depth": 8,
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 1
+            },
+            {
+              "id": 0,
+              "compression": 1
+            },
+            {
+              "id": 1,
+              "compression": 1
+            },
+            {
+              "id": 2,
+              "compression": 1
+            }
+          ]
+        },
+        {
+          "name": "Top half opacity",
+          "depth": 8,
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 1
+            },
+            {
+              "id": 0,
+              "compression": 1
+            },
+            {
+              "id": 1,
+              "compression": 1
+            },
+            {
+              "id": 2,
+              "compression": 1
+            }
+          ]
+        }
+      ],
+      "origin": "actual-Adobe-Photoshop-author-output",
+      "icc": [
+        {
+          "resourceID": 1039,
+          "bytes": 3144,
+          "sha256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e"
+        }
+      ]
+    },
+    {
+      "file": "rgb8-identity.png",
+      "source": "artifacts/photoshop-native/outputs/v3/rgb8-identity.png",
+      "bytes": 657372,
+      "sha256": "2223cb808bec5eda009c90af4cf2b055d95a6f304f8bcd19e940b2eb31b2ac41",
+      "origin": "actual-Adobe-Photoshop-author-output"
+    },
+    {
+      "file": "precision-rgba16.png",
+      "source": "artifacts/photoshop-native/inputs/precision-rgba16.png",
+      "bytes": 6024,
+      "sha256": "0fecd4c0851079339f90bbb12ff8f1234aad24530938d2fec89ac04cd08e2db1",
+      "origin": "original-synthetic-source"
+    },
+    {
+      "file": "precision-rgb16-native.psb",
+      "source": "artifacts/photoshop-native/outputs/supplement/precision-rgb16-native.psb",
+      "bytes": 1063276,
+      "sha256": "728d77a830393ba97ff02fdc756cef53e8923cca66eb64c0ca2f29b2be1d7d56",
+      "origin": "actual-Adobe-Photoshop-manual-SaveAs-output",
+      "version": 2,
+      "depth": 16,
+      "width": 65,
+      "height": 33,
+      "channels": [
+        {
+          "name": "图层 1",
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 3
+            },
+            {
+              "id": 0,
+              "compression": 3
+            },
+            {
+              "id": 1,
+              "compression": 3
+            },
+            {
+              "id": 2,
+              "compression": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "precision-rgb16-layered.psd",
+      "source": "artifacts/photoshop-native/outputs/supplement/precision-rgb16-layered.psd",
+      "bytes": 42666,
+      "sha256": "ea7b2abd55f0b987b2d903fec716559578ea7d40ca7f1db66758dc2e55c8d0c6",
+      "origin": "actual-Adobe-Photoshop-JSX-output",
+      "version": 1,
+      "depth": 16,
+      "width": 65,
+      "height": 33,
+      "channels": [
+        {
+          "name": "图层 1",
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 3
+            },
+            {
+              "id": 0,
+              "compression": 3
+            },
+            {
+              "id": 1,
+              "compression": 3
+            },
+            {
+              "id": 2,
+              "compression": 3
+            }
+          ]
+        },
+        {
+          "name": "图层 1 拷贝",
+          "compressions": [
+            {
+              "id": -1,
+              "compression": 3
+            },
+            {
+              "id": 0,
+              "compression": 3
+            },
+            {
+              "id": 1,
+              "compression": 3
+            },
+            {
+              "id": 2,
+              "compression": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "file": "precision-rgb16-identity.png",
+      "source": "artifacts/photoshop-native/outputs/supplement/precision-rgb16-identity.png",
+      "bytes": 18785,
+      "sha256": "f5a5af824c78d4e385fce233ef762b1793ab9ba72f2e1fd149dabdb593e086b1",
+      "origin": "actual-Adobe-Photoshop-JSX-output"
+    }
+  ],
+  "supplement": {
+    "source": "precision-rgba16.png",
+    "identity": "precision-rgb16-identity.png",
+    "log": {
+      "file": "supplement-results.tsv",
+      "sha256": "6348206cbdaac3281fc102b4fc09f7dfbbe732b45e488b8f0b8901827b1b8655"
+    },
+    "psb": "precision-rgb16-native.psb",
+    "execution": "The JSX LargeDocumentFormatSaveOptions construction failed and remains recorded as FAIL. It did not create the PSB. Parent separately operated installed Photoshop Save As through its real UI, chose Large Document Format with Maximize Compatibility checked, and saved the PSB recorded here. Manual UI save is the provenance for PSB, not the failed JSX log."
+  }
+}

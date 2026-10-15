@@ -1,0 +1,1 @@
+var alpha26CheckFile = new File("/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/alpha26-execution-confirmed.txt"); alpha26CheckFile.open("w"); alpha26CheckFile.write("entered"); alpha26CheckFile.close(); alert("alpha26 execution check");

@@ -16,9 +16,16 @@ function fft(real:Float64Array,imag:Float64Array,inverse=false):void{
 }
 /** Per-pass workspace is reused across all rows/channels. Returned values keep
  * float precision until the renderer's final premultiplied byte conversion. */
-export function gaussianLineConvolver(length:number,sigma:number,clampEdges=false): (input:Float32Array)=>Float32Array{
+export function gaussianLineConvolver(length:number,sigma:number,clampEdges:boolean|{start?:boolean;end?:boolean}=false): (input:Float32Array)=>Float32Array{
+ return kernelLineConvolver(length,integratedGaussianKernel(sigma),clampEdges)
+}
+/** Shared bounded convolution workspace. Gaussian callers retain their original
+ * coefficients; mask kernels can reuse the same direct/FFT implementation. */
+export function kernelLineConvolver(length:number,weights:Float64Array,clampEdges:boolean|{start?:boolean;end?:boolean}=false): (input:Float32Array)=>Float32Array{
  if(!Number.isInteger(length)||length<1||length>30_000)throw Error('Invalid Gaussian line length.')
- const kernel=integratedGaussianKernel(sigma),radius=(kernel.length-1)/2,useFFT=kernel.length>33
+ if(!weights.length||weights.length%2!==1||weights.length>200_001||weights.some(value=>!Number.isFinite(value)))throw Error('Invalid convolution kernel.')
+ const clampStart=typeof clampEdges==='boolean'?clampEdges:!!clampEdges.start,clampEnd=typeof clampEdges==='boolean'?clampEdges:!!clampEdges.end
+ const kernel=weights.slice(),radius=(kernel.length-1)/2,useFFT=kernel.length>33
  let n=1;while(n<length+radius*4)n*=2
  if(n>2_097_152)throw Error('Gaussian convolution exceeds the line workspace budget.')
  const kr=useFFT?new Float64Array(n):undefined,ki=useFFT?new Float64Array(n):undefined,real=useFFT?new Float64Array(n):undefined,imag=useFFT?new Float64Array(n):undefined
@@ -26,8 +33,8 @@ export function gaussianLineConvolver(length:number,sigma:number,clampEdges=fals
  return(input:Float32Array)=>{
   if(input.length!==length)throw Error('Gaussian line dimensions changed.')
   const output=new Float32Array(length)
-  if(real&&imag&&kr&&ki){real.fill(0);imag.fill(0);for(let x=-radius;x<length+radius;x++)real[x+radius]=x<0?clampEdges?input[0]:0:x>=length?clampEdges?input[length-1]:0:input[x];fft(real,imag);for(let i=0;i<n;i++){const r=real[i]*kr[i]-imag[i]*ki[i];imag[i]=real[i]*ki[i]+imag[i]*kr[i];real[i]=r}fft(real,imag,true);for(let x=0;x<length;x++)output[x]=real[x+radius*2]}
-  else for(let x=0;x<length;x++){let sum=0;for(let offset=-radius;offset<=radius;offset++){const at=x+offset;if(at<0||at>=length){if(clampEdges)sum+=input[at<0?0:length-1]*kernel[offset+radius]}else sum+=input[at]*kernel[offset+radius]}output[x]=sum}
+  if(real&&imag&&kr&&ki){real.fill(0);imag.fill(0);for(let x=-radius;x<length+radius;x++)real[x+radius]=x<0?clampStart?input[0]:0:x>=length?clampEnd?input[length-1]:0:input[x];fft(real,imag);for(let i=0;i<n;i++){const r=real[i]*kr[i]-imag[i]*ki[i];imag[i]=real[i]*ki[i]+imag[i]*kr[i];real[i]=r}fft(real,imag,true);for(let x=0;x<length;x++)output[x]=real[x+radius*2]}
+  else for(let x=0;x<length;x++){let sum=0;for(let offset=-radius;offset<=radius;offset++){const at=x+offset;if(at<0||at>=length){if(at<0?clampStart:clampEnd)sum+=input[at<0?0:length-1]*kernel[offset+radius]}else sum+=input[at]*kernel[offset+radius]}output[x]=sum}
   return output
  }
 }

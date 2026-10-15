@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "photoshopVersion": "27.11.0",
+  "capturedDate": "2026-10-14",
+  "frozenAt": "2026-10-14T07:59:58.949Z",
+  "provenance": "Root agent created an owned 240x160 test image, restored a clean duplicate for each GUI operation, selected Magic Eraser and recorded actual options and a single tool history state. Click coordinates are root-recorded GUI coordinates; history and tool descriptors are preserved below.",
+  "sources": {
+    "magic-owned": {
+      "width": 240,
+      "height": 160,
+      "rgbaSHA256": "86b58bf2274e226c07d2f36a2ea72155a9f7acc690f5fa8d8fa48346a8b0222e",
+      "rgbaZlib": "eJzt06GtVUEUheFiIAgcjuQJjsEhCDjUeQmGEnCvAiwF4LFUgKMEirgdHHrYgrXmzic+P7Oz/uM4rqPYWe6x3HGWOx6rnedZLd2nfvXbLN2nfvVbraBR/eq3VbxP/eq3WLpP/eq3WbpP/eq3WbpP/eq3WbpP/eq3WkGj+tVvq3if+tVvsXSf+tVvs3Sf+tVvs3Sf+tVvs3Sf+tVvtYJG9avfVvE+9avfYuk+9avfZuk+9avfZuk+9avfZuk+9avfagWN6le/reJ96le/xdJ96le/zdJ96le/zdJ96le/zdJ96le/1Qoa1a9+W8X71K9+i6X71K9+m6X71K9+m6X71K9+m6X71K9+qxU0ql/9tor3qV/9Fkv3qV/9Nkv3qV/9Nkv3qV/9Nkv3qV/9VitoVL/6bRXvU7/6LZbuU7/6bZbuU7/6bZbuU7/6bZbuU7/6rVbQqH712yrep371Wyzdp3712yzdp3712yzdp3712yzdp371W62gUf3qt1W8T/3qt1i6T/3qt1m6T/3qt1m6T/3qt1m6T/3qt1pBoyv3+/zTHwAAAAAAAAAAAAAAAAAAgLvw99mLer9fPlw/X72/vr/+fD29+Xp9efvt+vDux/Xw8Vf8fpCUblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/MJduU78wl25TvzCXblO/23sCAAAAAAAAAAAAAAAAAAA6HMdx7eR2u1Vb4Y3N0vti7341rF/W7lfD+mXtfjWsX9buV8P6Ze1+Naxf1u5Xw/pl7X41rF/W3/89/EG/7NqvhvW7s/S+NKxf9Kth/e4ovS8N6xf9ali/O0rvS8P6Rb8a1u+O0vvSsH7Rr4b1u6P0vjSsX/SrYf3uKL0vDesX/WpYvztK70vD+kW/GtbvjtL7Srv3G6T3hX41rF/0u2PD6X2hXw3rF/3u2HB6X+hXw/pFvzs2nN4X+tWwftHvjg2n94V+01a+U3pf6LfBqrdK7wv9tljxXul9od8mq90svS/022alu6X3hX4brXK79L7Qb6sV7pfeF/pFv+h3R+l9oV/0i353lN4X+kW/6HdH6X2hX/SLfneU3tf/9g8bGsuv",
+      "pngSHA256": "f60d297f41e35d4796a768695ddd7c4767b726b727c364d5ac72154e10ca5618",
+      "nativePath": "artifacts/photoshop-native/outputs/gui-alpha28/alpha28-gui-owned-magic-eraser-source.png"
+    }
+  },
+  "cases": [
+    {
+      "name": "magic-t32-aa0-contig0",
+      "method": "actual Photoshop GUI mouse click, not an internal editor command",
+      "sourceVariant": "magic-owned",
+      "params": {
+        "point": [
+          12,
+          14
+        ],
+        "tolerance": 32,
+        "opacity": 1,
+        "antialiased": false,
+        "contiguous": false,
+        "sampleAllLayers": false
+      },
+      "width": 240,
+      "height": 160,
+      "rgbaSHA256": "b085a26a97a70ee796b2894c660eeb5632734662acd6d96e72f2323dfc013efe",
+      "rgbaZlib": "eJzt06GNFUAUheHtBYLA4UhW8AwOQcDhNsFQAm4rwFIAHksFOEqgiNfBUALJSeDMvPuJz8/cnH+tdbeIPVwua2ft+/zN5fKwdta+D/9Wu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/96pdcu0/9zu736YdfCwAAAAAAAAAAAAAAAAAA4Bb8fvJsez+f36/vL96ury8/rsdXn9en11/Wuzff1v37H/X7QVO7Tf1Crt2mfiHXblO/kGu3qV/ItdvUL+TabeoXcu029Qu5dpv6hVy7Tf1Crt2mfiHXblO/kGu3qV/ItdvUL+TabeoXcu029Qu5dpv6hVy7Tf1Crt2mfiHXblO/kGu3qV/ItdvUL+TabeoXcu029Qu5dpv6hVy7Tf1Crt2mfiHXblO/kGu3qV/ItdvUL+TabeoXcu029TveIwAAAAAAAAAAAAAAAAAAsIe11t0k1+t17eyEN+6svS9m96th/XJ2vxrWL2f3q2H9cna/GtYvZ/erYf1ydr8a1i9n96th/XL+/m/hD/plar8a1u9k7X1pWL/oV8P6nai9Lw3rF/1qWL8TtfelYf2iXw3rd6L2vjSsX/SrYf1O1N6XhvWLfjWs34na+9KwftGvhvU7UXtfGtYv+tWwfidq76vt1m/Q3hf61bB+0e/Ehtv7Qr8a1i/6ndhwe1/oV8P6Rb8TG27vC/1qWL/od2LD7X2h37aT79TeF/rdwam3au8L/e7ixHu194V+d3Lazdr7Qr+7Oelu7X2h3x2dcrv2vtDvrk64X3tf6Bf9ot+J2vtCv+gX/U7U3hf6Rb/od6L2vtAv+kW/E7X39b/9AZIqh/I=",
+      "nativePNG_SHA256": "1d755f196ffab007a122377309ef15f37a8ee052f78a6920a05cf7dd8881ebc8",
+      "nativePNGPath": "artifacts/photoshop-native/outputs/gui-alpha28/magic-t32-aa0-contig0.png",
+      "history": "Photoshop=27.11.0\rwidth=240\rheight=160\rhistory=魔术橡皮擦\rstate=alpha28-gui-owned-magic-eraser\rstate=复制图像\rstate=名称更改\rstate=魔术橡皮擦\r",
+      "historySHA256": "2a8b9ba4e8c80a166d8c747ee61210f4cacbe188963900e3d36f8f44d929c982",
+      "toolOptions": {
+        "currentToolOptions": {
+          "className": "currentToolOptions",
+          "value": {
+            "mode": {
+              "enumType": "blendMode",
+              "value": "normal"
+            },
+            "opacity": 100,
+            "BckT": 32,
+            "BckA": false,
+            "BckS": false,
+            "contiguous": false,
+            "BckF": false,
+            "AntiAliasIterations": 1,
+            "ShrinkDelta": 0,
+            "ExpandDelta": 0
+          }
+        },
+        "tool": {
+          "enumType": "magicEraserTool",
+          "value": "targetEnum"
+        }
+      },
+      "toolOptionsSHA256": "3e9d2588a991de5d5524c933a85f4f705571083e1b0a1b92dd2c3afbcbba588a",
+      "gate": {
+        "alphaExact": true,
+        "premultipliedRGBExact": true,
+        "visibleRGBExact": true,
+        "hiddenRGBCompared": false
+      }
+    },
+    {
+      "name": "magic-t32-aa0-contig1",
+      "method": "actual Photoshop GUI mouse click, not an internal editor command",
+      "sourceVariant": "magic-owned",
+      "params": {
+        "point": [
+          12,
+          14
+        ],
+        "tolerance": 32,
+        "opacity": 1,
+        "antialiased": false,
+        "contiguous": true,
+        "sampleAllLayers": false
+      },
+      "width": 240,
+      "height": 160,
+      "rgbaSHA256": "28c18d793c0aaeaf6fe85fe2664204fb1dc7333dfab1ac7e289b64f8861befd3",
+      "rgbaZlib": "eJzt06GNlkEYhVF6gSBwOJIVfAaHIOBQ/yYYSsBRAZYC8FgqwFECRWwHQw+v4M7sPeL4mTf3WWs9WYzdX9fa2XXb3HW/tdvttrX0/k+X7lO/+kW/+tVvo3Sf+tUv+tWvfhul+9SvftGvfvXbKN2nfvWLfvWr30bpPvWrX/SrX/02SvepX/2iX/3qt1G6T/3qF/3qV7+N0n3qV7/oV7/6bZTuU7/6Rb/61W+jdJ/61S/61a9+G6X71K9+0a9+9dso3ad+9Yt+9avfRuk+9atf9Ktf/TZK96lf/aJf/eq3UbpP/eoX/epXv43SfepXv+hXv/ptlO5Tv/pFv/rVb6N0n/rVL/rVr34bpfvUr37Rr3712yjdp371i371q99G6T71q1/0q1/9Nkr3qV/9ol/96rdRuk/96hf96le/jdJ96re732cf/wAAAAAAAAAAAAAAAAAAADwKf58+397vF3fr58t36/urT+vr6y/r85tv6/3bH+vuw6/4/SAp3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+YS7dpn5hLt2mfmEu3aZ+630FAAAAAAAAAAAAAAAAAAD2cF3XavLw8LC1E964s/S+6O5Xw/rl7H41rF/O7lfD+uXsfjWsX87uV8P65ex+Naxfzu5Xw/rl/P0/hj/ol9Z+NazfZul9aVi/6FfD+m2U3peG9Yt+NazfRul9aVi/6FfD+m2U3peG9Yt+NazfRul9aVi/6FfD+m2U3peG9Yt+NazfRul9aVi/6FfD+m2U3lfaY79Bel/oV8P6Rb+NDaf3hX41rF/029hwel/oV8P6Rb+NDaf3hX41rF/029hwel/oN+3kO6X3hX53cOqt0vtCv7s48V7pfaHfnZx2s/S+0O9uTrpbel/od0en3C69L/S7qxPul94X+kW/6LdRel/oF/2i30bpfaFf9It+G6X3hX7RL/ptlN7X//YPejR+vQ==",
+      "nativePNG_SHA256": "356f4346f5f5b35f73758a391e319f16949de0a2585c32dce5f8fa26b2d767a1",
+      "nativePNGPath": "artifacts/photoshop-native/outputs/gui-alpha28/magic-t32-aa0-contig1.png",
+      "history": "Photoshop=27.11.0\rwidth=240\rheight=160\rhistory=魔术橡皮擦\rstate=alpha28-gui-owned-magic-eraser\rstate=复制图像\rstate=名称更改\rstate=魔术橡皮擦\r",
+      "historySHA256": "2a8b9ba4e8c80a166d8c747ee61210f4cacbe188963900e3d36f8f44d929c982",
+      "toolOptions": {
+        "currentToolOptions": {
+          "className": "currentToolOptions",
+          "value": {
+            "mode": {
+              "enumType": "blendMode",
+              "value": "normal"
+            },
+            "opacity": 100,
+            "BckT": 32,
+            "BckA": false,
+            "BckS": false,
+            "contiguous": true,
+            "BckF": false,
+            "AntiAliasIterations": 1,
+            "ShrinkDelta": 0,
+            "ExpandDelta": 0
+          }
+        },
+        "tool": {
+          "enumType": "magicEraserTool",
+          "value": "targetEnum"
+        }
+      },
+      "toolOptionsSHA256": "3d04875a81058ecad719ea766039059895368f86d02d6aa5e038c19cc27a8f2f",
+      "gate": {
+        "alphaExact": true,
+        "premultipliedRGBExact": true,
+        "visibleRGBExact": true,
+        "hiddenRGBCompared": false
+      }
+    }
+  ]
+}

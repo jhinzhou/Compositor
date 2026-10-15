@@ -1,30 +1,36 @@
 <script setup lang="ts">
 import { useI18n } from './i18n'
 const { t, tm } = useI18n()
-import { ref, watch } from 'vue'
-import type { RawImportSettings } from '../core/foreign-import'
-const props = withDefaults(defineProps<{ open: boolean; filename: string; settings?: Partial<RawImportSettings>; busy?: boolean; metadata?: { width: number; height: number; camera_make?: string; camera_model?: string }; error?: string; preview?: string }>(), { settings: () => ({}), busy: false, error: '' })
-const emit = defineEmits<{ import: [settings: RawImportSettings]; cancel: []; preview: [settings: RawImportSettings] }>()
-const draft = ref<RawImportSettings>({ whiteBalance: 'camera', exposureEV: 0, autoBright: true, halfSize: false, highlightMode: 0 })
-watch(() => [props.open, props.settings] as const, () => { if (props.open) draft.value = { whiteBalance: 'camera', exposureEV: 0, autoBright: true, halfSize: false, highlightMode: 0, ...props.settings } }, { immediate: true })
-function submit() { if (!props.busy && Number.isFinite(draft.value.exposureEV) && draft.value.exposureEV >= -5 && draft.value.exposureEV <= 5) emit('import', { ...draft.value }) }
+import { computed,ref, watch } from 'vue'
+import { normalizeRawSettings, type RawImportSettings } from '../shared/raw-settings'
+const props = withDefaults(defineProps<{ open: boolean; filename: string; settings?: Partial<RawImportSettings>; busy?: boolean; cancelable?: boolean; metadata?: { width: number; height: number; camera_make?: string; camera_model?: string }; error?: string; preview?: string }>(), { settings: () => ({}), busy: false, cancelable: true, error: '' })
+const emit = defineEmits<{ import: [settings: RawImportSettings]; cameraRaw: [settings: RawImportSettings]; cancel: []; preview: [settings: RawImportSettings] }>()
+const draft = ref<RawImportSettings>({ whiteBalance: 'camera', exposureEV: 0, autoBright: true, halfSize: false, highlightMode: 0, noiseReductionThreshold:0 })
+watch(() => [props.open, props.settings] as const, () => { if (props.open) draft.value = { whiteBalance: 'camera', exposureEV: 0, autoBright: true, halfSize: false, highlightMode: 0, noiseReductionThreshold:0, ...props.settings } }, { immediate: true })
+const valid=computed(()=>{try{normalizeRawSettings(draft.value);return true}catch{return false}})
+function submit() { if (!props.busy&&valid.value) emit('import',normalizeRawSettings(draft.value)) }
+function previewDraft(){if(!props.busy&&valid.value)emit('preview',normalizeRawSettings(draft.value))}
+function cancel(){if(props.cancelable)emit('cancel')}
+function openCameraRaw(){if(!props.busy&&valid.value)emit('cameraRaw',normalizeRawSettings(draft.value))}
 </script>
 <template>
-  <div v-if="open" class="raw-backdrop" @keydown.esc.prevent.stop="emit('cancel')">
+  <div v-if="open" class="raw-backdrop" @keydown.esc.prevent.stop="cancel">
     <form class="raw-import" role="dialog" aria-modal="true" aria-labelledby="raw-heading" @submit.prevent="submit">
-      <header><h2 id="raw-heading">{{ t('Import RAW image') }}</h2><button type="button" :aria-label="t('Close RAW import')" @click="emit('cancel')">×</button></header>
+      <header><h2 id="raw-heading">{{ t('Import RAW image') }}</h2><button type="button" :aria-label="t('Close RAW import')" :disabled="!cancelable" @click="cancel">×</button></header>
       <p class="raw-name" :title="filename">{{ filename }}</p>
       <p v-if="metadata" class="raw-meta">{{ metadata.camera_make }} {{ metadata.camera_model }} · {{ metadata.width }} × {{ metadata.height }} px</p>
       <img v-if="preview" :src="preview" class="raw-preview" :alt="t('RAW development preview')" /><fieldset :disabled="busy">
         <label>{{ t('White balance') }}<select v-model="draft.whiteBalance" :aria-label="t('White balance')"><option value="camera">{{ t('Camera') }}</option><option value="auto">{{ t('Auto') }}</option></select></label>
         <label>{{ t('Exposure EV') }}<input v-model.number="draft.exposureEV" type="number" min="-5" max="5" step="0.1" required /></label>
-        <label>{{ t('Highlights') }}<select v-model.number="draft.highlightMode" :aria-label="t('Highlights')"><option :value="0">{{ t('Clip') }}</option><option :value="1">{{ t('Unclip') }}</option><option :value="2">{{ t('Blend') }}</option></select></label>
+        <label>{{ t('Highlights') }}<select v-model.number="draft.highlightMode" :aria-label="t('Highlights')"><option :value="0">{{ t('Clip') }}</option><option :value="1">{{ t('Unclip') }}</option><option :value="2">{{ t('Blend') }}</option><option v-for="mode in [3,4,5,6,7,8,9]" :key="mode" :value="mode">{{ t('Rebuild mode {mode}',{mode}) }}</option></select></label>
+        <label>{{ t('Wavelet noise reduction') }}<input v-model.number="draft.noiseReductionThreshold" :aria-label="t('Wavelet noise reduction')" type="number" min="0" max="1000" step="1" required /></label>
+        <p class="raw-note">{{ t('RAW wavelet threshold (0–1000); 0 disables noise reduction. Rebuild modes 3–9 use LibRaw highlight recovery.') }}</p>
         <label class="raw-check"><input v-model="draft.autoBright" type="checkbox" /> {{ t('Auto brightness') }}</label>
         <label class="raw-check"><input v-model="draft.halfSize" type="checkbox" /> {{ t('Decode at half resolution') }}</label>
       </fieldset>
       <p class="raw-note">{{ t('Camera orientation is applied. The result becomes an editable 8-bit sRGB image layer. RAW sensor data and development settings are not stored in the project.') }}</p>
       <p v-if="error" class="raw-error" role="alert">{{ tm(error) }}</p>
-      <footer><button type="button" :disabled="busy" @click="emit('preview', { ...draft })">{{ t('Preview') }}</button><button type="button" @click="emit('cancel')">{{ t(busy ? 'Cancel import' : 'Cancel') }}</button><button type="submit" :disabled="busy" class="raw-primary">{{ t(busy ? 'Decoding…' : 'Import image') }}</button></footer>
+      <footer><button type="button" :disabled="busy||!valid" @click="previewDraft">{{ t('Preview') }}</button><button type="button" :disabled="!cancelable" @click="cancel">{{ t(busy ? 'Cancel import' : 'Cancel') }}</button><button type="button" :disabled="busy||!valid" :title="t('Import, then open the Camera Raw Filter')" @click="openCameraRaw">{{ t('Camera Raw…') }}</button><button type="submit" :disabled="busy||!valid" class="raw-primary">{{ t(busy ? 'Decoding…' : 'Import image') }}</button></footer>
     </form>
   </div>
 </template>

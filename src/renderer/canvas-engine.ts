@@ -7,14 +7,15 @@ import {effectsMargin,renderLayerEffects,validateLayerEffects,hasVisibleEffects}
 import {applyImageFilter,nativeAdjustmentToSpec} from '../shared/image-filters'
 import { BlendPainter } from './blend-modes'
 import type { WorldRegion } from './viewport-render'
+import {effectiveMaskPixels,effectiveMaskTransform,maskPropertiesKey} from '../shared/mask-properties'
+import {rpcValue} from './rpc-value'
+import {assetDisplayKey,assetRepresentationURL} from '../shared/asset-representation'
 
 let kitPromise: Promise<CanvasKit> | undefined
 export const getCanvasKit = (): Promise<CanvasKit> => kitPromise ??= CanvasKitInit({ locateFile: () => wasmUrl })
+/** All renderer image consumers decode the explicit RGBA8 display representation. */
 export function assetUrl(state: EditorState, file: string): string {
-  if (file.startsWith('data:image/png;base64,')) return file
-  const asset = state.assets.find(item => item.file === file)
-  if (!asset) throw new EditorError('ASSET_NOT_FOUND', 'The layer image is missing.')
-  return `compositor-asset://${state.sessionId}/${encodeURIComponent(file)}?hash=${asset.hash}`
+  return assetRepresentationURL(state, file, 'display')
 }
 export function orderedLayers(state: EditorState): { layer: Layer; opacity: number; depth: number }[] {
   const rows: { layer: Layer; opacity: number; depth: number }[] = []
@@ -36,9 +37,14 @@ export function viewportHalo(state:EditorState):number {
   }
   return effects+filters
 }
+export interface CanvasDisplayWarning {sessionId:string;revision:number;code:'UNSUPPORTED_FEATURE'|'RESOURCE_LIMIT';message:string;details?:unknown}
 export class CanvasEngine {
+  private displayWarning?:CanvasDisplayWarning
+  getDisplayWarning():Readonly<CanvasDisplayWarning>|undefined {return this.displayWarning}
   private fullResolutionEffects=false
   setFullResolutionEffects(value:boolean):void {this.fullResolutionEffects=value}
+  private screenQuantization=true
+  setScreenQuantization(value:boolean):void {this.screenQuantization=value}
   private kit?: CanvasKit
   private surface?: Surface
   private blends = new BlendPainter()
@@ -52,7 +58,7 @@ export class CanvasEngine {
     for (const { layer, opacity } of orderedLayers(state).reverse()) {
       if (!layer.imageFile || opacity <= 0) continue
       const asset = state.assets.find(asset => asset.file === layer.imageFile)
-      const image = asset && this.images.get(asset.hash)
+      const image = asset && this.images.get(assetDisplayKey(asset))
       if (!image) continue
       const point = layerSourcePoint(layer, x, y, image.width(), image.height())
       if (!point) continue
@@ -66,7 +72,7 @@ export class CanvasEngine {
     visited.add(layer.id)
     let coverage=this.maskCoverage(state,layer,x,y),parent=layer.parentID
     while(parent){const folder=state.manifest.layers.find(item=>item.id===parent);if(!folder)return 0;coverage*=this.maskCoverage(state,folder,x,y);parent=folder.parentID}
-    if(layer.maskSourceID){const source=state.manifest.layers.find(item=>item.id===layer.maskSourceID),asset=source?.imageFile&&state.assets.find(item=>item.file===source.imageFile),image=asset&&this.images.get(asset.hash)
+    if(layer.maskSourceID){const source=state.manifest.layers.find(item=>item.id===layer.maskSourceID),asset=source?.imageFile&&state.assets.find(item=>item.file===source.imageFile),image=asset&&this.images.get(assetDisplayKey(asset))
       if(!source||!image)return 0
       const point=layerSourcePoint(source,x,y,image.width(),image.height()),kit=this.kit!
       if(!point)return 0
@@ -79,11 +85,13 @@ export class CanvasEngine {
     if(!layer.maskFile||layer.maskEnabled===false)return 1
     const mask=this.maskImage(state,layer),kit=this.kit!,w=mask.width(),h=mask.height(),info={width:1,height:1,colorType:kit.ColorType.RGBA_8888,alphaType:kit.AlphaType.Unpremul,colorSpace:kit.ColorSpace.SRGB}
     if(w===1&&h===1)return mask.readPixels(0,0,info)![3]/255
-    const transform=layer.maskPlacement??layer.transform,point=layerSourcePoint({...layer,transform},x,y,w,h)
+    const transform=this.maskTransform(layer,mask),point=layerSourcePoint({...layer,transform},x,y,w,h)
     if(point)return mask.readPixels(point[0],point[1],info)![3]/255
     return this.maskBorder(mask)
   }
   private maskBorders=new WeakMap<object,number>()
+  private maskGeometry=new WeakMap<object,{width:number;height:number;inset:number}>()
+  private maskTransform(layer:Layer,mask:Image):Layer['transform']{const source=this.maskGeometry.get(mask)!;return effectiveMaskTransform(layer.maskPlacement??layer.transform,source,source.inset)}
   private maskBorder(mask:Image):number {
     const cached=this.maskBorders.get(mask);if(cached!==undefined)return cached
     const kit=this.kit!,w=mask.width(),h=mask.height(),pixels=mask.readPixels(0,0,{width:w,height:h,colorType:kit.ColorType.RGBA_8888,alphaType:kit.AlphaType.Unpremul,colorSpace:kit.ColorSpace.SRGB})!
@@ -97,20 +105,22 @@ export class CanvasEngine {
   private sessionId?: string
   private maskImages = new Map<string, Image>()
   async draw(element: HTMLCanvasElement, state: EditorState, width: number, height: number, region?: WorldRegion): Promise<void> {
+    this.displayWarning=undefined
     const kit = this.kit = await getCanvasKit()
     this.region = region ?? {x:0,y:0,width:state.manifest.width,height:state.manifest.height}
     if (this.sessionId !== state.sessionId) { this.clearImages(); this.sessionId = state.sessionId }
-    const needed = new Set(state.assets.map(asset => asset.hash))
-    for (const [hash,image] of this.maskImages) if(!needed.has(hash)){image.delete();this.maskImages.delete(hash)}
+    const needed = new Set(state.assets.map(assetDisplayKey))
+    const neededMasks=new Set(state.manifest.layers.flatMap(layer=>{const asset=layer.maskFile&&state.assets.find(item=>item.file===layer.maskFile);return asset?[maskPropertiesKey(assetDisplayKey(asset),layer)]:[]}))
+    for (const [hash,image] of this.maskImages) if(!neededMasks.has(hash)){image.delete();this.maskImages.delete(hash)}
     for (const [hash, image] of this.images) if (!needed.has(hash)) { image.delete(); this.images.delete(hash) }
     for (const asset of state.assets) {
-      if (this.images.has(asset.hash)) continue
+      if (this.images.has(assetDisplayKey(asset))) continue
       let bytes:ArrayBuffer|Uint8Array
       if(asset.file.startsWith('data:image/png;base64,')){const binary=atob(asset.file.slice('data:image/png;base64,'.length));bytes=Uint8Array.from(binary,char=>char.charCodeAt(0))}
       else {const response = await fetch(assetUrl(state, asset.file));if (!response.ok) throw new EditorError('ASSET_NOT_FOUND', 'An image snapshot could not be loaded.');bytes=await response.arrayBuffer()}
       const image = kit.MakeImageFromEncoded(bytes)
       if (!image) throw new EditorError('RENDER_FAILED', 'CanvasKit could not decode a layer image.')
-      this.images.set(asset.hash, image)
+      this.images.set(assetDisplayKey(asset), image)
     }
     this.surface?.delete()
     element.width = width; element.height = height
@@ -120,13 +130,30 @@ export class CanvasEngine {
     if (!this.surface) throw new EditorError('RENDER_FAILED', 'No rendering surface is available.')
     const canvas = this.surface.getCanvas()
     canvas.clear(kit.TRANSPARENT)
+    // Every visible high-depth layer is transformed and composited before the
+    // screen's RGBA8 boundary. Worker preflight runs before dense allocation.
+    // Explicit unsupported/budget cases retain the existing compatible preview,
+    // with a warning for the owning UI; source snapshots never change.
+    // Snapshot assets also identify registered inline stroke drafts whose file
+    // URLs differ from the original asset name. Keep the legacy export route.
+    const hasDeep=state.assets.some(asset=>asset.bitDepth===16||asset.isHDR)
+    if(hasDeep&&(!this.fullResolutionEffects||state.assets.some(asset=>asset.isHDR)||orderedLayers(state).some(({layer})=>!!layer.adjustment))){
+      const result=await window.compositor.request<{width:number;height:number;data:Uint8Array}>('deepCompositePreview',{sessionId:state.sessionId,expectedRevision:state.revision,manifest:rpcValue(state.manifest),width,height,region:this.region,screenQuantization:this.screenQuantization&&!this.fullResolutionEffects})
+      if(result.ok){
+        const image=this.rgbaImage(new Uint8Array(result.value.data),width,height)
+        try{canvas.drawImage(image,0,0);this.surface.flush()}finally{image.delete()}
+        return
+      }
+      if(this.fullResolutionEffects||!['UNSUPPORTED_FEATURE','RESOURCE_LIMIT'].includes(result.error.code))throw new EditorError(result.error.code,result.error.message,result.error.details)
+      this.displayWarning={sessionId:state.sessionId,revision:state.revision,code:result.error.code as CanvasDisplayWarning['code'],message:result.error.message,details:result.error.details}
+    }
     canvas.save(); this.worldTransform(canvas,width,height)
     const skipped=new Set<string>()
     for (const { layer, opacity } of orderedLayers(state)) {
       if(skipped.has(layer.id))continue
       if (layer.isGroup || (!layer.imageFile&&!layer.adjustment)) continue
       const asset = layer.imageFile&&state.assets.find(item => item.file === layer.imageFile)!
-      const image = asset&&this.images.get(asset.hash)!
+      const image = asset&&this.images.get(assetDisplayKey(asset))!
       const ancestors: Layer[] = []
       let parent = layer.parentID
       while (parent) { const folder = state.manifest.layers.find(item => item.id === parent)!; ancestors.push(folder); parent = folder.parentID }
@@ -168,7 +195,15 @@ export class CanvasEngine {
   private rgbaImage(data:Uint8Array|Uint8ClampedArray,width:number,height:number):Image {const kit=this.kit!;return kit.MakeImage({width,height,colorType:kit.ColorType.RGBA_8888,alphaType:kit.AlphaType.Unpremul,colorSpace:kit.ColorSpace.SRGB},data,width*4)!}
   private drawAdjustment(canvas:Canvas,surface:Surface,state:EditorState,layer:Layer,opacity:number,width:number,height:number,ancestors:Layer[]):void{
     const kit=this.kit!,original=this.surfacePixels(surface,width,height),spec=nativeAdjustmentToSpec(layer.adjustment),scale=width/this.region.width
-    const adjusted=applyImageFilter({width,height,data:original},spec,undefined,scale).data
+    // Viewport surfaces include a halo. Carry actual document-edge colors into
+    // that halo for Gaussian; clamping only the surface edge would still fade
+    // canvas edges in viewport renders while full document exports stayed solid.
+    let filterSource=original
+    if(spec.kind==='gaussianBlur'&&!spec.preserveTransparency){
+      const x0=Math.max(0,Math.ceil(-this.region.x*width/this.region.width)),y0=Math.max(0,Math.ceil(-this.region.y*height/this.region.height)),x1=Math.min(width-1,Math.ceil((state.manifest.width-this.region.x)*width/this.region.width)-1),y1=Math.min(height-1,Math.ceil((state.manifest.height-this.region.y)*height/this.region.height)-1)
+      if(x0<=x1&&y0<=y1&&(x0||y0||x1!==width-1||y1!==height-1)){filterSource=new Uint8ClampedArray(original);for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(x<x0||x>x1||y<y0||y>y1){const from=(Math.min(y1,Math.max(y0,y))*width+Math.min(x1,Math.max(x0,x)))*4;filterSource.set(original.subarray(from,from+4),(y*width+x)*4)}}
+    }
+    const adjusted=applyImageFilter({width,height,data:filterSource},spec,undefined,scale,undefined,{gaussianClampSides:{left:true,right:true,top:true,bottom:true}}).data
     const paint=new kit.Paint()
     if(layer.blendMode!=='Normal'){
       const blendSurface=kit.MakeSurface(width,height)!,bc=blendSurface.getCanvas(),base=new Uint8ClampedArray(original),top=new Uint8ClampedArray(adjusted)
@@ -192,15 +227,15 @@ export class CanvasEngine {
     canvas.restore()
   }
   private maskImage(state: EditorState, layer: Layer): Image {
-    const kit=this.kit!,asset=state.assets.find(item=>item.file===layer.maskFile)!,key=asset.hash
+    const kit=this.kit!,asset=state.assets.find(item=>item.file===layer.maskFile)!,key=maskPropertiesKey(assetDisplayKey(asset),layer)
     let mask=this.maskImages.get(key)
     if(mask)return mask
-    const source=this.images.get(key)!,w=source.width(),h=source.height()
-    const pixels=source.readPixels(0,0,{width:w,height:h,colorType:kit.ColorType.RGBA_8888,alphaType:kit.AlphaType.Unpremul,colorSpace:kit.ColorSpace.SRGB})!
-    const rgba=new Uint8Array(w*h*4)
+    const source=this.images.get(assetDisplayKey(asset))!,width=source.width(),height=source.height()
+    const raw=source.readPixels(0,0,{width,height,colorType:kit.ColorType.RGBA_8888,alphaType:kit.AlphaType.Unpremul,colorSpace:kit.ColorSpace.SRGB})!
+    const effective=effectiveMaskPixels({width,height,data:new Uint8ClampedArray(raw)},layer),{width:w,height:h,data:pixels}=effective.image,rgba=new Uint8Array(w*h*4)
     for(let i=0;i<rgba.length;i+=4){rgba[i]=rgba[i+1]=rgba[i+2]=255;rgba[i+3]=pixels[i]}
     mask=kit.MakeImage({width:w,height:h,colorType:kit.ColorType.RGBA_8888,alphaType:kit.AlphaType.Unpremul,colorSpace:kit.ColorSpace.SRGB},rgba,w*4)!
-    this.maskImages.set(key,mask);return mask
+    this.maskImages.set(key,mask);this.maskBorders.set(mask,effective.background/255);this.maskGeometry.set(mask,{width,height,inset:effective.inset});return mask
   }
   private applyMask(canvas: Canvas, state: EditorState, layer: Layer, width: number, height: number): void {
     if(!layer.maskFile||layer.maskEnabled===false)return
@@ -212,8 +247,13 @@ export class CanvasEngine {
       else {
         mc.clear(kit.Color(255,255,255,this.maskBorder(mask)));this.worldTransform(mc,width,height)
         paint.setBlendMode(kit.BlendMode.Src)
-        const transform=layer.maskPlacement??layer.transform
-        this.drawImage(mc,{...layer,transform},mask,paint)
+        const transform=this.maskTransform(layer,mask),sx=width/this.region.width,sy=height/this.region.height
+        // An already feathered source grid must transfer exactly at 1:1. The
+        // Mitchell cubic kernel otherwise adds another blur even at aligned
+        // integer pixel centers, making preview/export disagree with coverage.
+        const integral=(value:number)=>Math.abs(value-Math.round(value))<1e-6
+        const aligned=layer.maskFeatherModel==='photoshop'&&transform.rotation===0&&Math.abs(transform.size[0]*sx/mask.width()-1)<1e-6&&Math.abs(transform.size[1]*sy/mask.height()-1)<1e-6&&integral((transform.origin[0]-this.region.x)*sx)&&integral((transform.origin[1]-this.region.y)*sy)
+        this.drawImage(mc,{...layer,transform:aligned?{...transform,sampling:'Nearest'}:transform},mask,paint)
       }
       surface.flush();const image=surface.makeImageSnapshot()
       paint.setBlendMode(kit.BlendMode.DstIn)
@@ -224,7 +264,7 @@ export class CanvasEngine {
   private localEffects(state:EditorState,layer:Layer,source:Image,hash:string):{image:Image;inset:number} {
     const effects=validateLayerEffects(layer.effects),factor=this.fullResolutionEffects?1:Math.min(1,3000/(Math.max(source.width(),source.height())+2*effectsMargin(effects)))
     const maskAsset=layer.maskFile&&state.assets.find(item=>item.file===layer.maskFile)
-    const key=JSON.stringify([hash,factor,layer.effects,layer.maskEnabled!==false&&maskAsset?maskAsset.hash:null,layer.maskPlacement,layer.maskFile?layer.transform:null])
+    const key=JSON.stringify([hash,factor,layer.effects,layer.maskEnabled!==false&&maskAsset?maskPropertiesKey(assetDisplayKey(maskAsset),layer):null,layer.maskPlacement,layer.maskFile?layer.transform:null])
     const cached=this.effectImages.get(key);if(cached){this.effectImages.delete(key);this.effectImages.set(key,cached);return cached}
     const kit=this.kit!,w=Math.max(1,Math.round(source.width()*factor)),h=Math.max(1,Math.round(source.height()*factor))
     if(this.fullResolutionEffects){const inset=effectsMargin(effects),expandedW=w+2*inset,expandedH=h+2*inset,pixels=expandedW*expandedH;if(expandedW>LIMITS.maxSide||expandedH>LIMITS.maxSide||pixels>LIMITS.maxPixels||pixels*40>512*1024*1024)throw new EditorError('RESOURCE_LIMIT','The full-resolution effects working surfaces exceed the image or 512 MiB budget.')}
@@ -238,7 +278,7 @@ export class CanvasEngine {
       else {
         const surface=kit.MakeSurface(w,h);if(!surface)throw new EditorError('RESOURCE_LIMIT','The local effects mask surface is unavailable.')
         const canvas=surface.getCanvas(),paint=new kit.Paint(),t=layer.transform
-        try{canvas.clear(kit.Color(255,255,255,this.maskBorder(mask)));canvas.translate(w/2,h/2);canvas.scale(w/t.size[0]*(t.flipX?-1:1),h/t.size[1]*(t.flipY?-1:1));canvas.rotate(-t.rotation,0,0);canvas.translate(-t.origin[0]-t.size[0]/2,-t.origin[1]-t.size[1]/2);paint.setBlendMode(kit.BlendMode.Src);this.drawImage(canvas,{...layer,transform:layer.maskPlacement??t},mask,paint);surface.flush();const rgba=this.surfacePixels(surface,w,h);coverage=new Uint8Array(w*h);for(let i=0;i<coverage.length;i++)coverage[i]=rgba[i*4+3]}finally{paint.delete();surface.delete()}
+        try{canvas.clear(kit.Color(255,255,255,this.maskBorder(mask)));canvas.translate(w/2,h/2);canvas.scale(w/t.size[0]*(t.flipX?-1:1),h/t.size[1]*(t.flipY?-1:1));canvas.rotate(-t.rotation,0,0);canvas.translate(-t.origin[0]-t.size[0]/2,-t.origin[1]-t.size[1]/2);paint.setBlendMode(kit.BlendMode.Src);this.drawImage(canvas,{...layer,transform:this.maskTransform(layer,mask)},mask,paint);surface.flush();const rgba=this.surfacePixels(surface,w,h);coverage=new Uint8Array(w*h);for(let i=0;i<coverage.length;i++)coverage[i]=rgba[i*4+3]}finally{paint.delete();surface.delete()}
       }
     }
     const rendered=renderLayerEffects({width:w,height:h,data:new Uint8Array(pixels)},effects,coverage,factor),image=this.rgbaImage(rendered.data,rendered.width,rendered.height),bytes=rendered.data.byteLength
@@ -253,8 +293,8 @@ export class CanvasEngine {
     try{
       canvas.clear(kit.TRANSPARENT);this.worldTransform(canvas,width,height)
       if(layer.imageFile){
-        const asset=state.assets.find(item=>item.file===layer.imageFile)!,source=this.images.get(asset.hash)!
-        if(layer.effects&&hasVisibleEffects(layer.effects)){const local=this.localEffects(state,layer,source,asset.hash),transform=expandedContentTransform(layer.transform,[source.width(),source.height()],local.inset);this.drawImage(canvas,{...layer,transform},local.image,paint)}
+        const asset=state.assets.find(item=>item.file===layer.imageFile)!,source=this.images.get(assetDisplayKey(asset))!
+        if(layer.effects&&hasVisibleEffects(layer.effects)){const local=this.localEffects(state,layer,source,assetDisplayKey(asset)),transform=expandedContentTransform(layer.transform,[source.width(),source.height()],local.inset);this.drawImage(canvas,{...layer,transform},local.image,paint)}
         else {this.drawImage(canvas,layer,source,paint);this.applyMask(canvas,state,layer,width,height)}
       }
       if(layer.maskSourceID){const source=state.manifest.layers.find(item=>item.id===layer.maskSourceID)!,image=this.coveredLayer(state,source,width,height,[],depth+1)

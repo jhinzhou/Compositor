@@ -1,0 +1,2 @@
+#target photoshop
+(function(){var previous=app.displayDialogs;app.displayDialogs=DialogModes.NO;try{if(app.documents.length&&app.activeDocument.activeLayer.name==='alpha24-tools-owned')app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);var d=app.open(new File('/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/photoshop-native/inputs/alpha24-retouch-source.png'));d.activeLayer.name='alpha24-tools-owned';d.selection.select([[335,135],[385,135],[385,185],[335,185]],SelectionType.REPLACE,0,false);}finally{app.displayDialogs=previous;}})();

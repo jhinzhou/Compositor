@@ -1,3 +1,5 @@
+import {frameSchema} from '../shared/frame'
+import {storedVectorPathsSchema,vectorMaskSchema} from '../shared/vector-path'
 import {textStyleSchema,shapeStyleSchema} from '../shared/content-style'
 import {validateLayerEffects} from '../shared/layer-effects'
 import {nativeAdjustmentToSpec} from '../shared/image-filters'
@@ -13,6 +15,7 @@ export function hierarchyOrder(manifest: Manifest): Layer[] {
 
 export function validateManifest(input: unknown): { manifest: Manifest; warnings: string[] } {
   const manifest = manifestSchema.parse(input)
+  if(manifest.vectorPaths!==undefined)manifest.vectorPaths=storedVectorPathsSchema.parse(manifest.vectorPaths)
   if (manifest.width * manifest.height > LIMITS.maxSurfacePixels) throw new EditorError('RESOURCE_LIMIT', 'The canvas exceeds the 200 megapixel working surface limit.')
   const canonical=new Map<string,string>();for(const layer of manifest.layers){const key=layer.id.toUpperCase();if(canonical.has(key))throw new EditorError('INVALID_PROJECT','Layer IDs must be unique UUIDs.');canonical.set(key,layer.id)}
   const reference=(id:string|undefined)=>id?(canonical.get(id.toUpperCase())??id):undefined
@@ -24,7 +27,7 @@ export function validateManifest(input: unknown): { manifest: Manifest; warnings
   for (const layer of manifest.layers) {
     if (ids.has(layer.id)) throw new EditorError('INVALID_PROJECT', 'Layer IDs must be unique.')
     ids.add(layer.id)
-    if (layer.imageFile && layer.imageFile !== `${layer.id.toUpperCase()}.png`) throw new EditorError('INVALID_PROJECT', `Invalid image filename for ${layer.name}.`)
+    if (layer.imageFile && layer.imageFile !== `${layer.id.toUpperCase()}.png` && !(manifest.version>=13 && layer.imageFile===`${layer.id.toUpperCase()}.exr`)) throw new EditorError('INVALID_PROJECT', `Invalid image filename for ${layer.name}.`)
     if (layer.maskFile && layer.maskFile !== `${layer.id.toUpperCase()}.mask.png`) throw new EditorError('INVALID_PROJECT', 'Invalid mask filename.')
     if (!layer.maskFile && (layer.maskPlacement || layer.maskLinked !== undefined || layer.maskEnabled !== undefined)) throw new EditorError('INVALID_PROJECT', 'Mask metadata requires a mask asset.')
     if (layer.maskFile && manifest.version < (layer.isGroup ? 6 : 4)) throw new EditorError('INVALID_PROJECT', 'Mask metadata is newer than the declared format version.')
@@ -35,7 +38,17 @@ export function validateManifest(input: unknown): { manifest: Manifest; warnings
     if(layer.effects){if(layer.isGroup||layer.adjustment)throw new EditorError('INVALID_PROJECT','Folders and adjustment layers cannot carry raster effects.');validateLayerEffects(layer.effects)}
     if(layer.adjustment){if(layer.isGroup||layer.imageFile||layer.text||layer.shape||manifest.version<7)throw new EditorError('INVALID_PROJECT','Adjustment layers cannot contain raster, text or shape content and require version 7.');try{nativeAdjustmentToSpec(layer.adjustment)}catch(error){throw new EditorError('UNSUPPORTED_FEATURE',error instanceof Error?error.message:'Unsupported adjustment settings.')}}
     if ((layer.text || layer.shape) && !layer.imageFile) throw new EditorError('INVALID_PROJECT', 'Editable text and shapes require a PNG fallback.')
+    if ((layer.text || layer.shape) && layer.imageFile?.endsWith('.exr')) throw new EditorError('INVALID_PROJECT', 'Editable text and shapes require a PNG fallback.')
 
+    if(layer.frame!==undefined){
+      layer.frame=frameSchema.parse(layer.frame)
+      if(!layer.maskFile||layer.maskEnabled===false||layer.maskLinked!==false||(layer.maskDensity??1)!==1||(layer.maskFeather??0)!==0||layer.vectorMask!==undefined)throw new EditorError('INVALID_PROJECT','A frame requires its own enabled, independent clip mask.')
+      if(layer.isGroup||layer.adjustment||layer.text||layer.shape)throw new EditorError('INVALID_PROJECT','A frame cannot carry group, adjustment or editable text/shape content.')
+    }
+    if(layer.vectorMask!==undefined){
+      layer.vectorMask=vectorMaskSchema.parse(layer.vectorMask)
+      if(!layer.maskFile)throw new EditorError('INVALID_PROJECT','An editable vector mask requires its raster fallback asset.')
+    }
     if(layer.text&&!textStyleSchema.safeParse(layer.text).success)warnings.push(`${layer.name}: text metadata is not editable; its original PNG fallback is preserved.`)
     if(layer.shape&&!shapeStyleSchema.safeParse(layer.shape).success)warnings.push(`${layer.name}: shape metadata is not editable; its original PNG fallback is preserved.`)
     if (manifest.version < 2 && (layer.isGroup || layer.parentID)) throw new EditorError('INVALID_PROJECT', 'Groups require format version 2 or later.')

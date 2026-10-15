@@ -1,11 +1,17 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {CROP_HANDLES,createCropRectangle,cropDragRectangle,pixelCropRect,selectionBoundingBox,validCropRect} from '../src/renderer/crop-geometry'
+import {CROP_HANDLES,createCropRectangle,cropDragRectangle,pixelCropRect,sameCropRect,selectionBoundingBox,validCropRect} from '../src/renderer/crop-geometry'
 import {DEFAULT_GRID,type SnapOptions} from '../src/renderer/view-geometry'
 import type {Selection} from '../src/shared/pixel-contracts'
 
 const rect={x:10,y:20,width:100,height:80}
 const snap:SnapOptions={enabled:true,zoom:1,document:{width:100,height:100}}
+test('clicking a crop handle without movement is not a pending crop edit',()=>{
+ const initial={x:0,y:0,width:320,height:240}
+ for(const handle of CROP_HANDLES)assert.equal(sameCropRect(initial,cropDragRectangle(initial,handle,[0,0])),true,handle)
+ assert.equal(sameCropRect(initial,cropDragRectangle(initial,'move',[0,0])),true)
+ assert.equal(sameCropRect(initial,cropDragRectangle(initial,'e',[-1,0])),false)
+})
 test('all eight free crop handles preserve the opposite anchor and stay on the pixel grid',()=>{
  const expected={nw:{x:20,y:30,width:90,height:70},n:{x:10,y:30,width:100,height:70},ne:{x:10,y:30,width:110,height:70},e:{x:10,y:20,width:110,height:80},se:{x:10,y:20,width:110,height:90},s:{x:10,y:20,width:100,height:90},sw:{x:20,y:20,width:90,height:90},w:{x:20,y:20,width:90,height:80}}
  for(const handle of CROP_HANDLES)assert.deepEqual(cropDragRectangle(rect,handle,[10,10]),expected[handle],handle)

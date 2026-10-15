@@ -1,4 +1,13 @@
 export const errorsZhCN: Record<string, string> = {
+  'Wavelet noise reduction':'小波降噪',
+  'Rebuild mode {mode}':'高光重建模式 {mode}',
+  'RAW wavelet threshold (0–1000); 0 disables noise reduction. Rebuild modes 3–9 use LibRaw highlight recovery.':'RAW 小波降噪阈值（0–1000），0 表示关闭。模式 3–9 使用 LibRaw 高光重建。',
+  'This version 12 project contains 16-bit image layers. Convert a separate copy to 8-bit before opening it in this RGBA8 editor.':'此 v12 工程含 16 位图像图层。请将单独的副本转换为 8 位后，再在此 RGBA8 编辑器中打开。',
+  'Version 12 project contains only 8-bit image assets and was loaded into the version 11 RGBA8 editing format. Saving writes version 11.':'此 v12 工程仅含 8 位图像资源，已按 v11 RGBA8 格式载入；保存时将写入 v11。',
+  'The folder “{value1}” has no images to import.':'文件夹“{value1}”中没有可导入的图片。',
+  'Image import dialogs are available only to the local editor.':'图片导入对话框仅供本地编辑器使用。',
+  'Image folder enumeration exceeds the 10000-entry budget.':'图片文件夹超过 10000 个项目的扫描上限。',
+  'Import at most 256 images from folders at a time.':'每次最多从文件夹导入 256 张图片。',
   "{value1} is outside its supported range.": "{value1} 超出支持范围。",
   "{value1}: adjustment parameters converted to editable native {value2}; Photoshop rendering may differ.": "{value1}：调整参数已转换为可编辑的原生 {value2}；Photoshop 渲染结果可能不同。",
   "{value1}: layer effect descriptors are preserved as Photoshop metadata; effects are not baked into the layer pixels.": "{value1}：图层效果描述已保留为 Photoshop 元数据；效果未烘焙到图层像素中。",
@@ -563,5 +572,7 @@ export const errorsZhCN: Record<string, string> = {
   "Wand flood exceeds the queue budget.": "魔棒扩散超出队列预算。",
   "Application language is available only to the local editor.": "应用语言仅供本地编辑器设置。",
   "Unsupported application language.": "不支持此应用语言。",
-  "Could not save language settings.": "无法保存语言设置。"
+  "Could not save language settings.": "无法保存语言设置。",
+  "Matte refinement settings are outside supported ranges.": "蒙版细化参数超出支持范围。",
+  "Choose a feather amount from 0 to 20 pixels.": "请使用 0 到 20 像素的羽化数值。"
 }

@@ -1,0 +1,2 @@
+#target photoshop
+(function(){if($.global.alpha27GUIOwned)throw Error('Owned GUI document already exists.');$.global.alpha27GUIPrevious=app.documents.length?app.activeDocument:null;var opened=app.open(new File('/Users/zhoujin/Documents/PS/Compositor_Electron/artifacts/alpha27-perspective/inputs/calibration-opaque.png'));var d=opened.duplicate('alpha27-gui-owned-crop',false);opened.close(SaveOptions.DONOTSAVECHANGES);app.activeDocument=d;d.activeLayer.name='alpha27-tools-owned';d.selection.deselect();$.global.alpha27GUIOwned=d;})();

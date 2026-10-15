@@ -1,0 +1,17 @@
+/** Reads immutable native evidence and reports current portable approximation. */
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs'
+import {inflateSync} from 'node:zlib'
+import {createHash} from 'node:crypto'
+import assert from 'node:assert/strict'
+import {effectiveMaskPixels,effectiveMaskTransform,sampleEffectiveMask} from '../src/shared/mask-properties'
+import type {Layer} from '../src/shared/contracts'
+const hash=(b:Uint8Array|string)=>createHash('sha256').update(b).digest('hex'),fixtureBytes=readFileSync('fixtures/parity/photoshop-27.11-mask-feather-ui.json'),fixture=JSON.parse(fixtureBytes.toString()) as {rows:{name:string;layer:Layer;width:number;height:number;maskWidth:number;maskHeight:number;maskRGBAZlib:string;alphaZlib:string;alphaSHA256:string;pngSHA256:string;psdSHA256:string;measured:{max:number;unionMAE:number}}[]},root='artifacts/photoshop-native/outputs/mask-feather-ui-study'
+assert.equal(fixture.rows.length,16)
+const rows=fixture.rows.map(row=>{
+ const raw=inflateSync(Buffer.from(row.maskRGBAZlib,'base64')),alpha=inflateSync(Buffer.from(row.alphaZlib,'base64'));assert.equal(hash(alpha),row.alphaSHA256);assert.equal(hash(readFileSync(`${root}/${row.name}.png`)),row.pngSHA256);assert.equal(hash(readFileSync(`${root}/${row.name}.psd`)),row.psdSHA256)
+ const source={width:row.maskWidth,height:row.maskHeight,data:new Uint8ClampedArray(raw)}
+ function measure(layer:Layer){const effective=effectiveMaskPixels(source,layer),placement=effectiveMaskTransform(layer.maskPlacement??layer.transform,source,effective.inset);let max=0,sum=0,union=0;for(let y=0;y<row.height;y++)for(let x=0;x<row.width;x++){const actual=sampleEffectiveMask(effective,placement,x+.5,y+.5),expected=alpha[y*row.width+x],d=Math.abs(actual-expected);max=Math.max(max,d);sum+=d;if(actual||expected)union++}return {max,unionMAE:union?sum/union:0,absoluteL1:sum}}
+ const before=measure({...row.layer,maskFeatherModel:'compositor',maskFeatherEdgeMode:'default'}),after=measure({...row.layer,maskFeatherModel:'photoshop',maskFeatherEdgeMode:'clamp'});assert.equal(before.max,row.measured.max);assert.equal(before.unionMAE,row.measured.unionMAE);return {name:row.name,feather:row.layer.maskFeather??0,density:row.layer.maskDensity??1,before,after}
+})
+const report={application:'Adobe Photoshop 27.11.0',version:JSON.parse(readFileSync('package.json','utf8')).version,scope:'Sixteen UI-confirmed source-grid actual native masks. Portable continuous box4 plus sampling variance, explicit clamped fullcanvas boundary. Finite/rotated/scaled masks have project regressions but no native appearance equivalence claim. 0.3px remains max19, 1px max5 and3px max3; private algorithm not reproduced.',fixtureSHA256:hash(fixtureBytes),scriptSHA256:hash(readFileSync('scripts/measure-photoshop-mask-alpha20.ts')),rows}
+const dir='artifacts/photoshop-native/measurements/mask-alpha20';mkdirSync(dir,{recursive:true});writeFileSync(dir+'/comparison.json',JSON.stringify(report,null,2)+'\n');writeFileSync(dir+'/comparison.md',['# alpha.20 actual native mask feather measurements','',report.scope,'','| Native case | Old max / union MAE | Current max / union MAE |','|---|---:|---:|',...rows.map(r=>`| ${r.name} | ${r.before.max} / ${r.before.unionMAE.toFixed(4)} | ${r.after.max} / ${r.after.unionMAE.toFixed(4)} |`),''].join('\n'));console.log(rows.map(r=>({name:r.name,before:r.before.max,after:r.after.max})))

@@ -123,7 +123,7 @@ test('rejects path traversal, duplicate IDs, future versions and invalid parents
   const base = (await loadProject(fixture)).manifest
   assert.throws(() => validateManifest({ ...base, layers: [{ ...base.layers[0], imageFile: '../image.png' }] }), code('INVALID_PROJECT'))
   assert.throws(() => validateManifest({ ...base, layers: [base.layers[0], base.layers[0]] }), code('INVALID_PROJECT'))
-  assert.throws(() => validateManifest({ ...base, version: 12 }))
+  assert.throws(() => validateManifest({ ...base, version: 14 }))
   assert.throws(() => validateManifest({ ...base, layers: [{ ...base.layers[0], parentID: randomUUID() }] }), code('INVALID_PROJECT'))
 })
 test('PNG validation checks CRC and pixel limits before decoding', () => {
