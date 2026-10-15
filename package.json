@@ -1,6 +1,6 @@
 {
   "name": "compositor-electron",
-  "version": "0.3.0-alpha.29",
+  "version": "0.3.0-alpha.30",
   "description": "Cross-platform Compositor editor with a shared command service and MCP automation",
   "private": true,
   "type": "module",

@@ -7,6 +7,7 @@ import {sourcePoint,selectionCoverage} from '../shared/selection-coverage'
 import {brushStrokeCoverage} from '../shared/brush-coverage'
 import {brushStrokeExtentDiameter,prepareBrushStroke} from '../shared/brush-dynamics'
 import {strokeSegments,type StrokePoint} from '../shared/stroke-compaction'
+import {magicEraseColorTables,magicEraseColorScore,magicEraseAntialiasCoverage} from '../shared/magic-erase-antialias'
 export type ColorEraseData=Uint8Array|Uint16Array|Float32Array
 export interface ColorEraseImage<T extends ColorEraseData=ColorEraseData>{width:number;height:number;data:T}
 export interface ColorEraseContext {transform:Layer['transform'];selection?:Selection|null;canvasSize?:[number,number]}
@@ -94,10 +95,16 @@ export function magicErasePixels<T extends ColorEraseData>(image:ColorEraseImage
  if(!params.opacity||!inCanvas(context,params.point))return {data:clone(image.data),affectedPixels:0,work:state.work}
  const seedPoint=params.sampleImage?params.point:sourcePoint({transform:context.transform},...params.point,image.width,image.height),reference=colorAt(domain,seedPoint)
  if(!reference)return {data:clone(image.data),affectedPixels:0,work:state.work}
+ // The measured native model is RGB8 current-layer AA with integer tolerance.
+ // Keep merged, high-depth, fractional-tolerance and AA-off routes compatible.
+ const nativeAA=params.antialiased&&!params.sampleImage&&image.data instanceof Uint8Array&&Number.isInteger(params.tolerance)
+ if(nativeAA)state.reserve(1536+128*4)
+ const tables=nativeAA?magicEraseColorTables(reference,params.tolerance):undefined,scores=nativeAA?new Uint8Array(state.m):undefined
  const docAt=(x:number,y:number):StrokePoint=>params.sampleImage?[x,y]:documentPoint(context,x,y,image.width,image.height),matches=new Uint8Array(state.m);let matched=0
- for(let y=0;y<domain.height;y++)for(let x=0;x<domain.width;x++){state.tick();const p=y*domain.width+x,doc=docAt(x+.5,y+.5);if(!inCanvas(context,doc)||!selectionCoverage(context.selection??null,...doc))continue;const color=straight(domain,p);if(color&&distance(color,reference)<=params.tolerance){matches[p]=255;matched++}}
+ for(let y=0;y<domain.height;y++)for(let x=0;x<domain.width;x++){state.tick();const p=y*domain.width+x,doc=docAt(x+.5,y+.5);if(scores){state.tick(6);scores[p]=magicEraseColorScore(tables!,domain.data[p*4],domain.data[p*4+1],domain.data[p*4+2])}if(!inCanvas(context,doc)||!selectionCoverage(context.selection??null,...doc))continue;const color=straight(domain,p);if(color&&(scores?scores[p]===127:distance(color,reference)<=params.tolerance)){matches[p]=255;matched++}}
  const sx=Math.floor(seedPoint[0]),sy=Math.floor(seedPoint[1]),region=params.contiguous?flood(matches,domain.width,domain.height,[sy*domain.width+sx],state.tick):matches,coverage=new Float32Array(state.m)
- for(let y=0;y<domain.height;y++)for(let x=0;x<domain.width;x++){state.tick();const p=y*domain.width+x;if(!region[p])continue;if(!params.antialiased||matched===state.m){coverage[p]=1;continue}
+ if(scores)magicEraseAntialiasCoverage(region,scores,domain.width,domain.height,coverage,state.tick)
+ else for(let y=0;y<domain.height;y++)for(let x=0;x<domain.width;x++){state.tick();const p=y*domain.width+x;if(!region[p])continue;if(!params.antialiased||matched===state.m){coverage[p]=1;continue}
   // Four subpixel color tests soften only the accepted connected region;
   // they must not create a new matching island across a foreground barrier.
   // This is a bounded inward antialias approximation, not PS decontamination.

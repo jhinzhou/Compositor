@@ -28,9 +28,10 @@ test('native calibration preserves affine downsampling and accepts verified whol
  assert.ok(result.mae<2.86);assert.ok(result.max<=37);assert.ok(result.alphaMAE<=.1);assert.ok(result.alphaMax<=13);assert.deepEqual(asset.bytes,makeAsset('calibration.png',PNG.sync.write(png)).bytes)
  // Non-magnifying projective output remains byte-stable. Alpha28's frozen
  // whole-map magnification improves axis-up RGB MAE from 1.8709569444444445
- // to 1.5140347222222221; the original max/alpha gates remain unchanged.
+ // to 1.5140347222222221. The recovered axis Smoother is now RGBA exact;
+ // the independent general downsampling gate below remains unchanged.
  // Native descriptor interpolation fields remain ineffective in this cohort.
- for(const [name,mae,max,alphaMax]of [['perspective-down-bicubicAutomatic',5.788827777777778,101,0],['axis-up-bicubicAutomatic',1.5140347222222221,28,50]] as const){const r=fixture.cases.find((c:any)=>c.name===name),out=PNG.sync.read(perspectiveCropRaster(asset,placement,r.corners,r.width,r.height,'High quality').bytes),d=difference(out.data,inflateSync(Buffer.from(r.rgbaZlib,'base64')));assert.equal(d.mae,mae);assert.equal(d.max,max);assert.equal(d.alphaMax,alphaMax)}
+ for(const [name,mae,max,alphaMax]of [['perspective-down-bicubicAutomatic',5.788827777777778,101,0],['axis-up-bicubicAutomatic',0,0,0]] as const){const r=fixture.cases.find((c:any)=>c.name===name),out=PNG.sync.read(perspectiveCropRaster(asset,placement,r.corners,r.width,r.height,'High quality').bytes),d=difference(out.data,inflateSync(Buffer.from(r.rgbaZlib,'base64')));assert.equal(d.mae,mae);assert.equal(d.max,max);assert.equal(d.alphaMax,alphaMax)}
 })
 function independentWindowSample(data:Uint16Array|Float32Array,w:number,h:number,u:number,v:number,scale:number){
  const sinc=(x:number)=>Math.abs(x)<1e-12?1:Math.sin(Math.PI*x)/(Math.PI*x),kernel=(x:number)=>Math.abs(x)<3?sinc(x)*sinc(x/3):0,out=[0,0,0,0],left=Math.floor(u-.5),top=Math.floor(v-.5),radius=Math.ceil(3*scale);let normalization=0

@@ -77,13 +77,14 @@ test('whole-map interval proof rejects mixed scale and unsafe denominator, prese
  for(let y=0;y<=100;y++)for(let x=0;x<=100;x++)assert.equal(cropSourceIsMagnifying(safe,64,64,x/100,y/100),true)
 })
 
-test('real Crop work includes80 bounded taps plus64 proof probes per image; masks/aligned copies remain old cost',()=>{
+test('general Crop work includes80 bounded taps plus64 proof probes per image; masks/aligned copies remain old cost',()=>{
  const png=new PNG({width:8,height:8});png.data.fill(255);const asset=makeAsset('work.png',PNG.sync.write(png)),before=Buffer.from(asset.bytes),placement={origin:[0,0] as [number,number],size:[8,8] as [number,number],rotation:0,flipX:false,flipY:false,sampling:'High quality' as const},quad:[[number,number],[number,number],[number,number],[number,number]]=[[0,0],[8,0],[8,8],[0,8]],work={samples:0}
- perspectiveCropRaster(asset,placement,quad,12,12,'High quality',false,0,work);assert.equal(work.samples,12*12*80+64)
- perspectiveCropRaster(asset,placement,quad,12,12,'High quality',false,0,work);assert.equal(work.samples,2*(12*12*80+64),'Shared multilayer work cannot reset per source')
+ const general:typeof quad=[[0,.125],[8,.125],[8,8.125],[0,8.125]] // Retain the general sampler's budget gate outside the new full-source axis path.
+ perspectiveCropRaster(asset,placement,general,12,12,'High quality',false,0,work);assert.equal(work.samples,12*12*80+64)
+ perspectiveCropRaster(asset,placement,general,12,12,'High quality',false,0,work);assert.equal(work.samples,2*(12*12*80+64),'Shared multilayer work cannot reset per source')
  const mask={samples:0};perspectiveCropRaster(asset,placement,quad,12,12,'High quality',true,255,mask);assert.equal(mask.samples,12*12*16)
  const aligned={samples:0};perspectiveCropRaster(asset,placement,quad,8,8,'High quality',false,0,aligned);assert.equal(aligned.samples,64)
- assert.throws(()=>perspectiveCropRaster(asset,placement,quad,12,12,'High quality',false,0,{samples:120_000_000-63}),/work budget/)
+ assert.throws(()=>perspectiveCropRaster(asset,placement,general,12,12,'High quality',false,0,{samples:120_000_000-63}),/work budget/)
  assert.deepEqual(asset.bytes,before)
 })
 

@@ -1,7 +1,9 @@
 # Compositor Electron
 
-Compositor 的 Electron/Vue/TypeScript 跨平台实现，当前版本 **0.3.0-alpha.29**。2026-10-13实际 fetch 原版 main 到 [`e8c9e29`](https://github.com/robbietilton/Compositor/commit/e8c9e29701528413cc0e608d61187c1c61790add)，相对87e2283新增4个提交。保留原Swift工作目录和298文件源码快照，兼容行为通过本项目共享命令链移植；详见[最新上游审计](docs/UPSTREAM_ALPHA25_E8C9E29_AUDIT_2026-10-13.md)。Windows真机与HDR显示仍独立验收。
+Compositor 的 Electron/Vue/TypeScript 跨平台实现，当前版本 **0.3.0-alpha.30**。2026-10-13实际 fetch 原版 main 到 [`e8c9e29`](https://github.com/robbietilton/Compositor/commit/e8c9e29701528413cc0e608d61187c1c61790add)，相对87e2283新增4个提交。保留原Swift工作目录和298文件源码快照，兼容行为通过本项目共享命令链移植；详见[最新上游审计](docs/UPSTREAM_ALPHA25_E8C9E29_AUDIT_2026-10-13.md)。Windows真机与HDR显示仍独立验收。
 
+
+alpha.30 继续以 REA 静态证据和冻结后真实 Photoshop 样本优化效果：RGB8 完整矩形、偶数源中心的双轴放大接入原生 Smoother 分支，6 组新原生样本整图 RGBA 一致，4 组未恢复的尺寸/透明颜色情形保持旧输出；Magic Eraser AA 恢复六通道兼容度及有序边缘统计，清除旧256像素alpha残差。新AA独立样本中100%不透明度3例可见结果逐像素一致，43%工具不透明度仍有最大1字节的舍入残差；一般强透视、复杂彩色透明洞、合成取样和高位深效果不能据此称为完整等效。机制、失败样本和本轮工程验收见[alpha.30报告](docs/PHOTOSHOP_ALPHA30_ACCEPTANCE_2026-10-15.md)。
 
 alpha.29 使用 REA/Ghidra 原生证据优化现有功能，再补工具链：Photoshop 透视自动尺寸在56组实测几何上匹配，并将画布取整的像素相位用于自动裁剪；已有默认D5修补改用原生confidence金字塔和1 px ROI，19组旧与8组新实测最多差2个RGB通道、每通道1字节。补齐单行/单列选框、铅笔、油漆桶、减淡/加深/海绵、历史/艺术历史画笔、混合器画笔、Frame和可编辑Bezier路径，各自接共享命令、撤销与工程保存。Frame保留完整源图与独立clip；路径可转选区、填充和创建实时更新的矢量蒙版。新工具的功能验收与Photoshop像素等效分别记录：油漆桶硬/no-AA原生样本RGBA全一致；tonal、Art History和Mixer为明确近似模型，复杂AA/发丝、高频透视采样和透明修补仍有缺口。验收见[alpha.29报告](docs/PHOTOSHOP_ALPHA29_ACCEPTANCE_2026-10-14.md)、[工具链](docs/PHOTOSHOP_TOOLBAR_ALPHA29_2026-10-14.md)、[REA修补](docs/PATCH_REA_PYRAMID_ALPHA29_2026-10-14.md)、[Frame与Path](docs/FRAME_VECTOR_PATH_2026-10-14.md)。
 

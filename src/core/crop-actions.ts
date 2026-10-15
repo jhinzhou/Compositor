@@ -2,6 +2,7 @@ import {mapDocumentInfoPoints} from '../shared/document-info'
 import {transformVectorFrameMetadata} from './vector-frame-metadata'
 import {PNG} from 'pngjs'
 import {sampleCropBicubic,cropSourceFootprint,cropSampleTapCount,cropIsotropicAffineMinification,cropMappingIsMagnifying,CROP_MAGNIFICATION_BOUND_PROBES} from './crop-sampling'
+import {cropAxisSmootherGeometry,planCropAxisSmoother,renderCropAxisSmoother} from './crop-axis-smoother'
 import {EditorError,LIMITS,type EditAction,type Layer} from '../shared/contracts'
 import {mapCropPoint,perspectiveCropMatrix,rotateCropPoint,straightenPlacement} from '../shared/crop-projective'
 import {sourcePoint} from '../shared/selection-coverage'
@@ -49,6 +50,20 @@ export function perspectiveCropRaster(asset:Asset,placement:Layer['transform'],c
  // Preserve exact aligned identity/translation/quarter-turn samples, as the
  // existing high-depth compositor does; Mitchell is not interpolating at centers.
  const toSource=(u:number,v:number)=>{const p=mapCropPoint(matrix,u,v);return sourcePoint({transform:placement},p[0],p[1],asset.width,asset.height)},a=toSource(0,0),b=toSource(1/width,0),c=toSource(0,1/height),dx=[b[0]-a[0],b[1]-a[1]],dy=[c[0]-a[0],c[1]-a[1]],integer=(n:number)=>Math.abs(n-Math.round(n))<1e-9,unit=(v:number[])=>v.every(integer)&&Math.abs(v[0])+Math.abs(v[1])>1-1e-9&&Math.abs(v[0])+Math.abs(v[1])<1+1e-9,aligned=cubic&&Math.abs(matrix[6])+Math.abs(matrix[7])<1e-10&&a.every(integer)&&unit(dx)&&unit(dy)&&Math.abs(dx[0]*dy[0]+dx[1]*dy[1])<1e-9
+ // This native path has been independently validated only for an unplaced
+ // full source, integer-center RGB8 enlargement. Every other placement,
+ // precision, mask, phase and geometry keeps the established sampler below.
+ if(source&&cubic&&!mask&&source.width===asset.width&&source.height===asset.height&&cropAxisSmootherGeometry(asset,placement,corners,width,height)){
+  work.samples+=asset.width*asset.height
+  if(work.samples>COMPUTE_SAMPLES)throw new EditorError('RESOURCE_LIMIT','Perspective Crop exceeds its actual antialias sampling work budget.')
+  const plan=planCropAxisSmoother(source,width,height)
+  if(plan){
+   if(work.samples+plan.samples>COMPUTE_SAMPLES)throw new EditorError('RESOURCE_LIMIT','Perspective Crop exceeds its actual antialias sampling work budget.')
+   if(width*height*20+countAssetBytes(asset)+perspectiveCropDecodedSourceBytes(asset)+plan.scratchBytes>WORKING_BYTES)throw new EditorError('RESOURCE_LIMIT','Perspective Crop exceeds its pixel, work or 512 MiB working budget.')
+   work.samples+=plan.samples;renderCropAxisSmoother(source,plan,output as Uint8Array)
+   const png=new PNG({width,height});png.data.set(output);return makeAsset(asset.file,encodeRaster(png))
+  }
+ }
  // Compose the rigid document-to-source placement with the inverse crop map
  // once. Keep the existing coordinate path for pixel values; use this matrix
  // only to derive a low-pass footprint, preserving non-minified output bits.
@@ -91,15 +106,21 @@ export function applyPerspectiveCrop(stage:PixelStage,action:Extract<EditAction,
  if(stage.manifest.layers.some(l=>l.isGroup||l.adjustment||l.effects))throw new EditorError('UNSUPPORTED_FEATURE','Perspective Crop currently requires raster layers without groups, adjustments or layer effects. The document has been kept.')
  if(stage.manifest.guides?.length)throw new EditorError('UNSUPPORTED_FEATURE','Remove guides before Perspective Crop. Oblique guides cannot be represented. The document has been kept.')
  const refs=stage.manifest.layers.flatMap(layer=>[{file:layer.imageFile,mask:false},{file:layer.maskFile,mask:true}].filter((ref):ref is {file:string;mask:boolean}=>!!ref.file)),pixels=width*height,sourceBytes=[...new Set(stage.assets.values())].reduce((n,a)=>n+countAssetBytes(a),0)
- let outputBytes=0,decodedSourceBytes=0
+ let outputBytes=0,decodedSourceBytes=0,scratchBytes=0
  for(const {file,mask}of refs){const asset=stage.assets.get(file);if(!asset)throw new EditorError('ASSET_NOT_FOUND','The layer raster is missing.');outputBytes+=pixels*(asset.hdr?80:asset.deep?48:20)
   // Raster operations run serially. Keep all source/output assets in the
   // estimate, plus the largest temporary decode, rather than multiplying the
   // same shared source surface by the number of layer placements.
   if(!mask||asset.width!==1||asset.height!==1)decodedSourceBytes=Math.max(decodedSourceBytes,perspectiveCropDecodedSourceBytes(asset,mask))
  }
- if(pixels*refs.length>LIMITS.maxPixels||pixels*refs.length*sampleCost(sampling)>COMPUTE_SAMPLES||sourceBytes+outputBytes+decodedSourceBytes>WORKING_BYTES)throw new EditorError('RESOURCE_LIMIT','Perspective Crop exceeds its pixel, work or 512 MiB working budget.')
- assertDeepAssetBudget(stage.assets.values(),outputBytes+decodedSourceBytes)
+ // The new separable path retains one intermediate RGB8 surface. Include a
+ // conservative full-source-height peak with all other resident layer assets,
+ // even if the later pixel qualification declines or trims that source.
+ if(sampling==='High quality')for(const layer of stage.manifest.layers){const asset=layer.imageFile?stage.assets.get(layer.imageFile):undefined
+  if(asset&&!asset.deep&&!asset.hdr&&cropAxisSmootherGeometry(asset,layer.transform,corners,width,height))scratchBytes=Math.max(scratchBytes,width*asset.height*4+width*5)
+ }
+ if(pixels*refs.length>LIMITS.maxPixels||pixels*refs.length*sampleCost(sampling)>COMPUTE_SAMPLES||sourceBytes+outputBytes+decodedSourceBytes+scratchBytes>WORKING_BYTES)throw new EditorError('RESOURCE_LIMIT','Perspective Crop exceeds its pixel, work or 512 MiB working budget.')
+ assertDeepAssetBudget(stage.assets.values(),outputBytes+decodedSourceBytes+scratchBytes)
  const matrix=perspectiveCropMatrix(corners,width,height),originalAssets=new Map(stage.assets),work={samples:0}
  transformNamedSelections(stage.manifest,width,height,(x,y)=>mapCropPoint(matrix,x/width,y/height),sampling!=='Nearest')
  for(const layer of stage.manifest.layers){const old=structuredClone(layer.transform),maskPlacement=structuredClone(layer.maskPlacement??old)

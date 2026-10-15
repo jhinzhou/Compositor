@@ -44,10 +44,10 @@ test('Background repeated pointer points do not apply opacity twice',()=>{
  const image=raster(5,5,()=>[255,255,255,200]),single=backgroundErasePixels(image,ctx(5,5),bg([[2.5,2.5]],{opacity:.5})),repeat=backgroundErasePixels(image,ctx(5,5),bg([[2.5,2.5],[2.5,2.5]],{opacity:.5}))
  assert.equal(single.data[(2*5+2)*4+3],100);assert.deepEqual(single.data,repeat.data)
 })
-test('Magic inward antialias performs fractional subpixel color coverage without bridging disconnected regions',()=>{
+test('Magic RGB8 native AA preserves the selected core and grows scored outer pixels in ordered passes',()=>{
  const edge=raster(4,1,x=>x<2?[255,255,255,255]:[0,0,0,255]),hard=magicErasePixels(edge,ctx(4,1),magic([.5,.5],{tolerance:32})),aa=magicErasePixels(edge,ctx(4,1),magic([.5,.5],{tolerance:32,antialiased:true}))
- assert.equal(hard.data[7],0);assert.ok(aa.data[7]>0&&aa.data[7]<255);assert.equal(aa.data[11],255)
- const diagonal=raster(2,2,(x,y)=>x===y?[255,255,255,255]:[0,0,0,255]),connected=magicErasePixels(diagonal,ctx(2,2),magic([.5,.5],{antialiased:true}));assert.equal(connected.data[15],255)
+ assert.equal(hard.data[7],0);assert.equal(aa.data[7],0);assert.ok(aa.data[11]>0&&aa.data[11]<255);assert.equal(aa.data[15],255)
+ const diagonal=raster(2,2,(x,y)=>x===y?[255,255,255,255]:[0,0,0,255]),connected=magicErasePixels(diagonal,ctx(2,2),magic([.5,.5],{antialiased:true}));assert.equal(connected.data[15],0,'Native ordered growth can include a touching diagonal same-color island')
 })
 test('merged document-grid sampling determines region while erasing only transformed target; returns coverage before opacity/selection',()=>{
  const target=raster(4,1,()=>[255,0,0,255]),merged=raster(4,1,x=>x<2?[0,0,255,255]:[0,255,0,255]),context={...ctx(4,1),transform:{...ctx(4,1).transform,flipX:true}},before=merged.data.slice()
